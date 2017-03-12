@@ -31,8 +31,6 @@ android {
         }
         prodDebug {
             initWith(buildTypes.debug)
-            jniDebuggable true
-
             applicationIdSuffix ".prodDebug"
         }
     }
