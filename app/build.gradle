@@ -37,6 +37,7 @@ android {
     productFlavors {
         free {
             applicationIdSuffix ".free"
+            versionNameSuffix "-free"
         }
     }
 }
