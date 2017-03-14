@@ -20,14 +20,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        debug {
-            applicationIdSuffix '.debug'
-        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".release"
             signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix '.debug'
         }
         prodDebug {
             initWith(buildTypes.debug)
@@ -39,6 +39,12 @@ android {
             applicationIdSuffix ".free"
             versionNameSuffix "-free"
         }
+        api16 {
+            minSdkVersion 16
+        }
+        api21 {
+            minSdkVersion 21
+        }
     }
 }
 
@@ -49,5 +55,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }

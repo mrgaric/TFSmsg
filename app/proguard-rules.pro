@@ -16,3 +16,4 @@
 #   public *;
 #}
 -dontwarn com.squareup.okhttp.**
+-keep class com.google.gson.stream.** { *; }
