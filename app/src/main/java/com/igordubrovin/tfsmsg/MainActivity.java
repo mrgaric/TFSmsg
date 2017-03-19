@@ -1,10 +1,13 @@
 package com.igordubrovin.tfsmsg;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Toast.makeText(MainActivity.this, "position = " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -48,5 +53,22 @@ public class MainActivity extends AppCompatActivity {
         list.add(new DialogItem("title", "desc"));
         list.add(new DialogItem("title", "desc"));
         return list;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menuAbout:
+                Intent aboutIntent = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivity(aboutIntent);
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 }

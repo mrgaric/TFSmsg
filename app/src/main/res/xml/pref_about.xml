@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="@string/pref_about_app_title"
+        android:summary="@string/app_name"/>
+    <Preference
+        android:title="@string/pref_version_title"
+        android:summary="@string/pref_version_summary"/>
+    <Preference
+        android:title="@string/pref_developer_title"
+        android:summary="@string/pref_dev_name_summary"/>
+    <Preference
+        android:title="@string/pref_courses_title"
+        android:summary="@string/pref_courses_name_summary"/>
+</PreferenceScreen>

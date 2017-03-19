@@ -4,4 +4,14 @@
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="enter">Войти</string>
+
+    <string name="about">о приложении</string>
+
+    <string name="pref_about_app_title">О приложении</string>
+    <string name="pref_version_title">Версия сборки</string>
+    <string name="pref_developer_title">Разработчик</string>
+    <string name="pref_courses_title">Школа разработки</string>
+    <string name="pref_version_summary">1.0</string>
+    <string name="pref_dev_name_summary">Игорь Дубровин</string>
+    <string name="pref_courses_name_summary">Tinkoff Fintech School</string>
 </resources>
