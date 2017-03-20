@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/msg_incoming"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp">
         <TextView
             android:id="@+id/text_view_sender"
             android:layout_width="wrap_content"
@@ -25,7 +26,7 @@
             android:textColor="@color/colorAccent"
             android:maxLines="1"
             tools:text="test test test test"/>
-        <TextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
             android:id="@+id/text_view_incoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

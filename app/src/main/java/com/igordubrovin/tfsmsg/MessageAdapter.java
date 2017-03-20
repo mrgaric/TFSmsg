@@ -8,23 +8,25 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
+
 /**
  * Created by Игорь on 18.03.2017.
  */
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<MessageItem> dataSet;
+    private List<MessageItem> dataMessage;
     private OnItemClickListener clickListener;
 
-    public MessageAdapter(List<MessageItem> dataSet, OnItemClickListener clickListener){
-        this.dataSet = dataSet;
+    public MessageAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
+        this.dataMessage = dataMessage;
         this.clickListener = clickListener;
     }
 
     @Override
     public int getItemViewType(int position) throws IllegalArgumentException {
-        MessageItem item = dataSet.get(position);
+        MessageItem item = dataMessage.get(position);
         if (MessageIncomingItem.class.isInstance(item)) return 0;
         if (MessageItem.class.isInstance(item)) return 1;
         throw new IllegalArgumentException("Unknown element");
@@ -51,11 +53,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (ViewHolderOutgoingMessage.class.isInstance(holder)){
-            MessageItem item = dataSet.get(position);
+            MessageItem item = dataMessage.get(position);
             ((ViewHolderOutgoingMessage)holder).message.setText(item.getMessageText());
         }
         else {
-            MessageIncomingItem item = (MessageIncomingItem) dataSet.get(position);
+            MessageIncomingItem item = (MessageIncomingItem) dataMessage.get(position);
             ((ViewHolderIncomingMessage)holder).message.setText(item.getMessageText());
             ((ViewHolderIncomingMessage)holder).sender.setText(item.getSender());
         }
@@ -63,7 +65,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        return dataMessage.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -84,22 +86,22 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ViewHolderOutgoingMessage extends ViewHolder {
 
-        TextView message;
+        EmojiconTextView message;
 
         public ViewHolderOutgoingMessage(View itemView, OnItemClickListener listener) {
             super(itemView);
-            message = (TextView) itemView.findViewById(R.id.text_view_outgoing_message);
+            message = (EmojiconTextView) itemView.findViewById(R.id.text_view_outgoing_message);
             setClickListener(listener);
         }
     }
 
     public class ViewHolderIncomingMessage extends ViewHolder {
 
-        TextView message;
+        EmojiconTextView message;
         TextView sender;
         public ViewHolderIncomingMessage(View itemView, OnItemClickListener listener) {
             super(itemView);
-            message = (TextView) itemView.findViewById(R.id.text_view_incoming_message);
+            message = (EmojiconTextView) itemView.findViewById(R.id.text_view_incoming_message);
             sender = (TextView) itemView.findViewById(R.id.text_view_sender);
             setClickListener(listener);
         }
