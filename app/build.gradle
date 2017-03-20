@@ -50,9 +50,8 @@ android {
 
 repositories {
     jcenter()
-    maven {
-        url "https://jitpack.io"
-    }
+    maven {url "https://jitpack.io"}
+    maven {url "https://dl.bintray.com/hani-momanii/maven"}
 }
 
 dependencies {
@@ -66,5 +65,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.github.AndroidDeveloperLB:MaterialPreferenceLibrary:5'
+    compile 'hani.momanii.supernova_emoji_library:supernova-emoji-library:0.0.2'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:design:25.2.0'
 }
