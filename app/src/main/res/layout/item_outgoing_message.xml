@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
     android:layout_gravity="center">
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -14,14 +14,15 @@
         android:id="@+id/text_view_outgoing_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="250dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="18sp"
+        android:maxWidth="@dimen/max_width_item_message"
+        android:paddingTop="@dimen/padding_vertical_item_message"
+        android:paddingBottom="@dimen/padding_vertical_item_message"
+        android:paddingLeft="@dimen/padding_horizontal_item_message"
+        android:paddingRight="@dimen/padding_horizontal_item_message"
+        android:textSize="@dimen/text_size_message"
         android:background="@drawable/msg_outgoing"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginRight="@dimen/margin_horizontal_item_message"
+        android:layout_marginEnd="@dimen/margin_horizontal_item_message"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         tools:text="Test Test Test Test Test Test Test Test Test"/>
 </LinearLayout>

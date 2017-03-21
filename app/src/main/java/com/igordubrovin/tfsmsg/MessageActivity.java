@@ -10,16 +10,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
-import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class MessageActivity extends AppCompatActivity implements OnItemClickListener{
 
-    private EmojiconEditText emojEditTextMessage;
+    private EmojiconEditTextClearFocus emojEditTextMessage;
     private ImageView emojiconImage;
+    private ImageView clearImage;
     private ImageView sendImage;
     private EmojIconActions emojIconActions;
     private View root;
@@ -38,15 +38,70 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initRecyclerView();
+        initEmojiconView();
 
-        root = findViewById(R.id.root_constrain_layout_message);
-        emojiconImage = (ImageView) findViewById(R.id.image_view_emojicon);
         sendImage = (ImageView) findViewById(R.id.image_view_send);
-        emojEditTextMessage = (EmojiconEditText) findViewById(R.id.edit_text_message);
+        clearImage = (ImageView) findViewById(R.id.image_view_clear);
+
+        sendImage.setOnClickListener(clickSendImage);
+        clearImage.setOnClickListener(clickClearImage);
+
+    }
+
+    private void initRecyclerView(){
+        messageList = new LinkedList<>();
+        recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        adapter = new MessageAdapter(messageList, this);
+        recyclerViewMessage.setLayoutManager(layoutManager);
+        recyclerViewMessage.setAdapter(adapter);
+    }
+
+    private void initEmojiconView(){
+        emojEditTextMessage = (EmojiconEditTextClearFocus) findViewById(R.id.edit_text_message);
+        emojEditTextMessage.setOnTextEmptyListener(notEmptyEditText);
+        emojiconImage = (ImageView) findViewById(R.id.image_view_emojicon);
+        root = findViewById(R.id.root_constrain_layout_message);
         emojIconActions = new EmojIconActions(this, root, emojEditTextMessage, emojiconImage);
         emojIconActions.ShowEmojIcon();
         emojIconActions.setIconsIds(R.drawable.ic_keyboard_black, R.drawable.ic_insert_emoticon_black);
-        sendImage.setOnClickListener(clickSendImage);
+    }
+
+    private View.OnClickListener clickSendImage = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String message = emojEditTextMessage.getText().toString();
+            ((LinkedList<MessageItem>)messageList).addFirst(new MessageItem(message));
+            adapter.notifyDataSetChanged();
+            emojEditTextMessage.setText("");
+        }
+    };
+
+    private View.OnClickListener clickClearImage = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            emojEditTextMessage.setText("");
+        }
+    };
+
+    EmojiconEditTextClearFocus.OnTextEmptyListener notEmptyEditText = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
+        @Override
+        public void textIsNotEmpty() {
+            clearImage.setVisibility(View.VISIBLE);
+            sendImage.setClickable(true);
+        }
+
+        @Override
+        public void textIsEmpty() {
+            clearImage.setVisibility(View.INVISIBLE);
+            sendImage.setClickable(false);
+        }
+    };
+
+    @Override
+    public void onItemClick(int position) {
+        Toast.makeText(MessageActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -59,27 +114,6 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
         }
     }
 
-    private void initRecyclerView(){
-        messageList = new ArrayList<>();
-        recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        adapter = new MessageAdapter(messageList, this);
-        recyclerViewMessage.setLayoutManager(layoutManager);
-        recyclerViewMessage.setAdapter(adapter);
-    }
-
-    private View.OnClickListener clickSendImage = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String message = emojEditTextMessage.getText().toString();
-            if (!message.equals("")) {
-                messageList.add(new MessageItem(message));
-                adapter.notifyDataSetChanged();
-                recyclerViewMessage.scrollToPosition(adapter.getItemCount()-1);
-            }
-        }
-    };
-
   /*  private List<MessageItem> createDataSet() {
         List<MessageItem> list = new ArrayList<>();
         list.add(new MessageItem("test"));
@@ -90,9 +124,4 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
         list.add(new MessageIncomingItem("Test", "sender"));
         return list;
     }*/
-
-    @Override
-    public void onItemClick(int position) {
-        Toast.makeText(MessageActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
-    }
 }

@@ -27,5 +27,4 @@
             android:label="@string/about">
         </activity>
     </application>
-
 </manifest>

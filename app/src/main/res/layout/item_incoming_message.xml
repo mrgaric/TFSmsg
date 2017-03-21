@@ -4,25 +4,25 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
     android:layout_gravity="center">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/msg_incoming"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp">
+        android:layout_marginLeft="@dimen/margin_horizontal_item_message"
+        android:layout_marginStart="@dimen/margin_horizontal_item_message">
         <TextView
             android:id="@+id/text_view_sender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="250dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:textSize="14sp"
+            android:maxWidth="@dimen/max_width_item_message"
+            android:paddingTop="@dimen/padding_vertical_item_message"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
+            android:paddingLeft="@dimen/padding_horizontal_item_message"
+            android:paddingRight="@dimen/padding_horizontal_item_message"
+            android:textSize="@dimen/text_size_sender"
             android:textColor="@color/colorAccent"
             android:maxLines="1"
             tools:text="test test test test"/>
@@ -30,11 +30,12 @@
             android:id="@+id/text_view_incoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="250dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:textSize="18sp"
+            android:maxWidth="@dimen/max_width_item_message"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
+            android:paddingLeft="@dimen/padding_horizontal_item_message"
+            android:paddingRight="@dimen/padding_horizontal_item_message"
+            android:textSize="@dimen/text_size_message"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             tools:text="Test Test Test Test Test Test Test Test Test"/>
     </LinearLayout>
 
