@@ -60,6 +60,7 @@
             android:paddingTop="@dimen/padding_vertical_text_editor_message"
             android:textSize="@dimen/text_size_message"
             emojicon:emojiconSize="@dimen/emoji_size_message"
+            android:imeOptions="flagNoExtractUi"
             android:background="@drawable/background_edittext_message" />
         
         <ImageView
