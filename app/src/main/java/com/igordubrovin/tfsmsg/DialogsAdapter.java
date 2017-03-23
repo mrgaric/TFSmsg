@@ -35,6 +35,10 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
         return dataset.size();
     }
 
+    public DialogItem getItem(int position){
+        return dataset.get(position);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;

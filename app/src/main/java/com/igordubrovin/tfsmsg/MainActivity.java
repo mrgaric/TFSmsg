@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Toast.makeText(MainActivity.this, "position = " + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
+                intent.putExtra("titleDialog", ((DialogsAdapter)adapter).getItem(position).getTitle());
                 startActivity(intent);
             }
         });

@@ -1,11 +1,12 @@
 package com.igordubrovin.tfsmsg;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 
-public class MessageActivity extends AppCompatActivity implements OnItemClickListener{
+public class DialogActivity extends AppCompatActivity implements OnItemClickListener {
 
     private EmojiconEditTextClearFocus emojEditTextMessage;
     private ImageView emojiconImage;
@@ -23,33 +24,64 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
     private ImageView sendImage;
     private EmojIconActions emojIconActions;
     private View root;
+    private Toolbar toolbar;
 
     private RecyclerView recyclerViewMessage;
     private RecyclerView.Adapter adapter;
 
+    private Fragment fragmentStoresMessageList;
     private List<MessageItem> messageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        setContentView(R.layout.activity_dialog);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        initToolbar(getIntent().getStringExtra("titleDialog"));
+        initMessageList();
         initRecyclerView();
         initEmojiconView();
+        initImageView();
+    }
 
-        sendImage = (ImageView) findViewById(R.id.image_view_send);
-        clearImage = (ImageView) findViewById(R.id.image_view_clear);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((FragmentStoresMessageList)fragmentStoresMessageList).setMessageList(messageList);
+    }
 
-        sendImage.setOnClickListener(clickSendImage);
-        clearImage.setOnClickListener(clickClearImage);
+    //init view
 
+    private void initToolbar(String tittle){
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle(tittle);
+        toolbar.setTitleTextColor(Color.BLACK);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void initMessageList(){
+        fragmentStoresMessageList = getSupportFragmentManager().findFragmentByTag("SAVE_FRAGMENT");
+        if (fragmentStoresMessageList != null) messageList = ((FragmentStoresMessageList)fragmentStoresMessageList).getMessageList();
+        else {
+            messageList = new LinkedList<>();
+            fragmentStoresMessageList = new FragmentStoresMessageList();
+            getSupportFragmentManager().beginTransaction()
+                    .add(fragmentStoresMessageList, "SAVE_FRAGMENT")
+                    .commit();
+        }
     }
 
     private void initRecyclerView(){
-        messageList = new LinkedList<>();
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
@@ -67,6 +99,15 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
         emojIconActions.ShowEmojIcon();
         emojIconActions.setIconsIds(R.drawable.ic_keyboard_black, R.drawable.ic_insert_emoticon_black);
     }
+
+    private void initImageView(){
+        sendImage = (ImageView) findViewById(R.id.image_view_send);
+        clearImage = (ImageView) findViewById(R.id.image_view_clear);
+        sendImage.setOnClickListener(clickSendImage);
+        clearImage.setOnClickListener(clickClearImage);
+    }
+
+    // listeners view
 
     private View.OnClickListener clickSendImage = new View.OnClickListener() {
         @Override
@@ -101,17 +142,7 @@ public class MessageActivity extends AppCompatActivity implements OnItemClickLis
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(MessageActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        Toast.makeText(DialogActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
     }
 
   /*  private List<MessageItem> createDataSet() {
