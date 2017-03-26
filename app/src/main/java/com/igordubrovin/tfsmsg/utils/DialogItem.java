@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.utils;
 
 public class DialogItem {
 

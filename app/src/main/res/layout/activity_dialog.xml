@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.igordubrovin.tfsmsg.DialogActivity"
+    tools:context="com.igordubrovin.tfsmsg.activities.DialogActivity"
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp"
     xmlns:emojicon="http://schemas.android.com/apk/res-auto">
@@ -52,7 +52,7 @@
             android:layout_marginBottom="@dimen/margin_vertical_imageView_editor_message"
             android:src="@drawable/ic_insert_emoticon_black"/>
 
-        <com.igordubrovin.tfsmsg.EmojiconEditTextClearFocus
+        <com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus
             android:id="@+id/edit_text_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

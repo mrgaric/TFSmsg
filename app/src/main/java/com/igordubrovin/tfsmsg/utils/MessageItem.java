@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,7 +11,7 @@ public class MessageItem implements Parcelable {
 
     private String messageText;
 
-    MessageItem (String messageText){
+    public MessageItem (String messageText){
         this.messageText = messageText;
     }
 
@@ -42,6 +42,6 @@ public class MessageItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(messageText);
+
     }
 }

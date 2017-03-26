@@ -1,8 +1,6 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +9,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.igordubrovin.tfsmsg.Interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
+import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
+import com.igordubrovin.tfsmsg.utils.MessageItem;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 
-public class DialogActivity extends AppCompatActivity implements OnItemClickListener {
+public class DialogActivity extends AppCompatActivity {
 
     private EmojiconEditTextClearFocus emojEditTextMessage;
     private ImageView emojiconImage;
@@ -24,30 +29,38 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
     private ImageView sendImage;
     private EmojIconActions emojIconActions;
     private View root;
+
     private Toolbar toolbar;
 
     private RecyclerView recyclerViewMessage;
     private RecyclerView.Adapter adapter;
 
-    private Fragment fragmentStoresMessageList;
-    private List<MessageItem> messageList;
+    private List<MessageItem> messageItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
 
+        if (savedInstanceState == null)
+            messageItems = new LinkedList<>();
+        else{
+            List<MessageItem> savedData = savedInstanceState.getParcelableArrayList("asd");
+            if (savedData != null)
+                messageItems = new LinkedList<>(savedData);
+        }
+
         initToolbar(getIntent().getStringExtra("titleDialog"));
-        initMessageList();
         initRecyclerView();
         initEmojiconView();
         initImageView();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        ((FragmentStoresMessageList)fragmentStoresMessageList).setMessageList(messageList);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<MessageItem> savedData = new ArrayList<>(messageItems);
+        outState.putParcelableArrayList("asd", (ArrayList<MessageItem>) savedData);
     }
 
     //init view
@@ -55,7 +68,6 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
     private void initToolbar(String tittle){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle(tittle);
-        toolbar.setTitleTextColor(Color.BLACK);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,23 +81,11 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
         });
     }
 
-    private void initMessageList(){
-        fragmentStoresMessageList = getSupportFragmentManager().findFragmentByTag("SAVE_FRAGMENT");
-        if (fragmentStoresMessageList != null) messageList = ((FragmentStoresMessageList)fragmentStoresMessageList).getMessageList();
-        else {
-            messageList = new LinkedList<>();
-            fragmentStoresMessageList = new FragmentStoresMessageList();
-            getSupportFragmentManager().beginTransaction()
-                    .add(fragmentStoresMessageList, "SAVE_FRAGMENT")
-                    .commit();
-        }
-    }
-
     private void initRecyclerView(){
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessageAdapter(messageList, this);
+        adapter = new MessageAdapter(messageItems, clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
     }
@@ -112,10 +112,7 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
     private View.OnClickListener clickSendImage = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String message = emojEditTextMessage.getText().toString();
-            ((LinkedList<MessageItem>)messageList).addFirst(new MessageItem(message));
-            adapter.notifyDataSetChanged();
-            emojEditTextMessage.setText("");
+            sendMessage();
         }
     };
 
@@ -126,7 +123,7 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
         }
     };
 
-    EmojiconEditTextClearFocus.OnTextEmptyListener notEmptyEditText = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
+    private EmojiconEditTextClearFocus.OnTextEmptyListener notEmptyEditText = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
         @Override
         public void textIsNotEmpty() {
             clearImage.setVisibility(View.VISIBLE);
@@ -140,19 +137,19 @@ public class DialogActivity extends AppCompatActivity implements OnItemClickList
         }
     };
 
-    @Override
-    public void onItemClick(int position) {
-        Toast.makeText(DialogActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
+    private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
+        @Override
+        public void onItemClick(int position) {
+            Toast.makeText(DialogActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private void sendMessage(){
+        String message = emojEditTextMessage.getText().toString();
+        ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
+        adapter.notifyDataSetChanged();
+        emojEditTextMessage.setText("");
     }
 
-  /*  private List<MessageItem> createDataSet() {
-        List<MessageItem> list = new ArrayList<>();
-        list.add(new MessageItem("test"));
-        list.add(new MessageIncomingItem("Test", "sender"));
-        list.add(new MessageItem("test"));
-        list.add(new MessageItem("test"));
-        list.add(new MessageIncomingItem("Test", "sender"));
-        list.add(new MessageIncomingItem("Test", "sender"));
-        return list;
-    }*/
+    private void receiveMessage(){}
 }

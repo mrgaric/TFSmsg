@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.customView;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,10 +1,14 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.igordubrovin.tfsmsg.utils.DialogItem;
+import com.igordubrovin.tfsmsg.Interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.R;
 
 import java.util.List;
 

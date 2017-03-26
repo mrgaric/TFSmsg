@@ -1,6 +1,8 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.activities;
 
 import android.os.Bundle;
+
+import com.igordubrovin.tfsmsg.R;
 import com.lb.material_preferences_library.PreferenceActivity;
 
 public class AboutActivity extends PreferenceActivity {

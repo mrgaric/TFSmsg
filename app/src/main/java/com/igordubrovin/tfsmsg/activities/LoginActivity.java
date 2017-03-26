@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg;
+package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.igordubrovin.tfsmsg.MainActivity;
 import com.igordubrovin.tfsmsg.R;
 
 public class LoginActivity extends AppCompatActivity {
