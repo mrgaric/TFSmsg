@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg.Interfaces;
+package com.igordubrovin.tfsmsg.interfaces;
 
 public interface OnItemClickListener {
 

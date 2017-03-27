@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startNextScreen() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("LOGIN", login.getText().toString());
+        Intent intent = new Intent(this, NavigationActivity.class);
+        intent.putExtra(ProjectConstants.LOGIN_USER, login.getText().toString());
         startActivity(intent);
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.utils.DialogItem;
-import com.igordubrovin.tfsmsg.Interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.R;
 
 import java.util.List;

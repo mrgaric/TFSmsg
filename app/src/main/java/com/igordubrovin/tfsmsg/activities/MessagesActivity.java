@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.igordubrovin.tfsmsg.Interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
+import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
 import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 
-public class DialogActivity extends AppCompatActivity {
+public class MessagesActivity extends AppCompatActivity {
 
     private EmojiconEditTextClearFocus emojEditTextMessage;
     private ImageView emojiconImage;
@@ -40,7 +40,7 @@ public class DialogActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dialog);
+        setContentView(R.layout.activity_messages);
 
         if (savedInstanceState == null)
             messageItems = new LinkedList<>();
@@ -85,19 +85,19 @@ public class DialogActivity extends AppCompatActivity {
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessageAdapter(messageItems, clickRecyclerMessageItem);
+        adapter = new MessagesAdapter(messageItems, clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
     }
 
     private void initEmojiconView(){
         emojEditTextMessage = (EmojiconEditTextClearFocus) findViewById(R.id.edit_text_message);
-        emojEditTextMessage.setOnTextEmptyListener(notEmptyEditText);
+        emojEditTextMessage.setOnTextEmptyListener(emptyEditTextListener);
         emojiconImage = (ImageView) findViewById(R.id.image_view_emojicon);
-        root = findViewById(R.id.root_constrain_layout_message);
+        root = findViewById(R.id.root_layout_emojicon_message);
         emojIconActions = new EmojIconActions(this, root, emojEditTextMessage, emojiconImage);
         emojIconActions.ShowEmojIcon();
-        emojIconActions.setIconsIds(R.drawable.ic_keyboard_black, R.drawable.ic_insert_emoticon_black);
+        emojIconActions.setIconsIds(R.drawable.ic_keyboard, R.drawable.ic_insert_emoticon);
     }
 
     private void initImageView(){
@@ -112,7 +112,9 @@ public class DialogActivity extends AppCompatActivity {
     private View.OnClickListener clickSendImage = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            sendMessage();
+            String message = emojEditTextMessage.getText().toString();
+            updateAdapter(message);
+            emojEditTextMessage.setText("");
         }
     };
 
@@ -123,7 +125,7 @@ public class DialogActivity extends AppCompatActivity {
         }
     };
 
-    private EmojiconEditTextClearFocus.OnTextEmptyListener notEmptyEditText = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
+    private EmojiconEditTextClearFocus.OnTextEmptyListener emptyEditTextListener = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
         @Override
         public void textIsNotEmpty() {
             clearImage.setVisibility(View.VISIBLE);
@@ -140,16 +142,19 @@ public class DialogActivity extends AppCompatActivity {
     private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
-            Toast.makeText(DialogActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MessagesActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
         }
     };
 
-    private void sendMessage(){
-        String message = emojEditTextMessage.getText().toString();
-        ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
-        adapter.notifyDataSetChanged();
-        emojEditTextMessage.setText("");
+    //other
+
+    private void receiveMessage(){
+        String message = "";
+        updateAdapter(message);
     }
 
-    private void receiveMessage(){}
+    private void updateAdapter(String message){
+        ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
+        adapter.notifyDataSetChanged();
+    }
 }

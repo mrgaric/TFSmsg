@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
-import com.igordubrovin.tfsmsg.Interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.R;
 
 import java.util.List;
@@ -19,12 +19,12 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
  * Created by Игорь on 18.03.2017.
  */
 
-public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<MessageItem> dataMessage;
     private OnItemClickListener clickListener;
 
-    public MessageAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
+    public MessagesAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
         this.dataMessage = dataMessage;
         this.clickListener = clickListener;
     }

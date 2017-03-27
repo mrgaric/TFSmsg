@@ -20,9 +20,14 @@
     <dimen name="margin_right_image_emojicon_editor_message">16dp</dimen>
     <dimen name="margin_vertical_imageView_editor_message">10dp</dimen>
     <dimen name="padding_vertical_text_editor_message">10dp</dimen>
-    <dimen name="min_height_text_editor_message">46dp</dimen>
+    <dimen name="margin_vertical_text_editor_message">2dp</dimen>
+    <dimen name="min_height_text_editor_message">10dp</dimen>
     <dimen name="max_height_text_editor_message">129dp</dimen>
 
     <dimen name="margin_vertical_recycler_view">8dp</dimen>
     <dimen name="margin_horizontal_recycler_view">8dp</dimen>
+
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
