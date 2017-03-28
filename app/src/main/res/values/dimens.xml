@@ -7,7 +7,7 @@
     <dimen name="padding_horizontal_item_message">8dp</dimen>
     <dimen name="margin_horizontal_item_message">10dp</dimen>
     <dimen name="text_size_message">18sp</dimen>
-    <dimen name="emoji_size_message">18sp</dimen>
+    <dimen name="emoji_size_message">20sp</dimen>
     <dimen name="text_size_sender">14sp</dimen>
     <dimen name="margin_bottom_root_item_message">8dp</dimen>
     <dimen name="max_width_item_message">250dp</dimen>

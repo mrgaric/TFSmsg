@@ -6,13 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
 import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
+import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
@@ -98,14 +100,15 @@ public class MessagesActivity extends AppCompatActivity {
         root = findViewById(R.id.root_layout_emojicon_message);
         emojIconActions = new EmojIconActions(this, root, emojEditTextMessage, emojiconImage);
         emojIconActions.ShowEmojIcon();
-        emojIconActions.setIconsIds(R.drawable.ic_keyboard, R.drawable.ic_insert_emoticon);
+        emojIconActions.setIconsIds(R.drawable.ic_keyboard_color_accent, R.drawable.ic_insert_emoticon_color_accent);
 
     }
 
     private void initImageView(){
         sendImage = (ImageView) findViewById(R.id.image_view_send);
-        clearImage = (ImageView) findViewById(R.id.image_view_clear);
         sendImage.setOnClickListener(clickSendImage);
+        sendImage.setClickable(false);
+        clearImage = (ImageView) findViewById(R.id.image_view_clear);
         clearImage.setOnClickListener(clickClearImage);
     }
 
@@ -130,14 +133,22 @@ public class MessagesActivity extends AppCompatActivity {
     private EmojiconEditTextClearFocus.OnTextEmptyListener emptyEditTextListener = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
         @Override
         public void textIsNotEmpty() {
-            clearImage.setVisibility(View.VISIBLE);
-            sendImage.setClickable(true);
+            if (clearImage.getVisibility() == View.INVISIBLE && !sendImage.isClickable()) {
+                sendImage.setClickable(true);
+                sendImage.setImageResource(R.drawable.ic_send_color_accent);
+                clearImage.setVisibility(View.VISIBLE);
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clear_image_show);
+                clearImage.startAnimation(anim);
+            }
         }
 
         @Override
         public void textIsEmpty() {
-            clearImage.setVisibility(View.INVISIBLE);
             sendImage.setClickable(false);
+            sendImage.setImageResource(R.drawable.ic_send_color_gray);
+            clearImage.setVisibility(View.INVISIBLE);
+            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clear_image_hide);
+            clearImage.startAnimation(anim);
         }
     };
 
