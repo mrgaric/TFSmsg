@@ -16,6 +16,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
 import com.igordubrovin.tfsmsg.utils.DialogItem;
+import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class DialogsFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), MessagesActivity.class);
-                intent.putExtra("titleDialog", ((DialogsAdapter)adapter).getItem(position).getTitle());
+                intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
                 startActivity(intent);
             }
         });

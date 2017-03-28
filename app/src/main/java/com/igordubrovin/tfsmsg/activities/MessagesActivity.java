@@ -14,6 +14,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
 import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
+import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -45,12 +46,12 @@ public class MessagesActivity extends AppCompatActivity {
         if (savedInstanceState == null)
             messageItems = new LinkedList<>();
         else{
-            List<MessageItem> savedData = savedInstanceState.getParcelableArrayList("asd");
+            List<MessageItem> savedData = savedInstanceState.getParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS);
             if (savedData != null)
                 messageItems = new LinkedList<>(savedData);
         }
 
-        initToolbar(getIntent().getStringExtra("titleDialog"));
+        initToolbar(getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE));
         initRecyclerView();
         initEmojiconView();
         initImageView();
@@ -60,7 +61,7 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         List<MessageItem> savedData = new ArrayList<>(messageItems);
-        outState.putParcelableArrayList("asd", (ArrayList<MessageItem>) savedData);
+        outState.putParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS, (ArrayList<MessageItem>) savedData);
     }
 
     //init view
@@ -98,6 +99,7 @@ public class MessagesActivity extends AppCompatActivity {
         emojIconActions = new EmojIconActions(this, root, emojEditTextMessage, emojiconImage);
         emojIconActions.ShowEmojIcon();
         emojIconActions.setIconsIds(R.drawable.ic_keyboard, R.drawable.ic_insert_emoticon);
+
     }
 
     private void initImageView(){

@@ -1,6 +1,7 @@
 package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -61,6 +62,8 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     private void initNavigationView(Bundle savedInstanceState){
+        View navigationViewHeader;
+        SharedPreferences sPref;
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
         drawer.addDrawerListener(toggle);
@@ -68,9 +71,10 @@ public class NavigationActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        View navigationViewHeader = navigationView.getHeaderView(0);
+        navigationViewHeader = navigationView.getHeaderView(0);
         tvLogin = (TextView) navigationViewHeader.findViewById(R.id.tv_login_navigation_view_header);
-        tvLogin.setText(getIntent().getStringExtra(ProjectConstants.LOGIN_USER));
+        sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
+        tvLogin.setText(sPref.getString(ProjectConstants.USERS_LOGIN, "admin"));
 
         if (savedInstanceState == null) {
             navigationView.getMenu().getItem(MENU_DIALOGS).setChecked(true);
@@ -97,6 +101,11 @@ public class NavigationActivity extends AppCompatActivity {
                 case R.id.nav_exit:
                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(loginIntent);
+                    SharedPreferences sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sPref.edit();
+                    editor.putBoolean(ProjectConstants.PREFERENCES_STATE_LOGIN, ProjectConstants.USER_NOT_LOGGED);
+                    editor.putString(ProjectConstants.USERS_LOGIN, "");
+                    editor.apply();
                     finish();
                     break;
             }

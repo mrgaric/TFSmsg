@@ -1,7 +1,11 @@
 package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -34,9 +38,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startNextScreen() {
-        Intent intent = new Intent(this, NavigationActivity.class);
-        intent.putExtra(ProjectConstants.LOGIN_USER, login.getText().toString());
-        startActivity(intent);
+        if (password.getText().toString().equals("admin")) {
+            Intent intent = new Intent(this, NavigationActivity.class);
+            startActivity(intent);
+            SharedPreferences sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putBoolean(ProjectConstants.PREFERENCES_STATE_LOGIN, ProjectConstants.USER_LOGGED);
+            editor.putString(ProjectConstants.USERS_LOGIN, login.getText().toString());
+            editor.apply();
+        }
+        else {
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.root_login_view), "Login Error", BaseTransientBottomBar.LENGTH_SHORT);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+            snackbar.show();
+        }
     }
 }
 
