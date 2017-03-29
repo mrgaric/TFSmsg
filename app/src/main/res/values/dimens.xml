@@ -6,9 +6,6 @@
     <dimen name="padding_vertical_item_message">8dp</dimen>
     <dimen name="padding_horizontal_item_message">8dp</dimen>
     <dimen name="margin_horizontal_item_message">10dp</dimen>
-    <dimen name="text_size_message">18sp</dimen>
-    <dimen name="emoji_size_message">20sp</dimen>
-    <dimen name="text_size_sender">14sp</dimen>
     <dimen name="margin_bottom_root_item_message">8dp</dimen>
     <dimen name="max_width_item_message">250dp</dimen>
 
@@ -21,7 +18,7 @@
     <dimen name="margin_vertical_imageView_editor_message">10dp</dimen>
     <dimen name="padding_vertical_text_editor_message">10dp</dimen>
     <dimen name="margin_vertical_text_editor_message">2dp</dimen>
-    <dimen name="min_height_text_editor_message">10dp</dimen>
+    <dimen name="min_height_text_editor_message">46dp</dimen>
     <dimen name="max_height_text_editor_message">129dp</dimen>
 
     <dimen name="margin_vertical_recycler_view">8dp</dimen>
@@ -30,4 +27,10 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="ripple_radius">25dp</dimen>
+
+    <dimen name="text_size_message">18sp</dimen>
+    <dimen name="emoji_size_message">21sp</dimen>
+    <dimen name="text_size_sender">14sp</dimen>
 </resources>

@@ -25,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxHeight="@dimen/max_height_text_editor_message"
+        android:minHeight="@dimen/min_height_text_editor_message"
         android:layout_weight="1"
         android:gravity="bottom"
         android:paddingBottom="@dimen/padding_vertical_text_editor_message"

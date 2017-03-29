@@ -11,20 +11,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
-    <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
-        android:id="@+id/text_view_outgoing_message"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="@dimen/max_width_item_message"
-        android:paddingTop="@dimen/padding_vertical_item_message"
-        android:paddingBottom="@dimen/padding_vertical_item_message"
-        android:paddingLeft="@dimen/padding_horizontal_item_message"
-        android:paddingRight="@dimen/padding_horizontal_item_message"
-        android:textSize="@dimen/text_size_message"
-        emojicon:emojiconSize="@dimen/emoji_size_message"
-        android:background="@drawable/msg_outgoing"
-        android:layout_marginRight="@dimen/margin_horizontal_item_message"
-        android:layout_marginEnd="@dimen/margin_horizontal_item_message"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        tools:text="Test Test Test Test Test Test Test Test Test"/>
+        android:background="@drawable/out_message">
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
+            android:id="@+id/text_view_outgoing_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/max_width_item_message"
+            android:paddingTop="@dimen/padding_vertical_item_message"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
+            android:paddingLeft="@dimen/padding_horizontal_item_message"
+            android:paddingRight="@dimen/padding_horizontal_item_message"
+            android:textSize="@dimen/text_size_message"
+            emojicon:emojiconSize="@dimen/emoji_size_message"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:autoLink="web|phone|map|email"
+            tools:text="Testddgfggd Test Test ffdTest Test Test Test Test Test"/>
+    </FrameLayout>
 </LinearLayout>

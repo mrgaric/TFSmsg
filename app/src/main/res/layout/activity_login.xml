@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/login"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:scrollHorizontally="true"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/edit_text_password"
@@ -26,9 +27,9 @@
         android:hint="@string/password"
         android:imeActionId="@+id/login"
         android:imeOptions="actionUnspecified"
-        android:inputType="textPassword"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:scrollHorizontally="true"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btn_enter"

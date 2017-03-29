@@ -2,18 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:emojicon="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:orientation="horizontal">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/msg_incoming"
-        android:layout_marginLeft="@dimen/margin_horizontal_item_message"
-        android:layout_marginStart="@dimen/margin_horizontal_item_message">
+        android:background="@drawable/in_message">
         <TextView
             android:id="@+id/text_view_sender"
             android:layout_width="wrap_content"
@@ -26,7 +24,8 @@
             android:textSize="@dimen/text_size_sender"
             android:textColor="@color/colorAccent"
             android:maxLines="1"
-            tools:text="test test test test"/>
+            android:ellipsize="end"
+            tools:text="Test Test Test Test tefffstkkfg Test Test Test Test Test"/>
         <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
             android:id="@+id/text_view_incoming_message"
             android:layout_width="wrap_content"
@@ -38,12 +37,11 @@
             android:textSize="@dimen/text_size_message"
             emojicon:emojiconSize="@dimen/emoji_size_message"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:autoLink="web|phone|map|email"
             tools:text="Test Test Test Test Test Test Test Test Test"/>
     </LinearLayout>
-
     <android.support.v4.widget.Space
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
-
 </LinearLayout>

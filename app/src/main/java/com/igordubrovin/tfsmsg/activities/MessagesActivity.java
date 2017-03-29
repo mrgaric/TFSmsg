@@ -15,6 +15,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
 import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
@@ -118,8 +119,11 @@ public class MessagesActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             String message = emojEditTextMessage.getText().toString();
-            updateAdapter(message);
+            ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
+            adapter.notifyDataSetChanged();
+            recyclerViewMessage.scrollToPosition(0);
             emojEditTextMessage.setText("");
+            receiveMessage();
         }
     };
 
@@ -162,12 +166,10 @@ public class MessagesActivity extends AppCompatActivity {
     //other
 
     private void receiveMessage(){
-        String message = "";
-        updateAdapter(message);
-    }
-
-    private void updateAdapter(String message){
-        ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
+        String sender = "test test test test test test test test test";
+        String message = "Test Test Test Test Test Test Test Test Test Test";
+        ((LinkedList<MessageItem>)messageItems).addFirst(new MessageIncomingItem(message, sender));
         adapter.notifyDataSetChanged();
     }
+
 }

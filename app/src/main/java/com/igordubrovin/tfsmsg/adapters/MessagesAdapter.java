@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
-import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
-import com.igordubrovin.tfsmsg.R;
 
 import java.util.List;
 
