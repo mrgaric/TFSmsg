@@ -35,7 +35,7 @@
         emojicon:emojiconSize="@dimen/emoji_size_message"
         android:imeOptions="flagNoExtractUi"
         android:background="@android:color/white"
-        />
+        android:autoLink="web|phone|map|email"/>
 
     <ImageView
         android:id="@+id/image_view_clear"
