@@ -6,5 +6,5 @@
     android:height="24dp">
     <path
         android:pathData="M2.01 21L23 12 2.01 3 2 10 17 12 2 14Z"
-        android:fillColor="@color/colorImageViewEditorMsg" />
+        android:fillColor="#ffaaaaaa" />
 </vector>

@@ -19,4 +19,6 @@
     <string name="pref_version_summary">1.0</string>
     <string name="pref_dev_name_summary">Игорь Дубровин</string>
     <string name="pref_courses_name_summary">Tinkoff Fintech School</string>
+
+    <string name="enter_message">Введите сообщение</string>
 </resources>

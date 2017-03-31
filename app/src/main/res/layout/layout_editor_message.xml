@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/editor_background"
-    android:layout_gravity="bottom">
+    android:layout_gravity="bottom"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:id="@+id/image_view_emojicon"
@@ -35,7 +37,8 @@
         emojicon:emojiconSize="@dimen/emoji_size_message"
         android:imeOptions="flagNoExtractUi"
         android:background="@android:color/white"
-        android:autoLink="web|phone|map|email"/>
+        android:autoLink="web|phone|map|email"
+        android:hint="@string/enter_message"/>
 
     <ImageView
         android:id="@+id/image_view_clear"
@@ -48,8 +51,7 @@
         android:layout_marginRight="@dimen/margin_right_image_clear_editor_message"
         android:layout_marginLeft="@dimen/margin_left_image_clear_editor_message"
         android:layout_marginStart="@dimen/margin_left_image_clear_editor_message"
-        android:src="@drawable/ic_clear_material_color_accent"
-        android:background="@drawable/image_view_text_editor_ripple"/>
+        android:src="@drawable/ic_clear_material_color_accent"/>
 
     <ImageView
         android:id="@+id/image_view_send"

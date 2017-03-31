@@ -9,7 +9,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activities.SplashActivity"
+        <activity android:name=".activities.StartTransparentActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:screenOrientation="portrait"
             android:noHistory="true"
             android:configChanges="orientation|keyboardHidden|screenSize">
@@ -24,10 +25,10 @@
             android:noHistory="true">
         </activity>
         <activity android:name=".activities.NavigationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar">
         </activity>
         <activity android:name=".activities.MessagesActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
