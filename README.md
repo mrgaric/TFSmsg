@@ -1,3 +1,1 @@
 # Android Course #
-
-Пароль admin
