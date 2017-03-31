@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".activities.StartTransparentActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/AppTheme.Transparent"
             android:screenOrientation="portrait"
             android:noHistory="true"
             android:configChanges="orientation|keyboardHidden|screenSize">

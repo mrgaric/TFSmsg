@@ -21,4 +21,7 @@
     <string name="pref_courses_name_summary">Tinkoff Fintech School</string>
 
     <string name="enter_message">Введите сообщение</string>
+    <string name="smile">smile</string>
+    <string name="send">send</string>
+    <string name="clear">clear</string>
 </resources>
