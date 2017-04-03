@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TFSmsg.iml" filepath="$PROJECT_DIR$/TFSmsg.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tfsmsg.iml" filepath="$PROJECT_DIR$/tfsmsg.iml" />
     </modules>
   </component>
 </project>

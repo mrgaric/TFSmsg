@@ -4,25 +4,23 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 
-import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
-
 /**
  * Created by Игорь on 21.03.2017.
  */
 
-public class EmojiconEditTextClearFocus extends EmojiconEditText {
+public class EditText extends android.widget.EditText {
 
     private OnTextEmptyListener textEmptyListener;
 
-    public EmojiconEditTextClearFocus(Context context) {
+    public EditText(Context context) {
         super(context);
     }
 
-    public EmojiconEditTextClearFocus(Context context, AttributeSet attrs) {
+    public EditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public EmojiconEditTextClearFocus(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

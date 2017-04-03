@@ -26,7 +26,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="Test Test Test Test tefffstkkfg Test Test Test Test Test"/>
-        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
+        <TextView
             android:id="@+id/text_view_incoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,6 @@
             android:paddingLeft="@dimen/padding_horizontal_item_message"
             android:paddingRight="@dimen/padding_horizontal_item_message"
             android:textSize="@dimen/text_size_message"
-            emojicon:emojiconSize="@dimen/emoji_size_message"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:autoLink="web|phone|map|email"
             tools:text="Test Test Test Test Test Test Test Test Test"/>

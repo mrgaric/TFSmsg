@@ -13,8 +13,6 @@ import com.igordubrovin.tfsmsg.utils.MessageItem;
 
 import java.util.List;
 
-import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
-
 /**
  * Created by Игорь on 18.03.2017.
  */
@@ -91,22 +89,22 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class ViewHolderOutgoingMessage extends ViewHolder {
 
-        EmojiconTextView message;
+        TextView message;
 
         public ViewHolderOutgoingMessage(View itemView, OnItemClickListener listener) {
             super(itemView);
-            message = (EmojiconTextView) itemView.findViewById(R.id.text_view_outgoing_message);
+            message = (TextView) itemView.findViewById(R.id.text_view_outgoing_message);
             setClickListener(listener);
         }
     }
 
     public class ViewHolderIncomingMessage extends ViewHolder {
 
-        EmojiconTextView message;
+        TextView message;
         TextView sender;
         public ViewHolderIncomingMessage(View itemView, OnItemClickListener listener) {
             super(itemView);
-            message = (EmojiconTextView) itemView.findViewById(R.id.text_view_incoming_message);
+            message = (TextView) itemView.findViewById(R.id.text_view_incoming_message);
             sender = (TextView) itemView.findViewById(R.id.text_view_sender);
             setClickListener(listener);
         }

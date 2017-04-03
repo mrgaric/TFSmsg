@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
-import com.igordubrovin.tfsmsg.customView.EmojiconEditTextClearFocus;
+import com.igordubrovin.tfsmsg.customView.EditText;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
@@ -23,16 +23,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
-
 public class MessagesActivity extends AppCompatActivity {
 
-    private EmojiconEditTextClearFocus emojEditTextMessage;
-    private ImageView emojiconImage;
+    private EditText editTextMessage;
     private ImageView clearImage;
     private ImageView sendImage;
-    private EmojIconActions emojIconActions;
-    private View root;
 
     private Toolbar toolbar;
 
@@ -54,10 +49,10 @@ public class MessagesActivity extends AppCompatActivity {
                 messageItems = new LinkedList<>(savedData);
         }
 
+
         initToolbar(getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE));
         initRecyclerView();
-        initEmojiconView();
-        initImageView();
+        initMessageEditor();
     }
 
     @Override
@@ -94,18 +89,9 @@ public class MessagesActivity extends AppCompatActivity {
         recyclerViewMessage.setAdapter(adapter);
     }
 
-    private void initEmojiconView(){
-        emojEditTextMessage = (EmojiconEditTextClearFocus) findViewById(R.id.edit_text_message);
-        emojEditTextMessage.setOnTextEmptyListener(emptyEditTextListener);
-        emojiconImage = (ImageView) findViewById(R.id.image_view_emojicon);
-        root = findViewById(R.id.root_layout_emojicon_message);
-        emojIconActions = new EmojIconActions(this, root, emojEditTextMessage, emojiconImage);
-        emojIconActions.ShowEmojIcon();
-        emojIconActions.setIconsIds(R.drawable.ic_keyboard_color_accent, R.drawable.ic_insert_emoticon_color_accent);
-
-    }
-
-    private void initImageView(){
+    private void initMessageEditor(){
+        editTextMessage = (EditText) findViewById(R.id.edit_text_message);
+        editTextMessage.setOnTextEmptyListener(emptyEditTextListener);
         sendImage = (ImageView) findViewById(R.id.image_view_send);
         sendImage.setOnClickListener(clickSendImage);
         sendImage.setClickable(false);
@@ -118,11 +104,11 @@ public class MessagesActivity extends AppCompatActivity {
     private View.OnClickListener clickSendImage = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String message = emojEditTextMessage.getText().toString();
+            String message = editTextMessage.getText().toString();
             ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
             adapter.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
-            emojEditTextMessage.setText("");
+            editTextMessage.setText("");
             receiveMessage();
         }
     };
@@ -130,11 +116,11 @@ public class MessagesActivity extends AppCompatActivity {
     private View.OnClickListener clickClearImage = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            emojEditTextMessage.setText("");
+            editTextMessage.setText("");
         }
     };
 
-    private EmojiconEditTextClearFocus.OnTextEmptyListener emptyEditTextListener = new EmojiconEditTextClearFocus.OnTextEmptyListener() {
+    private EditText.OnTextEmptyListener emptyEditTextListener = new EditText.OnTextEmptyListener() {
         @Override
         public void textIsNotEmpty() {
             if (clearImage.getVisibility() == View.INVISIBLE && !sendImage.isClickable()) {
