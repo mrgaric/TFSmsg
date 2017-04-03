@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="text" format="string|reference"/>
+
+    <declare-styleable name="ProgressButton">
+        <attr name="text"/>
+        <attr name="enabled"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageEditor">
+        <attr name="text"/>
+        <attr name="hint" format="string|reference"/>
+        <attr name="enabled_send" format="boolean|reference"/>
+        <attr name="visible_clear" format="integer|reference"/>
+        <attr name="flag_animated_clear" format="boolean|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ItemMessage">
+        <attr name="text_message" format="string|reference"/>
+        <attr name="sender" format="string|reference"/>
+        <attr name="type" format="integer|reference"/>
+    </declare-styleable>
+</resources>

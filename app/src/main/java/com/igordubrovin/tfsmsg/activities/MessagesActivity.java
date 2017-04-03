@@ -6,14 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
-import com.igordubrovin.tfsmsg.customView.EditText;
+import com.igordubrovin.tfsmsg.widgets.MessageEditor;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
@@ -25,10 +22,7 @@ import java.util.List;
 
 public class MessagesActivity extends AppCompatActivity {
 
-    private EditText editTextMessage;
-    private ImageView clearImage;
-    private ImageView sendImage;
-
+    private MessageEditor messageEditor;
     private Toolbar toolbar;
 
     private RecyclerView recyclerViewMessage;
@@ -40,7 +34,7 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-
+        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
         if (savedInstanceState == null)
             messageItems = new LinkedList<>();
         else{
@@ -48,7 +42,6 @@ public class MessagesActivity extends AppCompatActivity {
             if (savedData != null)
                 messageItems = new LinkedList<>(savedData);
         }
-
 
         initToolbar(getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE));
         initRecyclerView();
@@ -61,8 +54,6 @@ public class MessagesActivity extends AppCompatActivity {
         List<MessageItem> savedData = new ArrayList<>(messageItems);
         outState.putParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS, (ArrayList<MessageItem>) savedData);
     }
-
-    //init view
 
     private void initToolbar(String tittle){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -90,55 +81,18 @@ public class MessagesActivity extends AppCompatActivity {
     }
 
     private void initMessageEditor(){
-        editTextMessage = (EditText) findViewById(R.id.edit_text_message);
-        editTextMessage.setOnTextEmptyListener(emptyEditTextListener);
-        sendImage = (ImageView) findViewById(R.id.image_view_send);
-        sendImage.setOnClickListener(clickSendImage);
-        sendImage.setClickable(false);
-        clearImage = (ImageView) findViewById(R.id.image_view_clear);
-        clearImage.setOnClickListener(clickClearImage);
+        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
+        messageEditor.setOnClickListenerSend(clickSend);
     }
 
-    // listeners view
-
-    private View.OnClickListener clickSendImage = new View.OnClickListener() {
+    private View.OnClickListener clickSend = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String message = editTextMessage.getText().toString();
+            String message = messageEditor.getText();
             ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
             adapter.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
-            editTextMessage.setText("");
             receiveMessage();
-        }
-    };
-
-    private View.OnClickListener clickClearImage = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            editTextMessage.setText("");
-        }
-    };
-
-    private EditText.OnTextEmptyListener emptyEditTextListener = new EditText.OnTextEmptyListener() {
-        @Override
-        public void textIsNotEmpty() {
-            if (clearImage.getVisibility() == View.INVISIBLE && !sendImage.isClickable()) {
-                sendImage.setClickable(true);
-                sendImage.setImageResource(R.drawable.ic_send_color_accent);
-                clearImage.setVisibility(View.VISIBLE);
-                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clear_image_show);
-                clearImage.startAnimation(anim);
-            }
-        }
-
-        @Override
-        public void textIsEmpty() {
-            sendImage.setClickable(false);
-            sendImage.setImageResource(R.drawable.ic_send_color_gray);
-            clearImage.setVisibility(View.INVISIBLE);
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clear_image_hide);
-            clearImage.startAnimation(anim);
         }
     };
 
@@ -148,8 +102,6 @@ public class MessagesActivity extends AppCompatActivity {
             Toast.makeText(MessagesActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
         }
     };
-
-    //other
 
     private void receiveMessage(){
         String sender = "test test test test test test test test test";

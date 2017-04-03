@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
-    android:layout_gravity="center">
-    <android.support.v4.widget.Space
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+    android:layout_gravity="center|right"
+    android:gravity="right"
+    >
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/out_message">
+
         <TextView
             android:id="@+id/text_view_outgoing_message"
             android:layout_width="wrap_content"
@@ -28,5 +27,7 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:autoLink="web|phone|map|email"
             tools:text="Testddgfggd Test Test ffdTest Test Test Test Test Test"/>
+
     </FrameLayout>
+
 </LinearLayout>

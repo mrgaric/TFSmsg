@@ -2,20 +2,23 @@ package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.widgets.ProgressButton;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText login;
     private EditText password;
-    private Button button;
+    private ProgressButton button;
+
+    private LoginTask task = new LoginTask();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +27,38 @@ public class LoginActivity extends AppCompatActivity {
 
         login = (EditText) findViewById(R.id.edit_text_login);
         password = (EditText) findViewById(R.id.edit_text_password);
-        button = (Button) findViewById(R.id.btn_enter);
+        button = (ProgressButton) findViewById(R.id.btn_enter);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startNextScreen();
+                new LoginTask().execute();
             }
         });
+    }
+
+    private class LoginTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            button.showProgress();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            button.hideProgress();
+            startNextScreen();
+        }
     }
 
     private void startNextScreen() {

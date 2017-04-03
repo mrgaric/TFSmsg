@@ -15,7 +15,7 @@ android {
         release {
             keyAlias 'garic'
             keyPassword 'password1'
-            storeFile file('D:/TFSmsg/KeyStore.jks')
+            storeFile file('KeyStore.jks')
             storePassword 'password'
         }
     }

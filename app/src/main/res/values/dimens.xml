@@ -10,12 +10,12 @@
     <dimen name="max_width_item_message">250dp</dimen>
 
     <dimen name="margin_left_message_editor">8dp</dimen>
-    <dimen name="margin_right_message_editor">8dp</dimen>
-    <dimen name="margin_vertical_imageView_message_editor">10dp</dimen>
     <dimen name="padding_vertical_text_message_editor">10dp</dimen>
     <dimen name="margin_vertical_text_message_editor">2dp</dimen>
     <dimen name="min_height_text_message_editor">46dp</dimen>
     <dimen name="max_height_text_message_editor">129dp</dimen>
+    <dimen name="height_image_message_editor">46dp</dimen>
+    <dimen name="width_image_message_editor">46dp</dimen>
 
     <dimen name="margin_vertical_recycler_view">8dp</dimen>
     <dimen name="margin_horizontal_recycler_view">8dp</dimen>

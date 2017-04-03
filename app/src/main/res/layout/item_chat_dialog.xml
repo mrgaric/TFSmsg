@@ -26,4 +26,5 @@
         android:paddingRight="16dp"
         android:textSize="14sp"
         tools:text="Test test test test 2" />
+
 </LinearLayout>
