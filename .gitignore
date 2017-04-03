@@ -27,9 +27,6 @@ local.properties
 # Log Files
 *.log
 
-# Keystore files
-*.jks
-
 # Windows thumbnail db
 Thumbs.db
 

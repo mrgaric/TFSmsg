@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
-    android:layout_gravity="center">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.igordubrovin.tfsmsg.widgets.ItemMessage
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:type="1"
-        app:text_message="asdasd"
-        app:sender="dsfds">
+        app:message_text="csd"
+        app:message_type="1"
+        app:sender_name="sd">
     </com.igordubrovin.tfsmsg.widgets.ItemMessage>
 
 </FrameLayout>

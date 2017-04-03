@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_bottom_root_item_message"
-    android:layout_gravity="center"
-    android:orientation="horizontal"
-    android:id="@+id/root_item_message">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/container_background_item_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/in_message">
+        android:background="@drawable/in_message"
+    android:layout_centerHorizontal="true"
+    >
 
         <TextView
             android:id="@+id/text_view_sender"
@@ -44,5 +40,3 @@
             tools:text="Test Test Test Test Test Test Test Test Test"/>
 
     </LinearLayout>
-
-</LinearLayout>
