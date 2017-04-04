@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,7 +54,7 @@ public class ItemMessage extends LinearLayout {
             if (typedArray.getString(R.styleable.ItemMessage_sender_name) != null) {
                 setSender(typedArray.getString(R.styleable.ItemMessage_sender_name));
             }
-            setType(typedArray.getInteger(R.styleable.ItemMessage_message_type, 0x00000000));
+            setType(typedArray.getInteger(R.styleable.ItemMessage_message_type, TYPE_IN));
             typedArray.recycle();
         }
     }
@@ -78,17 +76,11 @@ public class ItemMessage extends LinearLayout {
             sender.setVisibility(GONE);
             containerBackground.setBackgroundResource(R.drawable.out_message);
         } else throw new IllegalArgumentException("Unknown type" + type);
+        this.setGravity(Gravity.RIGHT);
     }
 
     public int getType() {
         return type;
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.RIGHT;
-        setLayoutParams(params);
-    }
 }

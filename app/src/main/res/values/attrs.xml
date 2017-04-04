@@ -18,7 +18,9 @@
     <declare-styleable name="ItemMessage">
         <attr name="message_text" format="string"/>
         <attr name="sender_name" format="string|reference"/>
-        <attr name="message_type" format="integer|reference"/>
-        <attr name="android:layout_gravity"/>
+        <attr name="message_type" format="integer|reference">
+            <enum name="incoming" value="0x00000000"/>
+            <enum name="outgoing" value="0x00000001"/>
+        </attr>
     </declare-styleable>
 </resources>

@@ -102,6 +102,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         TextView message;
         TextView sender;
+
         public ViewHolderIncomingMessage(View itemView, OnItemClickListener listener) {
             super(itemView);
             message = (TextView) itemView.findViewById(R.id.text_view_incoming_message);

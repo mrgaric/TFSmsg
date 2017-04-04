@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.adapters.MessageAdapterItem;
 import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
@@ -27,6 +28,8 @@ public class MessagesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewMessage;
     private RecyclerView.Adapter adapter;
+
+    private RecyclerView.Adapter adapterNew;
 
     private List<MessageItem> messageItems;
 
@@ -76,8 +79,9 @@ public class MessagesActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
         adapter = new MessagesAdapter(messageItems, clickRecyclerMessageItem);
+        adapterNew = new MessageAdapterItem(messageItems, clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
-        recyclerViewMessage.setAdapter(adapter);
+        recyclerViewMessage.setAdapter(adapterNew);
     }
 
     private void initMessageEditor(){
@@ -90,7 +94,7 @@ public class MessagesActivity extends AppCompatActivity {
         public void onClick(View v) {
             String message = messageEditor.getText();
             ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
-            adapter.notifyDataSetChanged();
+            adapterNew.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
             receiveMessage();
         }
@@ -107,7 +111,7 @@ public class MessagesActivity extends AppCompatActivity {
         String sender = "test test test test test test test test test";
         String message = "Test Test Test Test Test Test Test Test Test Test";
         ((LinkedList<MessageItem>)messageItems).addFirst(new MessageIncomingItem(message, sender));
-        adapter.notifyDataSetChanged();
+        adapterNew.notifyDataSetChanged();
     }
 
 }
