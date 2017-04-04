@@ -5,9 +5,8 @@
 
     <dimen name="padding_vertical_item_message">8dp</dimen>
     <dimen name="padding_horizontal_item_message">8dp</dimen>
-    <dimen name="margin_horizontal_item_message">10dp</dimen>
-    <dimen name="margin_bottom_root_item_message">8dp</dimen>
     <dimen name="max_width_item_message">250dp</dimen>
+    <dimen name="margin_bottom_item_message">8dp</dimen>
 
     <dimen name="margin_left_message_editor">8dp</dimen>
     <dimen name="padding_vertical_text_message_editor">10dp</dimen>

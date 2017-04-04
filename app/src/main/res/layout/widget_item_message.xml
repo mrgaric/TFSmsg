@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_background_item_message"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" android:layout_centerHorizontal="true">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/text_view_sender"
+    <LinearLayout
+        android:id="@+id/container_background_item_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_vertical_item_message"
-        android:paddingBottom="@dimen/padding_vertical_item_message"
-        android:paddingLeft="@dimen/padding_horizontal_item_message"
-        android:paddingRight="@dimen/padding_horizontal_item_message"
-        android:textSize="@dimen/text_size_sender"
-        android:textColor="@color/colorAccent"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="Test Test Test Test"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_view_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_vertical_item_message"
-        android:paddingLeft="@dimen/padding_horizontal_item_message"
-        android:paddingRight="@dimen/padding_horizontal_item_message"
-        android:textSize="@dimen/text_size_message"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:autoLink="web|phone|map|email"
-        tools:text="Test Test Test "/>
+        <TextView
+            android:id="@+id/text_view_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/max_width_item_message"
+            android:paddingTop="@dimen/padding_vertical_item_message"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
+            android:paddingLeft="@dimen/padding_horizontal_item_message"
+            android:paddingRight="@dimen/padding_horizontal_item_message"
+            android:textSize="@dimen/text_size_sender"
+            android:textColor="@color/colorAccent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Test Test Test Test"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/text_view_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/max_width_item_message"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
+            android:paddingLeft="@dimen/padding_horizontal_item_message"
+            android:paddingRight="@dimen/padding_horizontal_item_message"
+            android:textSize="@dimen/text_size_message"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:autoLink="web|phone|map|email"
+            tools:text="Test Test Test "/>
+    </LinearLayout>
+</FrameLayout>

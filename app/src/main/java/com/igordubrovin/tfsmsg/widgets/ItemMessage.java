@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,7 +16,7 @@ import com.igordubrovin.tfsmsg.R;
  * Created by Игорь on 03.04.2017.
  */
 
-public class ItemMessage extends LinearLayout {
+public class ItemMessage extends FrameLayout {
 
     private TextView message;
     private TextView sender;
@@ -69,18 +70,24 @@ public class ItemMessage extends LinearLayout {
 
     public void setType (int type){
         this.type = type;
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) containerBackground.getLayoutParams();
+
         if (type == TYPE_IN){
             sender.setVisibility(VISIBLE);
             containerBackground.setBackgroundResource(R.drawable.in_message);
-        } else if (type == TYPE_OUT){
+            lp.gravity = Gravity.START;
+        }
+        else if (type == TYPE_OUT){
             sender.setVisibility(GONE);
             containerBackground.setBackgroundResource(R.drawable.out_message);
-        } else throw new IllegalArgumentException("Unknown type" + type);
-        this.setGravity(Gravity.RIGHT);
+            lp.gravity = Gravity.END;
+        }
+        else throw new IllegalArgumentException("Unknown type" + type);
+
+        containerBackground.setLayoutParams(lp);
     }
 
     public int getType() {
         return type;
     }
-
 }

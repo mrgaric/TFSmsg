@@ -9,8 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.adapters.MessageAdapterItem;
-import com.igordubrovin.tfsmsg.adapters.MessagesAdapter;
+import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
@@ -28,8 +27,6 @@ public class MessagesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewMessage;
     private RecyclerView.Adapter adapter;
-
-    private RecyclerView.Adapter adapterNew;
 
     private List<MessageItem> messageItems;
 
@@ -78,10 +75,9 @@ public class MessagesActivity extends AppCompatActivity {
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessagesAdapter(messageItems, clickRecyclerMessageItem);
-        adapterNew = new MessageAdapterItem(messageItems, clickRecyclerMessageItem);
+        adapter = new MessageAdapter(messageItems, clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
-        recyclerViewMessage.setAdapter(adapterNew);
+        recyclerViewMessage.setAdapter(adapter);
     }
 
     private void initMessageEditor(){
@@ -94,7 +90,7 @@ public class MessagesActivity extends AppCompatActivity {
         public void onClick(View v) {
             String message = messageEditor.getText();
             ((LinkedList<MessageItem>)messageItems).addFirst(new MessageItem(message));
-            adapterNew.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
             receiveMessage();
         }
@@ -111,7 +107,7 @@ public class MessagesActivity extends AppCompatActivity {
         String sender = "test test test test test test test test test";
         String message = "Test Test Test Test Test Test Test Test Test Test";
         ((LinkedList<MessageItem>)messageItems).addFirst(new MessageIncomingItem(message, sender));
-        adapterNew.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
 }
