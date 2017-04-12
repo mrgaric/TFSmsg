@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
-import com.igordubrovin.tfsmsg.utils.MessageIncomingItem;
+import com.igordubrovin.tfsmsg.utils.IncomingMessageItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
 import com.igordubrovin.tfsmsg.widgets.ItemMessage;
 
@@ -20,10 +20,16 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<MessageItem> dataMessage;
+
+    public void swapData(List<MessageItem> dataMessage){
+        if (dataMessage != null){
+            this.dataMessage = dataMessage;
+            this.notifyDataSetChanged();
+        }
+    }
     private OnItemClickListener clickListener;
 
-    public MessageAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
-        this.dataMessage = dataMessage;
+    public MessageAdapter(OnItemClickListener clickListener){
         this.clickListener = clickListener;
     }
 
@@ -37,8 +43,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MessageItem item = dataMessage.get(position);
-        if (MessageIncomingItem.class.isInstance(item)) {
-            ((MessageAdapter.ViewHolder)holder).itemMessage.setSender(((MessageIncomingItem)item).getSender());
+        if (IncomingMessageItem.class.isInstance(item)) {
+            ((MessageAdapter.ViewHolder)holder).itemMessage.setSender(((IncomingMessageItem)item).getSender());
             ((MessageAdapter.ViewHolder)holder).itemMessage.setType(ItemMessage.TYPE_IN);
 
         } else if (MessageItem.class.isInstance(item)) {
@@ -51,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return dataMessage.size();
+        return dataMessage != null ? dataMessage.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

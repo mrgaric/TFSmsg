@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.igordubrovin.tfsmsg.utils.MessageItem;
+
 /**
  * Created by Игорь on 11.04.2017.
  */
@@ -16,6 +18,7 @@ public class SendMessageTaskFragment extends Fragment {
 
     private MessageSentListener messageSentListener;
     private Boolean success;
+    private MessageItem message;
 
     @Override
     public void onAttach(Context context) {
@@ -23,7 +26,7 @@ public class SendMessageTaskFragment extends Fragment {
         if (context instanceof MessageSentListener) {
             messageSentListener = (MessageSentListener) context;
             if (success != null){
-                messageSentListener.messageSent(success);
+                messageSentListener.messageSent(success, message);
                 success = null;
             }
         } else
@@ -43,20 +46,21 @@ public class SendMessageTaskFragment extends Fragment {
         messageSentListener = null;
     }
 
-    public void startSend(String message){
-        new SendMessageTask().execute(message);
+    public void startSend(MessageItem message){
+        this.message = message;
+        new SendMessageTask().execute(message.getMessageText());
     }
 
     private void setSuccess(Boolean success) {
         if (messageSentListener != null) {
-            messageSentListener.messageSent(success);
+            messageSentListener.messageSent(success, message);
         } else {
             this.success = success;
         }
     }
 
     public interface MessageSentListener{
-        void messageSent(Boolean success);
+        void messageSent(Boolean success, MessageItem message);
     }
 
     private class SendMessageTask extends AsyncTask<String, Void, Boolean>{
