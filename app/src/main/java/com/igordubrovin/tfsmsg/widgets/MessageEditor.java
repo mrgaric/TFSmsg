@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.igordubrovin.tfsmsg.R;
 
@@ -19,7 +19,7 @@ import com.igordubrovin.tfsmsg.R;
  * Created by Игорь on 03.04.2017.
  */
 
-public class MessageEditor extends LinearLayout{
+public class MessageEditor extends FrameLayout{
 
     private EditText editTextMessage;
     private ImageView sendImage;
@@ -85,15 +85,14 @@ public class MessageEditor extends LinearLayout{
         Animation anim;
         switch (visibilityClear){
             case VISIBLE:
-                clearImage.setVisibility(View.VISIBLE);
                 anim = AnimationUtils.loadAnimation(getContext(), R.anim.clear_image_show);
                 break;
             case INVISIBLE:
-                clearImage.setVisibility(View.INVISIBLE);
                 anim = AnimationUtils.loadAnimation(getContext(), R.anim.clear_image_hide);
                 break;
             default: return;
         }
+        clearImage.setVisibility(visibilityClear);
         if (flagAnimatedClear)
             clearImage.startAnimation(anim);
     }

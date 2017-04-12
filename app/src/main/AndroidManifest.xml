@@ -31,5 +31,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <service android:name=".service.ReceiveMessageService" />
     </application>
 </manifest>

@@ -5,6 +5,6 @@
     android:id="@+id/item_message"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:message_type="incoming"
+    app:message_type="outgoing"
     android:layout_marginBottom="@dimen/margin_bottom_item_message">
 </com.igordubrovin.tfsmsg.widgets.ItemMessage>

@@ -38,4 +38,6 @@
             android:autoLink="web|phone|map|email"
             tools:text="Test Test Test "/>
     </LinearLayout>
+
+
 </FrameLayout>
