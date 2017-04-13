@@ -21,15 +21,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private List<MessageItem> dataMessage;
 
-    public void swapData(List<MessageItem> dataMessage){
-        if (dataMessage != null){
-            this.dataMessage = dataMessage;
-            this.notifyDataSetChanged();
-        }
-    }
     private OnItemClickListener clickListener;
 
-    public MessageAdapter(OnItemClickListener clickListener){
+    public MessageAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
+        this.dataMessage = dataMessage;
         this.clickListener = clickListener;
     }
 
@@ -57,7 +52,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return dataMessage != null ? dataMessage.size() : 0;
+        return dataMessage.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

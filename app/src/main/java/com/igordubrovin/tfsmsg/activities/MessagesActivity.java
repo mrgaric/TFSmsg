@@ -20,11 +20,13 @@ import com.igordubrovin.tfsmsg.utils.MessageItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MessagesActivity extends AppCompatActivity
         implements SendMessageTaskFragment.MessageSentListener,
-        LoaderManager.LoaderCallbacks<List<MessageItem>>{
+        LoaderManager.LoaderCallbacks<MessageItem>{
 
     private MessageEditor messageEditor;
     private Toolbar toolbar;
@@ -32,6 +34,7 @@ public class MessagesActivity extends AppCompatActivity
     private RecyclerView.Adapter adapter;
     private SendMessageTaskFragment sendMessageTaskFragment;
     Loader messageLoader;
+    private List<MessageItem> messageItems;
 
     private static final int ID_MESSAGE_LOADER = 0;
 
@@ -41,16 +44,27 @@ public class MessagesActivity extends AppCompatActivity
         setContentView(R.layout.activity_messages);
         messageEditor = (MessageEditor) findViewById(R.id.message_editor);
 
+        if (savedInstanceState == null)
+            messageItems = new LinkedList<>();
+        else{
+            List<MessageItem> savedData = savedInstanceState.getParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS);
+            if (savedData != null)
+                messageItems = new LinkedList<>(savedData);
+        }
+
+        messageLoader = getSupportLoaderManager().initLoader(ID_MESSAGE_LOADER, null, this);
+
         initToolbar(getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE));
         initRecyclerView();
         initMessageEditor();
         initFragment();
+    }
 
-        messageLoader = getSupportLoaderManager().initLoader(ID_MESSAGE_LOADER, null, this);
-
-        if (savedInstanceState == null) {
-            messageLoader.forceLoad();
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<MessageItem> savedData = new ArrayList<>(messageItems);
+        outState.putParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS, (ArrayList<MessageItem>) savedData);
     }
 
     private void initToolbar(String tittle){
@@ -73,7 +87,7 @@ public class MessagesActivity extends AppCompatActivity
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessageAdapter(clickRecyclerMessageItem);
+        adapter = new MessageAdapter(messageItems, clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
     }
@@ -97,8 +111,12 @@ public class MessagesActivity extends AppCompatActivity
         public void onClick(View v) {
             String messageText = messageEditor.getText();
             MessageItem message = new MessageItem(messageText);
+            ((LinkedList<MessageItem>)messageItems).addFirst(message);
+            adapter.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
             sendMessageTaskFragment.startSend(message);
+
+
         }
     };
 
@@ -110,29 +128,29 @@ public class MessagesActivity extends AppCompatActivity
     };
 
     @Override
-    public void messageSent(Boolean success, MessageItem messageItem) {
+    public void messageSent(Boolean success) {
         if (success){
             Toast.makeText(this, "messageSent", Toast.LENGTH_SHORT).show();
-            ((MessageLoader)messageLoader).addSentMessage(messageItem);
         } else {
 
         }
     }
 
     @Override
-    public Loader<List<MessageItem>> onCreateLoader(int id, Bundle args) {
+    public Loader<MessageItem> onCreateLoader(int id, Bundle args) {
         return new MessageLoader(this);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<MessageItem>> loader, List<MessageItem> data) {
+    public void onLoadFinished(Loader<MessageItem> loader, MessageItem data) {
         if (data != null){
-            ((MessageAdapter)adapter).swapData(data);
+            ((LinkedList<MessageItem>)messageItems).addFirst(data);
+            adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<MessageItem>> loader) {
+    public void onLoaderReset(Loader<MessageItem> loader) {
 
     }
 }

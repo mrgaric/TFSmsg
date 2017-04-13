@@ -6,37 +6,34 @@ import android.support.v4.content.AsyncTaskLoader;
 import com.igordubrovin.tfsmsg.utils.IncomingMessageItem;
 import com.igordubrovin.tfsmsg.utils.MessageItem;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Created by Игорь on 12.04.2017.
  */
 
-public class MessageLoader extends AsyncTaskLoader<List<MessageItem>> {
-
-    private List<MessageItem> messageItems = new LinkedList<>();;
+public class MessageLoader extends AsyncTaskLoader<MessageItem> {
 
     public MessageLoader(Context context) {
         super(context);
     }
 
     @Override
-    public List<MessageItem> loadInBackground() {
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
+    }
+
+    @Override
+    public MessageItem loadInBackground() {
+        IncomingMessageItem incomingMessageItem = null;
         try {
             Thread.sleep(3000);
             String sender = "test test test test test test test test test";
             String message = "Test Test Test Test Test Test Test Test Test Test";
-            IncomingMessageItem incomingMessageItem = createIncomingMessageItem(sender, message);
-            messageItems.add(incomingMessageItem);
+            incomingMessageItem = createIncomingMessageItem(sender, message);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return messageItems;
-    }
-
-    public void addSentMessage(MessageItem messageItem){
-        ((LinkedList)messageItems).addFirst(messageItem);
+        return incomingMessageItem;
     }
 
     private IncomingMessageItem createIncomingMessageItem(String sender, String message){

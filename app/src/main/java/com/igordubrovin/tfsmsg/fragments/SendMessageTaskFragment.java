@@ -18,7 +18,6 @@ public class SendMessageTaskFragment extends Fragment {
 
     private MessageSentListener messageSentListener;
     private Boolean success;
-    private MessageItem message;
 
     @Override
     public void onAttach(Context context) {
@@ -26,7 +25,7 @@ public class SendMessageTaskFragment extends Fragment {
         if (context instanceof MessageSentListener) {
             messageSentListener = (MessageSentListener) context;
             if (success != null){
-                messageSentListener.messageSent(success, message);
+                messageSentListener.messageSent(success);
                 success = null;
             }
         } else
@@ -47,20 +46,19 @@ public class SendMessageTaskFragment extends Fragment {
     }
 
     public void startSend(MessageItem message){
-        this.message = message;
         new SendMessageTask().execute(message.getMessageText());
     }
 
     private void setSuccess(Boolean success) {
         if (messageSentListener != null) {
-            messageSentListener.messageSent(success, message);
+            messageSentListener.messageSent(success);
         } else {
             this.success = success;
         }
     }
 
     public interface MessageSentListener{
-        void messageSent(Boolean success, MessageItem message);
+        void messageSent(Boolean success);
     }
 
     private class SendMessageTask extends AsyncTask<String, Void, Boolean>{
