@@ -60,7 +60,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onItemClick(getAdapterPosition());
+                        listener.onItemClick(v, getAdapterPosition());
                     }
                 }
             });

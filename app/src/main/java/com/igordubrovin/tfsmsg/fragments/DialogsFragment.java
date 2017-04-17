@@ -3,7 +3,10 @@ package com.igordubrovin.tfsmsg.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,17 +50,19 @@ public class DialogsFragment extends Fragment {
         return view;
     }
 
-    private void initRecyclerView(View view) {
+    private void initRecyclerView(final View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_dialogs);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new DialogsAdapter(dialogItems, new OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), MessagesActivity.class);
-                intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
-                startActivity(intent);
+            public void onItemClick(View v, int position) {
+                Intent intent = new Intent(getContext(), MessagesActivity.class);
+                intent.putExtra(ProjectConstants.DIALOG_TITLE, dialogItems.get(position).getTitle());
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        new Pair<View, String>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog)));
+                ActivityCompat.startActivity(getContext(), intent, optionsCompat.toBundle());
             }
         });
         recyclerView.setAdapter(adapter);
@@ -70,7 +75,7 @@ public class DialogsFragment extends Fragment {
         list.add(new DialogItem("title", "desc"));
         list.add(new DialogItem("title", "desc"));
         list.add(new DialogItem("title", "desc"));
-        list.add(new DialogItem("title", "desc"));
+        list.add(new DialogItem("title111111111122", "desc"));
         list.add(new DialogItem("title", "desc"));
     }
 }

@@ -15,7 +15,8 @@
                 <TextView
                     android:id="@+id/tv_dialog_title_toolbar"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" 
+                    android:transitionName="@string/transition_name_title_dialog"/>
         </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>

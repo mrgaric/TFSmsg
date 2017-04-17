@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
@@ -30,10 +31,11 @@ public class MessagesActivity extends AppCompatActivity
 
     private MessageEditor messageEditor;
     private Toolbar toolbar;
+    private TextView tvTitle;
     private RecyclerView recyclerViewMessage;
     private RecyclerView.Adapter adapter;
     private SendMessageTaskFragment sendMessageTaskFragment;
-    Loader messageLoader;
+    private Loader messageLoader;
     private List<MessageItem> messageItems;
 
     private static final int ID_MESSAGE_LOADER = 0;
@@ -69,9 +71,10 @@ public class MessagesActivity extends AppCompatActivity
 
     private void initToolbar(String tittle){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle(tittle);
+        //toolbar.setTitle(tittle);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -81,6 +84,8 @@ public class MessagesActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
+        tvTitle = (TextView) findViewById(R.id.tv_dialog_title_toolbar);
+        tvTitle.setText(tittle);
     }
 
     private void initRecyclerView(){
@@ -122,7 +127,7 @@ public class MessagesActivity extends AppCompatActivity
 
     private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
         @Override
-        public void onItemClick(int position) {
+        public void onItemClick(View v, int position) {
             Toast.makeText(MessagesActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
         }
     };

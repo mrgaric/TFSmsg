@@ -24,4 +24,6 @@
     <string name="smile">smile</string>
     <string name="send">send</string>
     <string name="clear">clear</string>
+    
+    <string name="transition_name_title_dialog">transition:Title</string>
 </resources>
