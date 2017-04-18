@@ -21,20 +21,13 @@
                 <objectAnimator
                     android:name="path"
                     android:propertyName="fillColor"
-                    android:duration="500"
+                    android:duration="1000"
                     android:valueFrom="#000000"
                     android:valueTo="#ffffff"
                     android:valueType="colorType"
-                    android:interpolator="@android:anim/decelerate_interpolator"/>
-                <objectAnimator
-                    android:name="path"
-                    android:propertyName="fillColor"
-                    android:startOffset="500"
-                    android:duration="500"
-                    android:valueFrom="#ffffff"
-                    android:valueTo="#000000"
-                    android:valueType="colorType"
-                    android:interpolator="@android:anim/decelerate_interpolator"/>
+                    android:interpolator="@android:anim/decelerate_interpolator"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"/>
             </set>
         </aapt:attr>
     </target>
