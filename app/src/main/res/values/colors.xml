@@ -10,4 +10,12 @@
 
     <color name="grey">#333333</color>
     <color name="grey_light">#80333333</color>
+
+    <color name="color_background_first_image">#b388ff</color>
+    <color name="color_background_second_image">#f4ff81</color>
+    <color name="color_background_third_image">#ffe57f</color>
+    <color name="color_background_fourth_image">#80d8ff</color>
+    <color name="color_background_fifth_image">#b9f6ca</color>
+    <color name="color_background_sixth_image">#ff9e80</color>
+    <color name="color_background_default_image">#00c853</color>
 </resources>
