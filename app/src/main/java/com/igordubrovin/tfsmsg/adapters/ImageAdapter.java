@@ -3,7 +3,6 @@ package com.igordubrovin.tfsmsg.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -42,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        final ImageView imageView;
 
         if (convertView == null) {
             Point size = new Point();
@@ -55,44 +54,15 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setBackgroundColor(Color.RED);
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageResource(mThumbIds[position]);
-            /*final Drawable drawable = imageView.getDrawable();*/
-            /*final AnimatedVectorDrawableCompat animatedVector = AnimatedVectorDrawableCompat.create(mContext, mThumbIds[position]);
-            imageView.setImageDrawable(animatedVector);
-            if (animatedVector != null) {
-                animatedVector.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
-                    @Override
-                    public void onAnimationEnd(Drawable drawable) {
-                        super.onAnimationEnd(drawable);
-                        animatedVector.start();
-                    }
-                });
-                animatedVector.start();*/
-                final AnimatedVectorDrawable avd;
-                final Drawable drawable = imageView.getDrawable();
-                avd = (AnimatedVectorDrawable) drawable;
-
+            AnimatedVectorDrawable avd;
+            Drawable drawable = imageView.getDrawable();
+            avd = (AnimatedVectorDrawable) drawable;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    avd.registerAnimationCallback(new Animatable2.AnimationCallback() {
-                        @Override
-                        public void onAnimationEnd(Drawable drawable) {
-                            super.onAnimationEnd(drawable);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                avd.start();
-                            }
-                        }
-                    });
-                }
-                ((AnimatedVectorDrawable) drawable).start();
+                avd.start();
             }
-
-
         } else {
             imageView = (ImageView) convertView;
         }
-
-
-
         return imageView;
     }
 
