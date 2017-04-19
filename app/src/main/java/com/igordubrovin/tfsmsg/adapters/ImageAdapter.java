@@ -1,7 +1,6 @@
 package com.igordubrovin.tfsmsg.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 
 import com.igordubrovin.tfsmsg.R;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +23,32 @@ import java.util.List;
  */
 
 public class ImageAdapter extends BaseAdapter {
-    private Context mContext;
 
+    private Context context;
     private List<Thread> threadList = new ArrayList<>();
 
-    // Constructor
+    // Keep all Images in array
+    public Integer[] imagesArray = {
+            //here you can place the image
+            R.drawable.avd_vector_anim_cancel, R.drawable.avd_vector_anim_emoji,
+            R.drawable.avd_vector_anim_keyboard, R.drawable.avd_vector_anim_send,
+            R.drawable.avd_vector_mess, R.drawable.avd_vector_anim_chat
+    };
+
     public ImageAdapter(Context c) {
-        mContext = c;
+        context = c;
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return imagesArray.length;
     }
 
     public Object getItem(int position) {
-        return null;
+        return imagesArray[position];
     }
 
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -52,28 +57,28 @@ public class ImageAdapter extends BaseAdapter {
 
         if (convertView == null) {
             Point size = new Point();
-            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getSize(size);
             int width = size.x/2;
             int height = size.y/3;
-            imageView = new ImageView(mContext);
+            imageView = new ImageView(context);
             imageView.setLayoutParams(new GridView.LayoutParams(width, height));
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setImageResource(mThumbIds[position]);
+            imageView.setImageResource(imagesArray[position]);
             switch (position){
-                case 0: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_first_image));
+                case 0: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_first_image));
                     break;
-                case 1: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_second_image));
+                case 1: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_second_image));
                     break;
-                case 2: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_third_image));
+                case 2: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_third_image));
                     break;
-                case 3: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_fourth_image));
+                case 3: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_fourth_image));
                     break;
-                case 4: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_fifth_image));
+                case 4: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_fifth_image));
                     break;
-                case 5: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_sixth_image));
+                case 5: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_sixth_image));
                     break;
-                default: imageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_background_default_image));
+                default: imageView.setBackgroundColor(ContextCompat.getColor(context, R.color.color_background_default_image));
                     break;
             }
 
@@ -89,7 +94,7 @@ public class ImageAdapter extends BaseAdapter {
                 public void run() {
                     try {
                         while (true) {
-                            Thread.sleep(1500);
+                            Thread.sleep(2000);
                             if (Thread.currentThread().isInterrupted())
                                 break;
                             imageView.post(new Runnable() {
@@ -129,13 +134,4 @@ public class ImageAdapter extends BaseAdapter {
             t.interrupt();
         }
     }
-
-    // Keep all Images in array
-    public Integer[] mThumbIds = {
-            //here you can place the image
-            R.drawable.avd_vector_anim_cancel, R.drawable.avd_vector_anim_emoji,
-            R.drawable.avd_vector_anim_keyboard, R.drawable.avd_vector_anim_send,
-            R.drawable.avd_vector_mess, R.drawable.avd_vector_anim_chat
-    };
-
 }

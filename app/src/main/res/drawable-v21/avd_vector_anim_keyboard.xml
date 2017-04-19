@@ -42,11 +42,11 @@
     </aapt:attr>
     <target android:name="path_1">
         <aapt:attr name="android:animation">
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <set xmlns:android="http://schemas.android.com/apk/res/android"
+                android:ordering="sequentially">
                 <objectAnimator
                     android:name="path_1"
                     android:propertyName="fillAlpha"
-                    android:startOffset="750"
                     android:duration="100"
                     android:valueFrom="0"
                     android:valueTo="1"
@@ -55,7 +55,7 @@
                 <objectAnimator
                     android:name="path_1"
                     android:propertyName="fillAlpha"
-                    android:startOffset="850"
+                    android:startOffset="150"
                     android:duration="100"
                     android:valueFrom="1"
                     android:valueTo="0"
@@ -66,11 +66,12 @@
     </target>
     <target android:name="path_2">
         <aapt:attr name="android:animation">
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <set xmlns:android="http://schemas.android.com/apk/res/android"
+                android:ordering="sequentially">
                 <objectAnimator
                     android:name="path_2"
                     android:propertyName="fillAlpha"
-                    android:startOffset="250"
+                    android:startOffset="350"
                     android:duration="100"
                     android:valueFrom="0"
                     android:valueTo="1"
@@ -79,7 +80,7 @@
                 <objectAnimator
                     android:name="path_2"
                     android:propertyName="fillAlpha"
-                    android:startOffset="350"
+                    android:startOffset="200"
                     android:duration="100"
                     android:valueFrom="1"
                     android:valueTo="0"
@@ -90,22 +91,24 @@
     </target>
     <target android:name="path_3">
         <aapt:attr name="android:animation">
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <set xmlns:android="http://schemas.android.com/apk/res/android"
+                android:ordering="sequentially">
                 <objectAnimator
                     android:name="path_3"
                     android:propertyName="fillAlpha"
-                    android:startOffset="100"
+                    android:startOffset="750"
                     android:duration="100"
-                    android:valueFrom="1"
-                    android:valueTo="0"
+                    android:valueFrom="0"
+                    android:valueTo="1"
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
                 <objectAnimator
                     android:name="path_3"
                     android:propertyName="fillAlpha"
+                    android:startOffset="200"
                     android:duration="100"
-                    android:valueFrom="0"
-                    android:valueTo="1"
+                    android:valueFrom="1"
+                    android:valueTo="0"
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
             </set>
@@ -113,11 +116,12 @@
     </target>
     <target android:name="path_4">
         <aapt:attr name="android:animation">
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <set xmlns:android="http://schemas.android.com/apk/res/android"
+                android:ordering="sequentially">
                 <objectAnimator
                     android:name="path_4"
                     android:propertyName="fillAlpha"
-                    android:startOffset="500"
+                    android:startOffset="1150"
                     android:duration="100"
                     android:valueFrom="0"
                     android:valueTo="1"
@@ -126,7 +130,7 @@
                 <objectAnimator
                     android:name="path_4"
                     android:propertyName="fillAlpha"
-                    android:startOffset="600"
+                    android:startOffset="200"
                     android:duration="100"
                     android:valueFrom="1"
                     android:valueTo="0"
@@ -137,11 +141,12 @@
     </target>
     <target android:name="path_5">
         <aapt:attr name="android:animation">
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <set xmlns:android="http://schemas.android.com/apk/res/android"
+                android:ordering="sequentially">
                 <objectAnimator
                     android:name="path_5"
                     android:propertyName="fillAlpha"
-                    android:startOffset="1000"
+                    android:startOffset="1550"
                     android:duration="100"
                     android:valueFrom="0"
                     android:valueTo="1"
@@ -150,7 +155,7 @@
                 <objectAnimator
                     android:name="path_5"
                     android:propertyName="fillAlpha"
-                    android:startOffset="1100"
+                    android:startOffset="200"
                     android:duration="100"
                     android:valueFrom="1"
                     android:valueTo="0"
