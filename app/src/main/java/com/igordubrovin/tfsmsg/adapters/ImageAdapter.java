@@ -28,7 +28,7 @@ public class ImageAdapter extends BaseAdapter {
     private List<Thread> threadList = new ArrayList<>();
 
     // Keep all Images in array
-    public Integer[] imagesArray = {
+    private Integer[] imagesArray = {
             //here you can place the image
             R.drawable.avd_vector_anim_cancel, R.drawable.avd_vector_anim_emoji,
             R.drawable.avd_vector_anim_keyboard, R.drawable.avd_vector_anim_send,
