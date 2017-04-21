@@ -2,17 +2,16 @@ package com.igordubrovin.tfsmsg.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.transition.ChangeBounds;
 import android.support.transition.Fade;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
 import android.transition.Explode;
-import android.transition.Scene;
 import android.transition.Slide;
 import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.utils.ImageAnimation;
 
 /**
  * Created by Игорь on 26.03.2017.
@@ -41,8 +41,6 @@ public class AboutFragment extends Fragment {
     private TextView tvVersionSummary;
     private TextView tvVersionTitle;
     private boolean visibilityTv;
-    private ViewGroup sceneContainer;
-    private android.transition.Scene scene;
     private ConstraintLayout clRootIv;
     private ImageView ivKeyboard;
     private ImageView ivEmoji;
@@ -100,10 +98,6 @@ public class AboutFragment extends Fragment {
     }
 
     private void initImageView(View view){
-        sceneContainer = (ViewGroup) view.findViewById(R.id.scene_container_about_image);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            scene = Scene.getSceneForLayout(sceneContainer, R.layout.scene_about_one_image, getContext());
-        }
         clRootIv = (ConstraintLayout) view.findViewById(R.id.cl_root_iv);
         ivKeyboard = (ImageView) view.findViewById(R.id.iv_keyboard);
         ivEmoji = (ImageView) view.findViewById(R.id.iv_emoji);
@@ -123,16 +117,46 @@ public class AboutFragment extends Fragment {
 
     private View.OnClickListener clickImage = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                TransitionSet transitionSet = new TransitionSet();
-                Transition changeImageTransform = new ChangeImageTransform().addTarget(v);
-                Transition changeBounds = new ChangeBounds().addTarget(v);
-                transitionSet.addTransition(changeImageTransform).addTransition(changeBounds).setDuration(5000);
+        public void onClick(final View v) {
+            android.support.transition.TransitionSet transitionSet = new android.support.transition.TransitionSet();
+            android.support.transition.Transition changeBounds = new ChangeBounds();
+            Fade fade = new Fade();
+            changeBounds.addTarget(v).addListener(transitionListener);
+            fade.excludeTarget(v, true);
+            transitionSet.addTransition(fade)
+                    .addTransition(changeBounds)
+                    .setOrdering(android.support.transition.TransitionSet.ORDERING_TOGETHER)
+                    .setDuration(1000);
+            android.support.transition.TransitionManager.beginDelayedTransition(clRootIv, transitionSet);
 
-                android.transition.TransitionManager.go(scene, transitionSet);
+            if (v.getId() != ivKeyboard.getId()){
+                ivKeyboard.setVisibility(View.GONE);
+            }
+            if (v.getId() != ivEmoji.getId()){
+                ivEmoji.setVisibility(View.GONE);
+            }
+            if (v.getId() != ivChat.getId()){
+                ivChat.setVisibility(View.GONE);
+            }
+            if (v.getId() != ivMess.getId()){
+                ivMess.setVisibility(View.GONE);
+            }
+            if (v.getId() != ivSend.getId()){
+                ivSend.setVisibility(View.GONE);
+            }
+            if (v.getId() != ivCancel.getId()){
+                ivCancel.setVisibility(View.GONE);
             }
 
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) v.getLayoutParams();
+            params.width = clRootIv.getWidth();
+            params.height =clRootIv.getHeight();
+            params.leftMargin = 0;
+            params.rightMargin = 0;
+            params.bottomMargin = 0;
+            params.topMargin = 0;
+
+            v.setLayoutParams(params);
         }
     };
 
@@ -163,9 +187,9 @@ public class AboutFragment extends Fragment {
                     transitionSet.addTransition(slideLeft)
                             .addTransition(slideRight);
 
-                    android.transition.TransitionManager.beginDelayedTransition(clRootTv, transitionSet);
+                    TransitionManager.beginDelayedTransition(clRootTv, transitionSet);
                 } else {
-                    TransitionManager.beginDelayedTransition(clRootTv, new Fade());
+                    android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
                 }
                 tvAppNameTitle.setVisibility(View.VISIBLE);
                 tvCoursesTitle.setVisibility(View.VISIBLE);
@@ -191,7 +215,7 @@ public class AboutFragment extends Fragment {
                             .setDuration(500);
                     android.transition.TransitionManager.beginDelayedTransition(clRootTv, explode);
                 } else {
-                    TransitionManager.beginDelayedTransition(clRootTv, new Fade());
+                    android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
                 }
                 tvAppNameTitle.setVisibility(View.GONE);
                 tvCoursesTitle.setVisibility(View.GONE);
@@ -202,6 +226,33 @@ public class AboutFragment extends Fragment {
                 tvDevNameSummary.setVisibility(View.GONE);
                 tvVersionSummary.setVisibility(View.GONE);
             }
+        }
+    };
+
+    private android.support.transition.Transition.TransitionListener transitionListener = new android.support.transition.Transition.TransitionListener() {
+        @Override
+        public void onTransitionStart(@NonNull android.support.transition.Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionEnd(@NonNull android.support.transition.Transition transition) {
+            ImageAnimation imageAnimation = new ImageAnimation((ImageView) transition.getTargets().get(0));
+            imageAnimation.startAnimation();
+        }
+
+        @Override
+        public void onTransitionCancel(@NonNull android.support.transition.Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionPause(@NonNull android.support.transition.Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionResume(@NonNull android.support.transition.Transition transition) {
 
         }
     };
