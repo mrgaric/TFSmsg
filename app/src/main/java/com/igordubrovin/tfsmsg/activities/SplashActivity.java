@@ -1,7 +1,9 @@
 package com.igordubrovin.tfsmsg.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +26,13 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        imageAdapter = new ImageAdapter(this);
-        gridview = (GridView) findViewById(R.id.gridview);
+        gridview = (GridView) findViewById(R.id.grid_view_splash);
+        Point size = new Point();
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getSize(size);
+        int width = size.x/2;
+        int height = size.y/3;
+        imageAdapter = new ImageAdapter(this, width, height);
         gridview.setAdapter(imageAdapter);
         new Loading().execute();
     }
@@ -34,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        imageAdapter.interruptThreads();
+        imageAdapter.stopAnimation();
     }
 
     public class Loading extends AsyncTask<Void, Void, Void> {

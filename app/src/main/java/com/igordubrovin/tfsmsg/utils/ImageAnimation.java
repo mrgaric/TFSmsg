@@ -12,13 +12,16 @@ import android.widget.ImageView;
 public class ImageAnimation {
 
     private AnimatedVectorDrawable avd;
-    public ImageView imageView;
+    private ImageView imageView;
 
-    public ImageAnimation(ImageView imageView){
+    public void setImageView(ImageView imageView){
         this.imageView = imageView;
         Drawable drawable = imageView.getDrawable();
         avd = (AnimatedVectorDrawable) drawable;
+    }
 
+    public ImageView getImageView(){
+        return imageView;
     }
 
     public void startAnimation(){
