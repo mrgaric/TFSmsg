@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import com.igordubrovin.tfsmsg.utils.MessageItem;
+import com.igordubrovin.tfsmsg.db.MessageItem;
 
 /**
  * Created by Игорь on 16.04.2017.

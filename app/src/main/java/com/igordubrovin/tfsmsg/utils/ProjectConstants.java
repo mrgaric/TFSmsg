@@ -5,6 +5,9 @@ package com.igordubrovin.tfsmsg.utils;
  */
 
 public class ProjectConstants {
+    public static final String FRAGMENT_DIALOGS = "fragmentDialogs";
+    public static final String FRAGMENT_ABOUT = "fragmentAbout";
+    public static final String FRAGMENT_SETTINGS = "fragmentSettings";
     public static final String USERS_LOGIN = "LOGIN";
     public static final String PREFERENCES_LOGIN_FILE_NAME = "prefLogin";
     public static final String PREFERENCES_STATE_LOGIN = "stateLogin";

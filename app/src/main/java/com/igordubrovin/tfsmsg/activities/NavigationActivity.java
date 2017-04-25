@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -31,12 +32,14 @@ public class NavigationActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private TextView tvLogin;
+    private FloatingActionButton fabAddDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        initFab();
         initToolbar();
         initNavigationView(savedInstanceState);
     }
@@ -54,6 +57,29 @@ public class NavigationActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void initFab(){
+        fabAddDialog = (FloatingActionButton) findViewById(R.id.fab_add_dialog);
+        fabAddDialog.setOnClickListener(clickFab);
+    }
+
+    View.OnClickListener clickFab = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
+            if (dialogsFragment != null){
+                ((DialogsFragment) dialogsFragment).addDialogItem();
+            }
+        }
+    };
+
+    private void showFab(){
+        fabAddDialog.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFab(){
+        fabAddDialog.setVisibility(View.GONE);
     }
 
     private void initToolbar(){
@@ -88,15 +114,18 @@ public class NavigationActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.nav_dialogs:
                     DialogsFragment dialogsFragment = new DialogsFragment();
-                    replaceFragment(dialogsFragment);
+                    replaceFragment(dialogsFragment, ProjectConstants.FRAGMENT_DIALOGS);
+                    showFab();
                     break;
                 case R.id.nav_settings:
                     SettingsFragment settingsFragment = new SettingsFragment();
-                    replaceFragment(settingsFragment);
+                    replaceFragment(settingsFragment, ProjectConstants.FRAGMENT_SETTINGS);
+                    hideFab();
                     break;
                 case R.id.nav_about:
                     AboutFragment aboutFragment = new AboutFragment();
-                    replaceFragment(aboutFragment);
+                    replaceFragment(aboutFragment, ProjectConstants.FRAGMENT_ABOUT);
+                    hideFab();
                     break;
                 case R.id.nav_exit:
                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -114,10 +143,10 @@ public class NavigationActivity extends AppCompatActivity {
         }
     };
 
-    private void replaceFragment(Fragment fragment) {
+    private void replaceFragment(Fragment fragment, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.replace_fragment_enter, R.anim.replace_fragment_exite);
-        fragmentTransaction.replace(R.id.content_navigation, fragment);
+        fragmentTransaction.replace(R.id.content_navigation, fragment, tag);
         fragmentTransaction.commit();
     }
 }

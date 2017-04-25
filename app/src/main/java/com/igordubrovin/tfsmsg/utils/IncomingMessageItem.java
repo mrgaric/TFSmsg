@@ -1,5 +1,7 @@
 package com.igordubrovin.tfsmsg.utils;
 
+import com.igordubrovin.tfsmsg.db.MessageItem;
+
 /**
  * Created by Игорь on 18.03.2017.
  */

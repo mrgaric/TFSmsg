@@ -17,3 +17,4 @@
 #}
 -dontwarn com.squareup.okhttp.**
 -keep class com.google.gson.stream.** { *; }
+-keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }

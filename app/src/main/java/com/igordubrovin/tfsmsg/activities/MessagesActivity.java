@@ -17,7 +17,7 @@ import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
 import com.igordubrovin.tfsmsg.fragments.SendMessageTaskFragment;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
-import com.igordubrovin.tfsmsg.utils.MessageItem;
+import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
 
@@ -120,8 +120,6 @@ public class MessagesActivity extends AppCompatActivity
             adapter.notifyDataSetChanged();
             recyclerViewMessage.scrollToPosition(0);
             sendMessageTaskFragment.startSend(message);
-
-
         }
     };
 

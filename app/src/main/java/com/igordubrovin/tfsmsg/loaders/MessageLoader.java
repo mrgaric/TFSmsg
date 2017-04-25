@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.igordubrovin.tfsmsg.utils.IncomingMessageItem;
-import com.igordubrovin.tfsmsg.utils.MessageItem;
+import com.igordubrovin.tfsmsg.db.MessageItem;
 
 /**
  * Created by Игорь on 12.04.2017.

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.igordubrovin.tfsmsg.utils.DialogItem;
+import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.R;
 
@@ -17,8 +17,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
     private List<DialogItem> dataset;
     private OnItemClickListener clickListener;
 
-    public DialogsAdapter(List<DialogItem> dataset, OnItemClickListener clickListener) {
-        this.dataset = dataset;
+    public DialogsAdapter(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -36,11 +35,21 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return dataset.size();
+        return dataset == null ? 0 : dataset.size();
     }
 
     public DialogItem getItem(int position){
         return dataset.get(position);
+    }
+
+    public void addDialog(DialogItem dialogItem) {
+        dataset.add(dialogItem);
+        notifyItemInserted(dataset.size());
+    }
+
+    public void setItems(List<DialogItem> dialogItems) {
+        dataset = dialogItems;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

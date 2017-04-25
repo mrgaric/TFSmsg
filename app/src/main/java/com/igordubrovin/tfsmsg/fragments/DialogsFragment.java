@@ -2,6 +2,7 @@ package com.igordubrovin.tfsmsg.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -17,11 +18,18 @@ import android.view.ViewGroup;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
+import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.db.DialogsDatabase;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
-import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,14 +40,11 @@ public class DialogsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    List<DialogItem> dialogItems;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        dialogItems = new ArrayList<>();
-        createDataset(dialogItems);
     }
 
     @Nullable
@@ -47,6 +52,7 @@ public class DialogsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialogs, container, false);
         initRecyclerView(view);
+        getPreviousDialogItems();
         return view;
     }
 
@@ -55,13 +61,14 @@ public class DialogsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DialogsAdapter(dialogItems, new OnItemClickListener() {
+        adapter = new DialogsAdapter(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Intent intent = new Intent(getContext(), MessagesActivity.class);
-                intent.putExtra(ProjectConstants.DIALOG_TITLE, dialogItems.get(position).getTitle());
-                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                        new Pair<View, String>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog)));
+                intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
+                Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
+                @SuppressWarnings("unchecked")
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
                 ActivityCompat.startActivity(getContext(), intent, optionsCompat.toBundle());
             }
         });
@@ -70,12 +77,26 @@ public class DialogsFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void createDataset(List<DialogItem> list) {
-        list.add(new DialogItem("title", "desc"));
-        list.add(new DialogItem("title", "desc"));
-        list.add(new DialogItem("title", "desc"));
-        list.add(new DialogItem("title", "desc"));
-        list.add(new DialogItem("title111111111122", "desc"));
-        list.add(new DialogItem("title", "desc"));
+    public void addDialogItem() {
+        int itemCount = adapter.getItemCount();
+        final DialogItem dialogItem = new DialogItem("Title is " + itemCount, "Description is " + itemCount);
+        DatabaseDefinition database = FlowManager.getDatabase(DialogsDatabase.class);
+        ((DialogsAdapter)adapter).addDialog(dialogItem);
+        Transaction transaction = database.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                dialogItem.save();
+            }
+        }).build();
+        transaction.execute();
+    }
+
+    private void getPreviousDialogItems() {
+        SQLite.select().from(DialogItem.class).async().queryListResultCallback(new QueryTransaction.QueryResultListCallback<DialogItem>() {
+            @Override
+            public void onListQueryResult(QueryTransaction transaction, @NonNull List<DialogItem> tResult) {
+                ((DialogsAdapter)adapter).setItems(tResult);
+            }
+        }).execute();
     }
 }

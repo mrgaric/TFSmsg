@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.igordubrovin.tfsmsg.utils.MessageItem;
+import com.igordubrovin.tfsmsg.db.MessageItem;
 
 /**
  * Created by Игорь on 11.04.2017.
