@@ -1,6 +1,8 @@
 package com.igordubrovin.tfsmsg.activities;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -14,14 +16,19 @@ import android.widget.Toast;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
+import com.igordubrovin.tfsmsg.db.ChatDbHelper;
+import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.fragments.SendMessageTaskFragment;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
-import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
+import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
-import java.util.ArrayList;
+import org.parceler.Parcels;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +43,7 @@ public class MessagesActivity extends AppCompatActivity
     private RecyclerView.Adapter adapter;
     private SendMessageTaskFragment sendMessageTaskFragment;
     private Loader messageLoader;
-    private List<MessageItem> messageItems;
+    private DialogItem dialogItem;
 
     private static final int ID_MESSAGE_LOADER = 0;
 
@@ -44,19 +51,19 @@ public class MessagesActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        String title;
+        Parcelable parcelable;
         messageEditor = (MessageEditor) findViewById(R.id.message_editor);
-
-        if (savedInstanceState == null)
-            messageItems = new LinkedList<>();
-        else{
-            List<MessageItem> savedData = savedInstanceState.getParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS);
-            if (savedData != null)
-                messageItems = new LinkedList<>(savedData);
+        if (savedInstanceState == null) {
+            parcelable = getIntent().getParcelableExtra(ProjectConstants.DIALOG_ITEM_INTENT);
+            title = getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE);
+        } else {
+            parcelable = savedInstanceState.getParcelable(ProjectConstants.DIALOG_ITEM_INTENT);
+            title = savedInstanceState.getString(ProjectConstants.DIALOG_TITLE, "Title");
         }
-
+        dialogItem = Parcels.unwrap(parcelable);
         messageLoader = getSupportLoaderManager().initLoader(ID_MESSAGE_LOADER, null, this);
-
-        initToolbar(getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE));
+        initToolbar(title);
         initRecyclerView();
         initMessageEditor();
         initFragment();
@@ -65,13 +72,13 @@ public class MessagesActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        List<MessageItem> savedData = new ArrayList<>(messageItems);
-        outState.putParcelableArrayList(ProjectConstants.SAVED_LIST_MESSAGE_ITEMS, (ArrayList<MessageItem>) savedData);
+        Parcelable parcelable = Parcels.wrap(dialogItem);
+        outState.putParcelable(ProjectConstants.DIALOG_ITEM_INTENT, parcelable);
+        outState.putString(ProjectConstants.DIALOG_TITLE, tvTitle.getText().toString());
     }
 
     private void initToolbar(String tittle){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        //toolbar.setTitle(tittle);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -92,7 +99,8 @@ public class MessagesActivity extends AppCompatActivity
         recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessageAdapter(messageItems, clickRecyclerMessageItem);
+        adapter = new MessageAdapter(clickRecyclerMessageItem);
+        getMessageItems();
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
     }
@@ -116,10 +124,7 @@ public class MessagesActivity extends AppCompatActivity
         public void onClick(View v) {
             String messageText = messageEditor.getText();
             MessageItem message = new MessageItem(messageText);
-            ((LinkedList<MessageItem>)messageItems).addFirst(message);
-            adapter.notifyDataSetChanged();
-            recyclerViewMessage.scrollToPosition(0);
-            sendMessageTaskFragment.startSend(message);
+            addMessageItem(message);
         }
     };
 
@@ -130,12 +135,36 @@ public class MessagesActivity extends AppCompatActivity
         }
     };
 
+    private void addMessageItem(final MessageItem messageItem) {
+        messageItem.setDialogItem(dialogItem);
+        ChatDbHelper helper = new ChatDbHelper();
+        helper.addItem(messageItem, new Transaction.Success() {
+            @Override
+            public void onSuccess(Transaction transaction) {
+                sendMessageTaskFragment.startSend(messageItem);
+                ((MessageAdapter)adapter).addMessage(messageItem);
+                recyclerViewMessage.scrollToPosition(0);
+            }
+        });
+    }
+
+    private void getMessageItems(){
+        ChatDbHelper helper = new ChatDbHelper();
+        helper.getMessageItems(dialogItem, new QueryTransaction.QueryResultListCallback<MessageItem>() {
+            @Override
+            public void onListQueryResult(QueryTransaction transaction, @NonNull List<MessageItem> tResult) {
+                List<MessageItem> messageItems = new LinkedList<>(tResult);
+                ((MessageAdapter)adapter).setItems(messageItems);
+            }
+        });
+    }
+
     @Override
     public void messageSent(Boolean success) {
         if (success){
             Toast.makeText(this, "messageSent", Toast.LENGTH_SHORT).show();
         } else {
-
+            //TODO
         }
     }
 
@@ -147,8 +176,7 @@ public class MessagesActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<MessageItem> loader, MessageItem data) {
         if (data != null){
-            ((LinkedList<MessageItem>)messageItems).addFirst(data);
-            adapter.notifyDataSetChanged();
+            addMessageItem(data);
         }
     }
 

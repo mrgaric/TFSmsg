@@ -18,17 +18,14 @@ import android.view.ViewGroup;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
+import com.igordubrovin.tfsmsg.db.ChatDbHelper;
 import com.igordubrovin.tfsmsg.db.DialogItem;
-import com.igordubrovin.tfsmsg.db.DialogsDatabase;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
-import com.raizlabs.android.dbflow.config.DatabaseDefinition;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.QueryTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -52,7 +49,7 @@ public class DialogsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialogs, container, false);
         initRecyclerView(view);
-        getPreviousDialogItems();
+        getDialogItemsDb();
         return view;
     }
 
@@ -65,6 +62,7 @@ public class DialogsFragment extends Fragment {
             @Override
             public void onItemClick(View v, int position) {
                 Intent intent = new Intent(getContext(), MessagesActivity.class);
+                intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(((DialogsAdapter)adapter).getItem(position)));
                 intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
                 Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
                 @SuppressWarnings("unchecked")
@@ -77,26 +75,29 @@ public class DialogsFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    public void addDialogItem() {
+    public void clickFAB(){
         int itemCount = adapter.getItemCount();
-        final DialogItem dialogItem = new DialogItem("Title is " + itemCount, "Description is " + itemCount);
-        DatabaseDefinition database = FlowManager.getDatabase(DialogsDatabase.class);
-        ((DialogsAdapter)adapter).addDialog(dialogItem);
-        Transaction transaction = database.beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                dialogItem.save();
-            }
-        }).build();
-        transaction.execute();
+        DialogItem dialogItem = new DialogItem("Title is " + itemCount, "Description is " + itemCount);
+        addDialogItem(dialogItem);
     }
 
-    private void getPreviousDialogItems() {
-        SQLite.select().from(DialogItem.class).async().queryListResultCallback(new QueryTransaction.QueryResultListCallback<DialogItem>() {
+    private void addDialogItem(final DialogItem dialogItem) {
+        ChatDbHelper helper = new ChatDbHelper();
+        helper.addItem(dialogItem, new Transaction.Success() {
+            @Override
+            public void onSuccess(Transaction transaction) {
+                ((DialogsAdapter)adapter).addDialog(dialogItem);
+            }
+        });
+    }
+
+    private void getDialogItemsDb() {
+        ChatDbHelper helper = new ChatDbHelper();
+        helper.getDialogItemsDb(new QueryTransaction.QueryResultListCallback<DialogItem>() {
             @Override
             public void onListQueryResult(QueryTransaction transaction, @NonNull List<DialogItem> tResult) {
                 ((DialogsAdapter)adapter).setItems(tResult);
             }
-        }).execute();
+        });
     }
 }

@@ -11,6 +11,7 @@ import com.igordubrovin.tfsmsg.utils.IncomingMessageItem;
 import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.widgets.ItemMessage;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,8 +24,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private OnItemClickListener clickListener;
 
-    public MessageAdapter(List<MessageItem> dataMessage, OnItemClickListener clickListener){
-        this.dataMessage = dataMessage;
+    public MessageAdapter(OnItemClickListener clickListener){
         this.clickListener = clickListener;
     }
 
@@ -50,9 +50,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((MessageAdapter.ViewHolder)holder).itemMessage.setTextMessage(item.getMessageText());
     }
 
+    public void addMessage(MessageItem messageItem) {
+        ((LinkedList<MessageItem>)dataMessage).addFirst(messageItem);
+        notifyItemInserted(0);
+    }
+
+    public void setItems(List<MessageItem> messageItems) {
+        dataMessage = messageItems;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return dataMessage.size();
+        return dataMessage == null ? 0 : dataMessage.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

@@ -14,10 +14,6 @@ public class ProjectConstants {
     public static final Boolean USER_LOGGED = true;
     public static final Boolean USER_NOT_LOGGED = false;
     public static final String DIALOG_TITLE = "titleDialog";
-    public static final String SAVED_LIST_MESSAGE_ITEMS = "savedMessageItems";
     public static final String PROGRESS_BUTTON_STATE = "progressButtonState";
-    public static final String SERVICE_SENDER_MESSAGE = "serviceSenderMessage";
-    public static final String SERVICE_MESSAGE = "serviceMessage";
-    public static final int ID_NOTIFICATION_RECEIVE_MESSAGE = 0;
-
+    public static final String DIALOG_ITEM_INTENT = "dialogItemIntent";
 }

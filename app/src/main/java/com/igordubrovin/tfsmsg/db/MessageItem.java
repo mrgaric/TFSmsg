@@ -1,30 +1,34 @@
 package com.igordubrovin.tfsmsg.db;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * Created by Игорь on 18.03.2017.
  */
 
-@Table(database = MessagesDatabase.class)
-public class MessageItem implements Parcelable {
-
+@Table(database = ChatDatabase.class)
+@org.parceler.Parcel(analyze = {MessageItem.class})
+public class MessageItem extends BaseModel {
+    @Column
     @PrimaryKey(autoincrement = true)
     long id;
     @Column
     String messageText;
     @Column
-    String idAuthor;
-    @Column
     String time;
     @Column
     String date;
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(columnName = "dialogItem_id",
+            foreignKeyColumnName = "id")},
+            saveForeignKeyModel = false,
+            stubbedRelationship = true)
+    DialogItem dialogItem;
 
     public MessageItem(){};
 
@@ -32,33 +36,40 @@ public class MessageItem implements Parcelable {
         this.messageText = messageText;
     }
 
-    protected MessageItem(Parcel in) {
-        messageText = in.readString();
-    }
-
-    public static final Creator<MessageItem> CREATOR = new Creator<MessageItem>() {
-        @Override
-        public MessageItem createFromParcel(Parcel in) {
-            return new MessageItem(in);
-        }
-
-        @Override
-        public MessageItem[] newArray(int size) {
-            return new MessageItem[size];
-        }
-    };
-
-    public String getMessageText() {
+    public synchronized String getMessageText() {
         return messageText;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public synchronized void setMessageText(String messageText) {
+        this.messageText = messageText;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
+    public synchronized String getTime() {
+        return time;
     }
+
+    public synchronized void setTime(String time) {
+        this.time = time;
+    }
+
+    public synchronized String getDate() {
+        return date;
+    }
+
+    public synchronized void setDate(String date) {
+        this.date = date;
+    }
+
+    public synchronized DialogItem getDialogItem() {
+        return dialogItem;
+    }
+
+    public synchronized void setDialogItem(DialogItem dialogItem) {
+        this.dialogItem = dialogItem;
+    }
+
+    public synchronized long getId() {
+        return id;
+    }
+
 }

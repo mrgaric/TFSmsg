@@ -69,7 +69,7 @@ public class NavigationActivity extends AppCompatActivity {
         public void onClick(View v) {
             Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
             if (dialogsFragment != null){
-                ((DialogsFragment) dialogsFragment).addDialogItem();
+                ((DialogsFragment) dialogsFragment).clickFAB();
             }
         }
     };
