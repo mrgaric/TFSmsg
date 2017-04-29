@@ -2,7 +2,6 @@ package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.widget.GridView;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.ImageAdapter;
-import com.igordubrovin.tfsmsg.utils.ProjectConstants;
+import com.igordubrovin.tfsmsg.utils.PrefManager;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -43,25 +42,24 @@ public class SplashActivity extends AppCompatActivity {
         imageAdapter.stopAnimation();
     }
 
-    public class Loading extends AsyncTask<Void, Void, Void> {
+    private class Loading extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
             try {
                 Thread.sleep(10);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
-            return null;
+            return PrefManager.getInstance().isLogin();
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
             Intent intent;
-            SharedPreferences sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
-            if (sPref.getBoolean(ProjectConstants.PREFERENCES_STATE_LOGIN, ProjectConstants.USER_NOT_LOGGED))
+            if (result)
                 intent = new Intent(getApplicationContext(), NavigationActivity.class);
             else
                 intent = new Intent(getApplicationContext(), LoginActivity.class);

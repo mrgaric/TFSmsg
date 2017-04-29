@@ -1,7 +1,6 @@
 package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -45,7 +44,7 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(ProjectConstants.PROGRESS_BUTTON_STATE, ! button.isClickable());
+        outState.putBoolean(ProjectConstants.PROGRESS_BUTTON_STATE, !button.isClickable());
     }
 
     @Override
@@ -54,23 +53,13 @@ public class LoginActivity extends AppCompatActivity
         setStateProgressButton(savedInstanceState.getBoolean(ProjectConstants.PROGRESS_BUTTON_STATE));
     }
 
-    View.OnClickListener clickProgressButton = new View.OnClickListener() {
+    private View.OnClickListener clickProgressButton = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             loginTaskFragment.checkLogin(login.getText().toString(), password.getText().toString());
             setStateProgressButton(true);
         }
     };
-
-    @Override
-    public void onResult(Boolean success) {
-        if (success)
-            startNextScreen();
-        else {
-            showErrorLogin();
-            setStateProgressButton(false);
-        }
-    }
 
     private void setStateProgressButton(Boolean buttonPressed){
         if (buttonPressed) {
@@ -83,12 +72,6 @@ public class LoginActivity extends AppCompatActivity
     }
 
     private void startNextScreen() {
-
-        SharedPreferences sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(ProjectConstants.PREFERENCES_STATE_LOGIN, ProjectConstants.USER_LOGGED);
-        editor.putString(ProjectConstants.USERS_LOGIN, login.getText().toString());
-        editor.apply();
         Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
     }
@@ -97,6 +80,16 @@ public class LoginActivity extends AppCompatActivity
         Snackbar snackbar = Snackbar.make(findViewById(R.id.root_login_view), "Login Error", BaseTransientBottomBar.LENGTH_SHORT);
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
         snackbar.show();
+    }
+
+    @Override
+    public void onResult(Boolean success) {
+        if (success) {
+            startNextScreen();
+        } else {
+            showErrorLogin();
+            setStateProgressButton(false);
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-package com.igordubrovin.tfsmsg.activities;
+package com.igordubrovin.tfsmsg.utils;
 
 import android.app.Application;
 
@@ -13,5 +13,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         FlowManager.init(this);
+        PrefManager.newInstance(this);
     }
 }

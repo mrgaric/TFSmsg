@@ -20,6 +20,8 @@ public class MessageItem extends BaseModel {
     @Column
     String messageText;
     @Column
+    String idAuthor;
+    @Column
     String time;
     @Column
     String date;
@@ -32,16 +34,20 @@ public class MessageItem extends BaseModel {
 
     public MessageItem(){};
 
-    public MessageItem (String messageText){
-        this.messageText = messageText;
-    }
-
     public synchronized String getMessageText() {
         return messageText;
     }
 
     public synchronized void setMessageText(String messageText) {
         this.messageText = messageText;
+    }
+
+    public synchronized String getIdAuthor() {
+        return idAuthor;
+    }
+
+    public synchronized void setIdAuthor(String idAuthor) {
+        this.idAuthor = idAuthor;
     }
 
     public synchronized String getTime() {

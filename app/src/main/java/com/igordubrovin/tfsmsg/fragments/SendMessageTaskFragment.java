@@ -14,7 +14,7 @@ import com.igordubrovin.tfsmsg.db.MessageItem;
 
 public class SendMessageTaskFragment extends Fragment {
 
-    public static final String TAG = "SendMessageTaskFragment";
+    public static final String SEND_MESSAGE_TASK_FRAGMENT_TAG = "SendMessageTaskFragment";
 
     private MessageSentListener messageSentListener;
     private Boolean success;
@@ -46,7 +46,7 @@ public class SendMessageTaskFragment extends Fragment {
     }
 
     public void startSend(MessageItem message){
-        new SendMessageTask().execute(message.getMessageText());
+        new SendMessageTask().execute(message);
     }
 
     private void setSuccess(Boolean success) {
@@ -61,10 +61,10 @@ public class SendMessageTaskFragment extends Fragment {
         void messageSent(Boolean success);
     }
 
-    private class SendMessageTask extends AsyncTask<String, Void, Boolean>{
+    private class SendMessageTask extends AsyncTask<MessageItem, Void, Boolean>{
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected Boolean doInBackground(MessageItem... params) {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

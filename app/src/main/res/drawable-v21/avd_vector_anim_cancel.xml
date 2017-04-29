@@ -16,7 +16,7 @@
         </vector>
     </aapt:attr>
     <target android:name="path" android:repeatCount="infinite">
-        <aapt:attr name="android:animation" android:repeatCount="infinite">
+        <aapt:attr name="android:animation">
             <set xmlns:android="http://schemas.android.com/apk/res/android"
                 android:ordering="sequentially">
                 <objectAnimator

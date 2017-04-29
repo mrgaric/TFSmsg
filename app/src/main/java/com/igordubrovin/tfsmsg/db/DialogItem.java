@@ -24,11 +24,6 @@ public class DialogItem extends BaseModel{
 
     public DialogItem(){};
 
-    public DialogItem(String title, String desc) {
-        this.title = title;
-        this.desc = desc;
-    }
-
     public synchronized long getId() {
         return id;
     }

@@ -1,7 +1,6 @@
 package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,15 +21,18 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.fragments.AboutFragment;
 import com.igordubrovin.tfsmsg.fragments.DialogsFragment;
 import com.igordubrovin.tfsmsg.fragments.SettingsFragment;
+import com.igordubrovin.tfsmsg.utils.PrefManager;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private final static int MENU_DIALOGS = 0;
+    private static final int MENU_DIALOGS = 0;
+    private static final String STATE_VISIBILITY_FAB = "state_visiblity_fab";
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private View navigationViewHeader;
     private TextView tvLogin;
     private FloatingActionButton fabAddDialog;
 
@@ -38,8 +40,13 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-
-        initFab();
+        int visibility;
+        if (savedInstanceState == null){
+            visibility = View.VISIBLE;
+        } else {
+            visibility = savedInstanceState.getInt(STATE_VISIBILITY_FAB);
+        }
+        initFab(visibility);
         initToolbar();
         initNavigationView(savedInstanceState);
     }
@@ -51,6 +58,12 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_VISIBILITY_FAB, fabAddDialog.getVisibility());
+    }
+
+    @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -59,27 +72,10 @@ public class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    private void initFab(){
+    private void initFab(int visibility){
         fabAddDialog = (FloatingActionButton) findViewById(R.id.fab_add_dialog);
+        fabAddDialog.setVisibility(visibility);
         fabAddDialog.setOnClickListener(clickFab);
-    }
-
-    View.OnClickListener clickFab = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
-            if (dialogsFragment != null){
-                ((DialogsFragment) dialogsFragment).clickFAB();
-            }
-        }
-    };
-
-    private void showFab(){
-        fabAddDialog.setVisibility(View.VISIBLE);
-    }
-
-    private void hideFab(){
-        fabAddDialog.setVisibility(View.GONE);
     }
 
     private void initToolbar(){
@@ -88,8 +84,7 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     private void initNavigationView(Bundle savedInstanceState){
-        View navigationViewHeader;
-        SharedPreferences sPref;
+        String userLogin;
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
         drawer.addDrawerListener(toggle);
@@ -99,8 +94,8 @@ public class NavigationActivity extends AppCompatActivity {
 
         navigationViewHeader = navigationView.getHeaderView(0);
         tvLogin = (TextView) navigationViewHeader.findViewById(R.id.tv_login_navigation_view_header);
-        sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
-        tvLogin.setText(sPref.getString(ProjectConstants.USERS_LOGIN, "admin"));
+        userLogin = PrefManager.getInstance().login();
+        tvLogin.setText(userLogin);
 
         if (savedInstanceState == null) {
             navigationView.getMenu().getItem(MENU_DIALOGS).setChecked(true);
@@ -108,12 +103,27 @@ public class NavigationActivity extends AppCompatActivity {
         }
     }
 
+    private void showFab(){
+        fabAddDialog.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFab(){
+        fabAddDialog.setVisibility(View.GONE);
+    }
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.replace_fragment_enter, R.anim.replace_fragment_exite);
+        fragmentTransaction.replace(R.id.content_navigation, fragment, tag);
+        fragmentTransaction.commit();
+    }
+
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.nav_dialogs:
-                    DialogsFragment dialogsFragment = new DialogsFragment();
+                    DialogsFragment dialogsFragment = DialogsFragment.newInstance(tvLogin.getText().toString());
                     replaceFragment(dialogsFragment, ProjectConstants.FRAGMENT_DIALOGS);
                     showFab();
                     break;
@@ -130,11 +140,8 @@ public class NavigationActivity extends AppCompatActivity {
                 case R.id.nav_exit:
                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(loginIntent);
-                    SharedPreferences sPref = getSharedPreferences(ProjectConstants.PREFERENCES_LOGIN_FILE_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sPref.edit();
-                    editor.putBoolean(ProjectConstants.PREFERENCES_STATE_LOGIN, ProjectConstants.USER_NOT_LOGGED);
-                    editor.putString(ProjectConstants.USERS_LOGIN, "");
-                    editor.apply();
+                    PrefManager.getInstance().saveLogin("");
+                    PrefManager.getInstance().setFlagLogin(false);
                     finish();
                     break;
             }
@@ -143,10 +150,13 @@ public class NavigationActivity extends AppCompatActivity {
         }
     };
 
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.replace_fragment_enter, R.anim.replace_fragment_exite);
-        fragmentTransaction.replace(R.id.content_navigation, fragment, tag);
-        fragmentTransaction.commit();
-    }
+    private View.OnClickListener clickFab = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
+            if (dialogsFragment != null){
+                ((DialogsFragment) dialogsFragment).clickFAB();
+            }
+        }
+    };
 }

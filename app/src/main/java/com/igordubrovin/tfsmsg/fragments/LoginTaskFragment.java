@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.igordubrovin.tfsmsg.utils.PrefManager;
+
 /**
  * Created by Игорь on 10.04.2017.
  */
@@ -68,7 +70,14 @@ public class LoginTaskFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return !params[0].equals("");
+            if (!params[0].equals("")) {
+                PrefManager.getInstance().saveLogin(params[0]);
+                PrefManager.getInstance().setFlagLogin(true);
+                return true;
+            } else {
+                PrefManager.getInstance().setFlagLogin(false);
+                return false;
+            }
         }
 
         @Override

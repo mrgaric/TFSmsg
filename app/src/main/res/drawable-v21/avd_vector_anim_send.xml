@@ -26,7 +26,7 @@
                     android:valueTo="#ffaaaaaa"
                     android:valueType="colorType"
                     android:interpolator="@android:anim/decelerate_interpolator"
-                    android:repeatCount="2"
+                    android:repeatCount="1"
                     android:repeatMode="reverse"/>
             </set>
         </aapt:attr>

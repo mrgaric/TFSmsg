@@ -10,4 +10,5 @@ import com.raizlabs.android.dbflow.annotation.Database;
 public class ChatDatabase {
     public static final String NAME = "chat_db";
     public static final int VERSION = 1;
+
 }

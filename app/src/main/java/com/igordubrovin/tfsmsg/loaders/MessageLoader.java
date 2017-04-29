@@ -3,7 +3,6 @@ package com.igordubrovin.tfsmsg.loaders;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.igordubrovin.tfsmsg.utils.IncomingMessageItem;
 import com.igordubrovin.tfsmsg.db.MessageItem;
 
 /**
@@ -24,20 +23,22 @@ public class MessageLoader extends AsyncTaskLoader<MessageItem> {
 
     @Override
     public MessageItem loadInBackground() {
-        IncomingMessageItem incomingMessageItem = null;
+        MessageItem messageItem = null;
         try {
             Thread.sleep(3000);
             String sender = "test test test test test test test test test";
             String message = "Test Test Test Test Test Test Test Test Test Test";
-            incomingMessageItem = createIncomingMessageItem(sender, message);
+            messageItem = createMessageItem(sender, message);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return incomingMessageItem;
+        return messageItem;
     }
 
-    private IncomingMessageItem createIncomingMessageItem(String sender, String message){
-        return new IncomingMessageItem(sender, message);
+    private synchronized MessageItem createMessageItem(String sender, String message){
+        MessageItem messageItem = new MessageItem();
+        messageItem.setMessageText(message);
+        messageItem.setIdAuthor(sender);
+        return messageItem;
     }
-
 }
