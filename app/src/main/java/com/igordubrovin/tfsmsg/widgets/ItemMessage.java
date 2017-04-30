@@ -18,8 +18,9 @@ import com.igordubrovin.tfsmsg.R;
 
 public class ItemMessage extends FrameLayout {
 
-    private TextView message;
-    private TextView sender;
+    private TextView tvMessage;
+    private TextView tvSender;
+    private TextView tvTime;
     private LinearLayout containerBackground;
 
     private int type;
@@ -43,8 +44,9 @@ public class ItemMessage extends FrameLayout {
 
     private void initAttrs(AttributeSet attrs){
         LayoutInflater.from(getContext()).inflate(R.layout.widget_item_message, this);
-        message = (TextView) findViewById(R.id.text_view_message);
-        sender = (TextView) findViewById(R.id.text_view_sender);
+        tvMessage = (TextView) findViewById(R.id.text_view_message);
+        tvSender = (TextView) findViewById(R.id.text_view_sender);
+        tvTime = (TextView) findViewById(R.id.tv_time_message);
         containerBackground = (LinearLayout) findViewById(R.id.container_background_item_message);
 
         final TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ItemMessage);
@@ -53,7 +55,7 @@ public class ItemMessage extends FrameLayout {
                 setTextMessage(typedArray.getString(R.styleable.ItemMessage_message_text));
             }
             if (typedArray.getString(R.styleable.ItemMessage_sender_name) != null) {
-                setSender(typedArray.getString(R.styleable.ItemMessage_sender_name));
+                setTvSender(typedArray.getString(R.styleable.ItemMessage_sender_name));
             }
             setType(typedArray.getInteger(R.styleable.ItemMessage_message_type, TYPE_IN));
             typedArray.recycle();
@@ -61,11 +63,15 @@ public class ItemMessage extends FrameLayout {
     }
 
     public void setTextMessage(String textMessage){
-        message.setText(textMessage);
+        tvMessage.setText(textMessage);
     }
 
-    public void setSender (String senderName){
-        sender.setText(senderName);
+    public void setTvSender(String senderName){
+        tvSender.setText(senderName);
+    }
+
+    public void setTime (String time){
+        tvTime.setText(time);
     }
 
     public void setType (int type){
@@ -73,12 +79,12 @@ public class ItemMessage extends FrameLayout {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) containerBackground.getLayoutParams();
 
         if (type == TYPE_IN){
-            sender.setVisibility(VISIBLE);
+            tvSender.setVisibility(VISIBLE);
             containerBackground.setBackgroundResource(R.drawable.in_message);
             lp.gravity = Gravity.START;
         }
         else if (type == TYPE_OUT){
-            sender.setVisibility(GONE);
+            tvSender.setVisibility(GONE);
             containerBackground.setBackgroundResource(R.drawable.out_message);
             lp.gravity = Gravity.END;
         }

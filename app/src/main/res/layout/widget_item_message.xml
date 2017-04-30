@@ -37,7 +37,12 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:autoLink="web|phone|map|email"
             tools:text="Test Test Test "/>
+        
+        <TextView
+            android:id="@+id/tv_time_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            tools:text="12:00"/>
     </LinearLayout>
-
-
 </FrameLayout>

@@ -22,10 +22,21 @@
         android:id="@+id/tv_dialog_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="14sp"
         tools:text="Test test test test 2" />
+
+    <TextView
+        android:id="@+id/tv_dialog_last_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="Test test test test 3"/>
 
 </LinearLayout>

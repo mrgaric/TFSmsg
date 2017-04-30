@@ -21,6 +21,7 @@ import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.fragments.ChatDbFragment;
 import com.igordubrovin.tfsmsg.fragments.SendMessageTaskFragment;
 import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
+import com.igordubrovin.tfsmsg.interfaces.MessageSentListener;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
@@ -34,7 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MessagesActivity extends AppCompatActivity
-        implements SendMessageTaskFragment.MessageSentListener,
+        implements MessageSentListener,
         ChatDbItemsListener,
         LoaderManager.LoaderCallbacks<MessageItem>{
 
@@ -48,7 +49,7 @@ public class MessagesActivity extends AppCompatActivity
     private ChatDbFragment chatDbFragment;
     private String login;
 
-    private static final int ID_MESSAGE_LOADER = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +62,18 @@ public class MessagesActivity extends AppCompatActivity
             parcelable = getIntent().getParcelableExtra(ProjectConstants.DIALOG_ITEM_INTENT);
             title = getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE);
             login = getIntent().getStringExtra(ProjectConstants.USER_LOGIN);
-            getSupportLoaderManager().initLoader(ID_MESSAGE_LOADER, null, this);
+            getSupportLoaderManager().initLoader(ProjectConstants.ID_MESSAGE_LOADER, null, this);
         } else {
             parcelable = savedInstanceState.getParcelable(ProjectConstants.DIALOG_ITEM_INTENT);
             title = savedInstanceState.getString(ProjectConstants.DIALOG_TITLE, "Title");
             login = savedInstanceState.getString(ProjectConstants.USER_LOGIN, "");
         }
         dialogItem = Parcels.unwrap(parcelable);
+        createSendMessageTaskFragment();
+        createChatDbFragment();
         initToolbar(title);
         initRecyclerView();
         initMessageEditor();
-        createSendMessageTaskFragment();
-        createChatDbFragment();
-        getMessageItems();
     }
 
     @Override
@@ -83,6 +83,28 @@ public class MessagesActivity extends AppCompatActivity
         outState.putParcelable(ProjectConstants.DIALOG_ITEM_INTENT, parcelable);
         outState.putString(ProjectConstants.DIALOG_TITLE, tvTitle.getText().toString());
         outState.putString(ProjectConstants.USER_LOGIN, login);
+    }
+
+    private void createSendMessageTaskFragment(){
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        sendMessageTaskFragment = (SendMessageTaskFragment) supportFragmentManager.findFragmentByTag(SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG);
+        if (sendMessageTaskFragment == null) {
+            sendMessageTaskFragment = new SendMessageTaskFragment();
+            supportFragmentManager.beginTransaction()
+                    .add(sendMessageTaskFragment, SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    private void createChatDbFragment(){
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        chatDbFragment = (ChatDbFragment) supportFragmentManager.findFragmentByTag(ChatDbFragment.CHAT_DB_FRAGMENT_TAG);
+        if (chatDbFragment == null) {
+            chatDbFragment = new ChatDbFragment();
+            supportFragmentManager.beginTransaction()
+                    .add(chatDbFragment, ChatDbFragment.CHAT_DB_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     private void initToolbar(String tittle){
@@ -110,59 +132,8 @@ public class MessagesActivity extends AppCompatActivity
         adapter = new MessageAdapter(clickRecyclerMessageItem, login);
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
+        getMessageItems();
     }
-
-    private void initMessageEditor(){
-        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
-        messageEditor.setOnClickListenerSend(clickSend);
-    }
-
-    private void createSendMessageTaskFragment(){
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        sendMessageTaskFragment = (SendMessageTaskFragment) supportFragmentManager.findFragmentByTag(SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG);
-        if (sendMessageTaskFragment == null) {
-            sendMessageTaskFragment = new SendMessageTaskFragment();
-            supportFragmentManager.beginTransaction()
-                    .add(sendMessageTaskFragment, SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG)
-                    .commit();
-        }
-    }
-
-    private void createChatDbFragment(){
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        chatDbFragment = (ChatDbFragment) supportFragmentManager.findFragmentByTag(ChatDbFragment.CHAT_DB_FRAGMENT_TAG);
-        if (chatDbFragment == null) {
-            chatDbFragment = new ChatDbFragment();
-            supportFragmentManager.beginTransaction()
-                    .add(chatDbFragment, ChatDbFragment.CHAT_DB_FRAGMENT_TAG)
-                    .commit();
-        }
-    }
-
-    private void addMessageItem(MessageItem messageItem) {
-        DateHelper dateHelper = new DateHelper();
-        messageItem.setTime(dateHelper.getCurrentTime());
-        messageItem.setDate(dateHelper.getCurrentDate());
-        messageItem.setDialogItem(dialogItem);
-        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
-        helper.addItem(messageItem);
-    }
-
-    private void getMessageItems(){
-        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
-        helper.getMessageItems(dialogItem);
-    }
-
-    private View.OnClickListener clickSend = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String messageText = messageEditor.getText();
-            MessageItem messageItem = new MessageItem();
-            messageItem.setMessageText(messageText);
-            messageItem.setIdAuthor(login);
-            addMessageItem(messageItem);
-        }
-    };
 
     private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
         @Override
@@ -171,15 +142,52 @@ public class MessagesActivity extends AppCompatActivity
         }
     };
 
+    private void getMessageItems(){
+        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
+        helper.getMessageItems(dialogItem);
+    }
+
+    private void initMessageEditor(){
+        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
+        messageEditor.setOnClickListenerSend(clickSend);
+    }
+
+    private View.OnClickListener clickSend = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String messageText = messageEditor.getText();
+            MessageItem messageItem = new MessageItem();
+            DateHelper dateHelper = new DateHelper();
+            messageItem.setTime(dateHelper.getCurrentTime());
+            messageItem.setDate(dateHelper.getCurrentDate());
+            messageItem.setMessageText(messageText);
+            messageItem.setIdAuthor(login);
+            addMessageItem(messageItem);
+        }
+    };
+
+    private void addMessageItem(MessageItem messageItem) {
+        messageItem.setDialogItem(dialogItem);
+        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
+        helper.saveItem(messageItem);
+    }
+
     @Override
     public void itemAdded(BaseModel item) {
         MessageItem messageItem = (MessageItem) item;
-        if (messageItem.getIdAuthor().equals(login))
-            sendMessageTaskFragment.startSend(messageItem);
-        if (((MessageAdapter) adapter).getData() != null) {
+        if (((MessageAdapter) adapter).getData() != null)
             ((MessageAdapter) adapter).addMessage(messageItem);
+        if (messageItem.getIdAuthor().equals(login)){
             recyclerViewMessage.scrollToPosition(0);
+            sendMessageTaskFragment.startSend(messageItem);
         }
+        updateLastMessageDialogItem(messageItem.getIdAuthor(), messageItem.getMessageText());
+    }
+
+    private void updateLastMessageDialogItem(String sender, String lastMessage){
+        dialogItem.setLastMessage(sender.concat(": ").concat(lastMessage));
+        ChatDbHelper chatDbHelper = new ChatDbHelper();
+        chatDbHelper.saveItem(dialogItem);
     }
 
     @Override
@@ -218,7 +226,7 @@ public class MessagesActivity extends AppCompatActivity
         if (data != null){
             addMessageItem(data);
         }
-        getSupportLoaderManager().destroyLoader(ID_MESSAGE_LOADER);
+        getSupportLoaderManager().destroyLoader(ProjectConstants.ID_MESSAGE_LOADER);
     }
 
     @Override

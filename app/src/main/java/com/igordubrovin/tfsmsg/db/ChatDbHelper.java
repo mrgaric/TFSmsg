@@ -23,6 +23,8 @@ public class ChatDbHelper {
     private ChatDbFragment chatDbFragment;
     private ChatDbItemsListener chatDbItemsListener;
 
+    public ChatDbHelper(){}
+
     public ChatDbHelper(ChatDbFragment chatDbFragment){
         this.chatDbFragment = chatDbFragment;
     }
@@ -42,8 +44,8 @@ public class ChatDbHelper {
                     public void onListQueryResult(QueryTransaction transaction, @NonNull List<MessageItem> tResult) {
                         if (chatDbFragment != null)
                             chatDbFragment.returnListItemReceived(tResult);
-                        else
-                            chatDbItemsListener.itemsReceived(tResult);
+                        else if (chatDbItemsListener != null)
+                                chatDbItemsListener.itemsReceived(tResult);
                     }
                 })
                 .execute();
@@ -58,14 +60,14 @@ public class ChatDbHelper {
                     public void onListQueryResult(QueryTransaction transaction, @NonNull List<DialogItem> tResult) {
                         if (chatDbFragment != null)
                             chatDbFragment.returnListItemReceived(tResult);
-                        else
-                            chatDbItemsListener.itemsReceived(tResult);
+                        else if (chatDbItemsListener != null)
+                                chatDbItemsListener.itemsReceived(tResult);
                     }
                 })
                 .execute();
     }
 
-    public void addItem(@NonNull final BaseModel item) {
+    public void saveItem(@NonNull final BaseModel item) {
         FlowManager.getDatabase(ChatDatabase.class)
                 .beginTransactionAsync(new ITransaction() {
                     @Override
@@ -83,7 +85,7 @@ public class ChatDbHelper {
                     public void onSuccess(Transaction transaction) {
                         if (chatDbFragment != null)
                             chatDbFragment.returnItemAdded(item);
-                        else
+                        else if (chatDbItemsListener != null)
                             chatDbItemsListener.itemAdded(item);
                     }
                 })

@@ -71,23 +71,30 @@ public class DialogsFragment extends Fragment
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DialogsAdapter(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Intent intent = new Intent(getContext(), MessagesActivity.class);
-                intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(((DialogsAdapter)adapter).getItem(position)));
-                intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
-                intent.putExtra(ProjectConstants.USER_LOGIN, login);
-                Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
-                @SuppressWarnings("unchecked")
-                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
-                ActivityCompat.startActivity(getContext(), intent, optionsCompat.toBundle());
-            }
-        });
+        adapter = new DialogsAdapter(itemClickListener);
         getDialogItemsDb();
         recyclerView.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity().getApplicationContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    OnItemClickListener itemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, int position) {
+            Intent intent = new Intent(getContext(), MessagesActivity.class);
+            intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(((DialogsAdapter)adapter).getItem(position)));
+            intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
+            intent.putExtra(ProjectConstants.USER_LOGIN, login);
+            Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
+            @SuppressWarnings("unchecked")
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
+            ActivityCompat.startActivity(getContext(), intent, optionsCompat.toBundle());
+        }
+    };
+
+    public void getDialogItemsDb() {
+        ChatDbHelper helper = new ChatDbHelper(this);
+        helper.getDialogItemsDb();
     }
 
     public void clickFAB(){
@@ -103,12 +110,7 @@ public class DialogsFragment extends Fragment
 
     private void addDialogItem(final DialogItem dialogItem) {
         ChatDbHelper helper = new ChatDbHelper(this);
-        helper.addItem(dialogItem);
-    }
-
-    private void getDialogItemsDb() {
-        ChatDbHelper helper = new ChatDbHelper(this);
-        helper.getDialogItemsDb();
+        helper.saveItem(dialogItem);
     }
 
     @Override

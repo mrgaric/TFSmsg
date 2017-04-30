@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.utils.ImageAnimation;
+import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -58,9 +59,6 @@ public class AboutFragment extends Fragment {
     private int idVisibleIv;
     private ImageAnimation imageAnimation;
     private int orientationScreen;
-    private static final String TV_STATE_VISIBLE = "tv_state_visible";
-    private static final String IV_STATE_VISIBLE = "iv_state_visible";
-    private static final String ID_VISIBLE_IV = "id_visible_iv";
 
     @Override
     public void onAttach(Context context) {
@@ -74,9 +72,9 @@ public class AboutFragment extends Fragment {
         imageAnimation = new ImageAnimation();
         imageViews = new LinkedList<>();
         if (savedInstanceState != null){
-            visibilityTv = savedInstanceState.getBoolean(TV_STATE_VISIBLE);
-            visibilityIv = savedInstanceState.getBoolean(IV_STATE_VISIBLE);
-            idVisibleIv = savedInstanceState.getInt(ID_VISIBLE_IV);
+            visibilityTv = savedInstanceState.getBoolean(ProjectConstants.TV_STATE_VISIBLE);
+            visibilityIv = savedInstanceState.getBoolean(ProjectConstants.IV_STATE_VISIBLE);
+            idVisibleIv = savedInstanceState.getInt(ProjectConstants.ID_VISIBLE_IV);
         } else {
             visibilityTv = true;
             visibilityIv = true;
@@ -93,18 +91,18 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ProjectConstants.TV_STATE_VISIBLE, visibilityTv);
+        outState.putBoolean(ProjectConstants.IV_STATE_VISIBLE, visibilityIv);
+        outState.putInt(ProjectConstants.ID_VISIBLE_IV, idVisibleIv);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (imageAnimation.getImageView() != null)
             imageAnimation.stopAnimation();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(TV_STATE_VISIBLE, visibilityTv);
-        outState.putBoolean(IV_STATE_VISIBLE, visibilityIv);
-        outState.putInt(ID_VISIBLE_IV, idVisibleIv);
     }
 
     private void initTextView(View view){
@@ -121,17 +119,6 @@ public class AboutFragment extends Fragment {
         if (!visibilityTv){
             setVisibilityTv(View.GONE);
         }
-    }
-
-    private void setVisibilityTv(int visibility){
-        tvAppNameTitle.setVisibility(visibility);
-        tvCoursesTitle.setVisibility(visibility);
-        tvDeveloperTitle.setVisibility(visibility);
-        tvVersionTitle.setVisibility(visibility);
-        tvAppNameSummary.setVisibility(visibility);
-        tvCourseNameSummary.setVisibility(visibility);
-        tvDevNameSummary.setVisibility(visibility);
-        tvVersionSummary.setVisibility(visibility);
     }
 
     private View.OnClickListener clickRootTv = new View.OnClickListener() {
@@ -181,6 +168,17 @@ public class AboutFragment extends Fragment {
         }
     };
 
+    private void setVisibilityTv(int visibility){
+        tvAppNameTitle.setVisibility(visibility);
+        tvCoursesTitle.setVisibility(visibility);
+        tvDeveloperTitle.setVisibility(visibility);
+        tvVersionTitle.setVisibility(visibility);
+        tvAppNameSummary.setVisibility(visibility);
+        tvCourseNameSummary.setVisibility(visibility);
+        tvDevNameSummary.setVisibility(visibility);
+        tvVersionSummary.setVisibility(visibility);
+    }
+
     private void initImageView(View view){
         clRootIv = (GridLayout) view.findViewById(R.id.cl_root_iv);
         ivKeyboard = (ImageView) view.findViewById(R.id.iv_keyboard);
@@ -219,6 +217,37 @@ public class AboutFragment extends Fragment {
         }
     }
 
+    private View.OnClickListener clickImage = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            idVisibleIv = v.getId();
+            android.support.transition.TransitionSet transitionSet = new android.support.transition.TransitionSet();
+            android.support.transition.Transition changeBounds = new ChangeBounds();
+            Fade fade = new Fade();
+            fade.excludeTarget(v, true);
+            transitionSet.addTransition(fade)
+                    .addTransition(changeBounds)
+                    .setOrdering(android.support.transition.TransitionSet.ORDERING_TOGETHER)
+                    .setDuration(1000);
+            android.support.transition.TransitionManager.beginDelayedTransition(clRootIv, transitionSet);
+
+            if (visibilityIv) {
+                visibilityIv = false;
+                setClickableImage(idVisibleIv, false);
+                imageAnimation.setImageView((ImageView) v);
+                setImageVisibility(idVisibleIv, View.GONE);
+                v.setLayoutParams(getImageViewParentParam(v));
+                imageAnimation.startAnimation();
+            } else {
+                visibilityIv = true;
+                setClickableImage(idVisibleIv, true);
+                setImageVisibility(idVisibleIv, View.VISIBLE);
+                v.setLayoutParams(getImageViewParam(v));
+                imageAnimation.stopAnimation();
+            }
+        }
+    };
+
     private GridLayout.LayoutParams getImageViewParam(View view){
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();
         if (orientationScreen == Configuration.ORIENTATION_PORTRAIT) {
@@ -256,37 +285,6 @@ public class AboutFragment extends Fragment {
         }
         return null;
     }
-
-    private View.OnClickListener clickImage = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            idVisibleIv = v.getId();
-            android.support.transition.TransitionSet transitionSet = new android.support.transition.TransitionSet();
-            android.support.transition.Transition changeBounds = new ChangeBounds();
-            Fade fade = new Fade();
-            fade.excludeTarget(v, true);
-            transitionSet.addTransition(fade)
-                    .addTransition(changeBounds)
-                    .setOrdering(android.support.transition.TransitionSet.ORDERING_TOGETHER)
-                    .setDuration(1000);
-            android.support.transition.TransitionManager.beginDelayedTransition(clRootIv, transitionSet);
-
-            if (visibilityIv) {
-                visibilityIv = false;
-                setClickableImage(idVisibleIv, false);
-                imageAnimation.setImageView((ImageView) v);
-                setImageVisibility(idVisibleIv, View.GONE);
-                v.setLayoutParams(getImageViewParentParam(v));
-                imageAnimation.startAnimation();
-            } else {
-                visibilityIv = true;
-                setClickableImage(idVisibleIv, true);
-                setImageVisibility(idVisibleIv, View.VISIBLE);
-                v.setLayoutParams(getImageViewParam(v));
-                imageAnimation.stopAnimation();
-            }
-        }
-    };
 
     private void setImageVisibility(int id, int visibility){
         for (ImageView imageView : imageViews){

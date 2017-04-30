@@ -46,8 +46,8 @@ public class NavigationActivity extends AppCompatActivity {
         } else {
             visibility = savedInstanceState.getInt(STATE_VISIBILITY_FAB);
         }
-        initFab(visibility);
         initToolbar();
+        initFab(visibility);
         initNavigationView(savedInstanceState);
     }
 
@@ -72,16 +72,35 @@ public class NavigationActivity extends AppCompatActivity {
         }
     }
 
-    private void initFab(int visibility){
-        fabAddDialog = (FloatingActionButton) findViewById(R.id.fab_add_dialog);
-        fabAddDialog.setVisibility(visibility);
-        fabAddDialog.setOnClickListener(clickFab);
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
+        if (dialogsFragment != null) {
+            ((DialogsFragment)dialogsFragment).getDialogItemsDb();
+        }
     }
 
     private void initToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
+
+    private void initFab(int visibility){
+        fabAddDialog = (FloatingActionButton) findViewById(R.id.fab_add_dialog);
+        fabAddDialog.setVisibility(visibility);
+        fabAddDialog.setOnClickListener(clickFab);
+    }
+
+    private View.OnClickListener clickFab = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
+            if (dialogsFragment != null){
+                ((DialogsFragment) dialogsFragment).clickFAB();
+            }
+        }
+    };
 
     private void initNavigationView(Bundle savedInstanceState){
         String userLogin;
@@ -101,21 +120,6 @@ public class NavigationActivity extends AppCompatActivity {
             navigationView.getMenu().getItem(MENU_DIALOGS).setChecked(true);
             navigationItemSelectedListener.onNavigationItemSelected(navigationView.getMenu().getItem(MENU_DIALOGS));
         }
-    }
-
-    private void showFab(){
-        fabAddDialog.setVisibility(View.VISIBLE);
-    }
-
-    private void hideFab(){
-        fabAddDialog.setVisibility(View.GONE);
-    }
-
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.replace_fragment_enter, R.anim.replace_fragment_exite);
-        fragmentTransaction.replace(R.id.content_navigation, fragment, tag);
-        fragmentTransaction.commit();
     }
 
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
@@ -150,13 +154,18 @@ public class NavigationActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener clickFab = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
-            if (dialogsFragment != null){
-                ((DialogsFragment) dialogsFragment).clickFAB();
-            }
-        }
-    };
+    private void showFab(){
+        fabAddDialog.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFab(){
+        fabAddDialog.setVisibility(View.GONE);
+    }
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.replace_fragment_enter, R.anim.replace_fragment_exite);
+        fragmentTransaction.replace(R.id.content_navigation, fragment, tag);
+        fragmentTransaction.commit();
+    }
 }

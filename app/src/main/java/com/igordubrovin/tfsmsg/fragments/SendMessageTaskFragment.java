@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.igordubrovin.tfsmsg.db.MessageItem;
+import com.igordubrovin.tfsmsg.interfaces.MessageSentListener;
 
 /**
  * Created by Игорь on 11.04.2017.
@@ -55,10 +56,6 @@ public class SendMessageTaskFragment extends Fragment {
         } else {
             this.success = success;
         }
-    }
-
-    public interface MessageSentListener{
-        void messageSent(Boolean success);
     }
 
     private class SendMessageTask extends AsyncTask<MessageItem, Void, Boolean>{

@@ -21,6 +21,8 @@ public class DialogItem extends BaseModel{
     String time;
     @Column
     String date;
+    @Column
+    String lastMessage;
 
     public DialogItem(){};
 
@@ -58,6 +60,14 @@ public class DialogItem extends BaseModel{
 
     public synchronized void setDate(String date) {
         this.date = date;
+    }
+
+    public synchronized String getLastMessage() {
+        return lastMessage;
+    }
+
+    public synchronized void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
     //public List<MessageItem> messageItems;

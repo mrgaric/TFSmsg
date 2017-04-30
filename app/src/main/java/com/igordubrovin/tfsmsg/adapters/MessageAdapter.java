@@ -42,11 +42,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((MessageAdapter.ViewHolder)holder).itemMessage.setType(ItemMessage.TYPE_OUT);
 
         } else {
-            ((MessageAdapter.ViewHolder)holder).itemMessage.setSender((item).getIdAuthor());
+            ((MessageAdapter.ViewHolder)holder).itemMessage.setTvSender((item).getIdAuthor());
             ((MessageAdapter.ViewHolder)holder).itemMessage.setType(ItemMessage.TYPE_IN);
         }
-
         ((MessageAdapter.ViewHolder)holder).itemMessage.setTextMessage(item.getMessageText());
+        ((MessageAdapter.ViewHolder)holder).itemMessage.setTime(item.getTime());
     }
 
     @Override

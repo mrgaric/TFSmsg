@@ -29,8 +29,12 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.title.setText(dataset.get(position).getTitle());
-        holder.desc.setText(dataset.get(position).getDesc());
+        holder.tvTitle.setText(dataset.get(position).getTitle());
+        holder.tvDesc.setText(dataset.get(position).getDesc());
+        String lastMessage = dataset.get(position).getLastMessage();
+        if (lastMessage != null && !lastMessage.equals("")){
+            holder.tvLastMessage.setText(lastMessage);
+        }
     }
 
     @Override
@@ -54,13 +58,15 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title;
-        public TextView desc;
+        public TextView tvTitle;
+        public TextView tvDesc;
+        public TextView tvLastMessage;
 
         public ViewHolder(View view, OnItemClickListener listener) {
             super(view);
-            title = (TextView) view.findViewById(R.id.tv_dialog_title);
-            desc = (TextView) view.findViewById(R.id.tv_dialog_desc);
+            tvTitle = (TextView) view.findViewById(R.id.tv_dialog_title);
+            tvDesc = (TextView) view.findViewById(R.id.tv_dialog_desc);
+            tvLastMessage = (TextView) view.findViewById(R.id.tv_dialog_last_message);
             setListener(listener);
         }
 

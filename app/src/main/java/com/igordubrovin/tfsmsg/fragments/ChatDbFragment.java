@@ -66,7 +66,7 @@ public class ChatDbFragment extends Fragment {
     }
 
     public void returnItemDeleted(BaseModel item){
-
+        //TODO
     }
 
 }

@@ -21,7 +21,7 @@ public class DateHelper {
     }
 
     public String getCurrentTime(){
-        DateFormat dateFormat = DateFormat.getTimeInstance();
+        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
         return dateFormat.format(calendar.getTime());
     }
 }

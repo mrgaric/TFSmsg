@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.igordubrovin.tfsmsg.db.MessageItem;
+import com.igordubrovin.tfsmsg.utils.DateHelper;
 
 /**
  * Created by Игорь on 12.04.2017.
@@ -37,6 +38,9 @@ public class MessageLoader extends AsyncTaskLoader<MessageItem> {
 
     private synchronized MessageItem createMessageItem(String sender, String message){
         MessageItem messageItem = new MessageItem();
+        DateHelper dateHelper = new DateHelper();
+        messageItem.setTime(dateHelper.getCurrentTime());
+        messageItem.setDate(dateHelper.getCurrentDate());
         messageItem.setMessageText(message);
         messageItem.setIdAuthor(sender);
         return messageItem;

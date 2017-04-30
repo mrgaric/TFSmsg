@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.igordubrovin.tfsmsg.interfaces.LoginListener;
 import com.igordubrovin.tfsmsg.utils.PrefManager;
 
 /**
@@ -55,10 +56,6 @@ public class LoginTaskFragment extends Fragment {
         } else {
             this.success = success;
         }
-    }
-
-    public interface LoginListener {
-        void onResult(Boolean success);
     }
 
     private class LoginTask extends AsyncTask<String, Void, Boolean> {
