@@ -1,7 +1,6 @@
 package com.igordubrovin.tfsmsg.fragments;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.GridLayout;
@@ -204,16 +204,38 @@ public class AboutFragment extends Fragment {
         if (!visibilityIv){
             setImageVisibility(idVisibleIv, View.GONE);
             setClickableImage(idVisibleIv, false);
-            ImageView imageView = getImageViewById(idVisibleIv);
-            if (imageView != null) {
-                imageView.setLayoutParams(getImageViewParentParam(imageView));
-                imageAnimation.setImageView(imageView);
+            clRootIv.getViewTreeObserver().addOnGlobalLayoutListener(oneImageOnGlobalLayoutListener);
+        } else {
+            clRootIv.getViewTreeObserver().addOnGlobalLayoutListener(allImageOnGlobalLayoutListener);
+        }
+    }
+
+    ViewTreeObserver.OnGlobalLayoutListener oneImageOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            clRootIv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            ImageView imageViewAnim = getImageViewById(idVisibleIv);
+            if (imageViewAnim != null) {
+                imageViewAnim.setLayoutParams(getImageViewParentParam(imageViewAnim));
+                imageAnimation.setImageView(imageViewAnim);
                 imageAnimation.startAnimation();
             }
-        } else {
-            for (ImageView imageView : imageViews){
+            setImageViewsParam(imageViewAnim);
+        }
+    };
+
+    ViewTreeObserver.OnGlobalLayoutListener allImageOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            clRootIv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            setImageViewsParam(null);
+        }
+    };
+
+    private void setImageViewsParam(ImageView imageViewAnim){
+        for (ImageView imageView : imageViews){
+            if (imageView != imageViewAnim)
                 imageView.setLayoutParams(getImageViewParam(imageView));
-            }
         }
     }
 
@@ -250,31 +272,15 @@ public class AboutFragment extends Fragment {
 
     private GridLayout.LayoutParams getImageViewParam(View view){
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();
-        if (orientationScreen == Configuration.ORIENTATION_PORTRAIT) {
-            params.width = 540;
-            params.height = 390;
-        } else if (orientationScreen == Configuration.ORIENTATION_LANDSCAPE) {
-            params.width = 450;
-            params.height = 300;
-        } else {
-            params.width = 0;
-            params.height = 0;
-        }
+        params.width = clRootIv.getWidth()/2;
+        params.height = clRootIv.getHeight()/3;
         return params;
     }
 
     private GridLayout.LayoutParams getImageViewParentParam(View view){
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();
-        if (orientationScreen == Configuration.ORIENTATION_PORTRAIT) {
-            params.width = 1080;
-            params.height = 1200;
-        } else if (orientationScreen == Configuration.ORIENTATION_LANDSCAPE) {
-            params.width = 900;
-            params.height = 900;
-        } else {
-            params.width = 0;
-            params.height = 0;
-        }
+        params.width = clRootIv.getWidth();
+        params.height = clRootIv.getHeight();
         return params;
     }
 

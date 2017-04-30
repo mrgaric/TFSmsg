@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
 
             try {
-                Thread.sleep(10);
+                Thread.sleep(2000);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }

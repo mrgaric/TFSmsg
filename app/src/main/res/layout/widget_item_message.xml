@@ -30,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/max_width_item_message"
-            android:paddingBottom="@dimen/padding_vertical_item_message"
             android:paddingLeft="@dimen/padding_horizontal_item_message"
             android:paddingRight="@dimen/padding_horizontal_item_message"
             android:textSize="@dimen/text_size_message"
@@ -42,6 +41,7 @@
             android:id="@+id/tv_time_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_vertical_item_message"
             android:layout_gravity="right"
             tools:text="12:00"/>
     </LinearLayout>
