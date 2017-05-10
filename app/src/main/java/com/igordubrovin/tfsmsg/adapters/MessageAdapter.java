@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
-import com.igordubrovin.tfsmsg.widgets.ItemMessage;
+import com.igordubrovin.tfsmsg.widgets.MessageView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +27,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.clickListener = clickListener;
         this.login = login;
     }
+    //сравнение дат текущего элемента и предидущего
+    private boolean checkHeader(int position){
+        return (dataMessage.size() == 1)
+                || (position == dataMessage.size() - 1)
+                || (!dataMessage.get(position).getDate().equals(dataMessage.get(position + 1).getDate()));
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,14 +45,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MessageItem item = dataMessage.get(position);
         if (item.getIdAuthor().equals(login)) {
-            ((MessageAdapter.ViewHolder)holder).itemMessage.setType(ItemMessage.TYPE_OUT);
-
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setType(MessageView.TYPE_OUT);
         } else {
-            ((MessageAdapter.ViewHolder)holder).itemMessage.setTvSender((item).getIdAuthor());
-            ((MessageAdapter.ViewHolder)holder).itemMessage.setType(ItemMessage.TYPE_IN);
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setTvSender((item).getIdAuthor());
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setType(MessageView.TYPE_IN);
         }
-        ((MessageAdapter.ViewHolder)holder).itemMessage.setTextMessage(item.getMessageText());
-        ((MessageAdapter.ViewHolder)holder).itemMessage.setTime(item.getTime());
+        if (checkHeader(position)){
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setVisibilityTvDate(MessageView.VISIBLE_DATE);
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setTvDate(item.getDate());
+        } else {
+            ((MessageAdapter.ViewHolder) holder).itemMessage.setVisibilityTvDate(MessageView.GONE_DATE);
+        }
+        ((MessageAdapter.ViewHolder) holder).itemMessage.setTextMessage(item.getMessageText());
+        ((MessageAdapter.ViewHolder) holder).itemMessage.setTvTime(item.getTime());
     }
 
     @Override
@@ -70,11 +81,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        ItemMessage itemMessage;
+        MessageView itemMessage;
 
         public ViewHolder(View itemView, OnItemClickListener clickListener){
             super(itemView);
-            itemMessage = (ItemMessage) itemView.findViewById(R.id.item_message);
+            itemMessage = (MessageView) itemView.findViewById(R.id.item_message);
             setClickListener(clickListener);
         }
 
@@ -88,5 +99,4 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
     }
-
 }

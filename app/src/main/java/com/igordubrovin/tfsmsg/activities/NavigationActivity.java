@@ -35,6 +35,7 @@ public class NavigationActivity extends AppCompatActivity {
     private View navigationViewHeader;
     private TextView tvLogin;
     private FloatingActionButton fabAddDialog;
+    private String userLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class NavigationActivity extends AppCompatActivity {
         } else {
             visibility = savedInstanceState.getInt(STATE_VISIBILITY_FAB);
         }
+        userLogin = PrefManager.getInstance().login();
         initToolbar();
         initFab(visibility);
         initNavigationView(savedInstanceState);
@@ -103,7 +105,6 @@ public class NavigationActivity extends AppCompatActivity {
     };
 
     private void initNavigationView(Bundle savedInstanceState){
-        String userLogin;
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
         drawer.addDrawerListener(toggle);
@@ -113,7 +114,7 @@ public class NavigationActivity extends AppCompatActivity {
 
         navigationViewHeader = navigationView.getHeaderView(0);
         tvLogin = (TextView) navigationViewHeader.findViewById(R.id.tv_login_navigation_view_header);
-        userLogin = PrefManager.getInstance().login();
+
         tvLogin.setText(userLogin);
 
         if (savedInstanceState == null) {

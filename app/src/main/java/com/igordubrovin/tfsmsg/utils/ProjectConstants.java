@@ -16,4 +16,6 @@ public class ProjectConstants {
     public static final String TV_STATE_VISIBLE = "tv_state_visible";
     public static final String IV_STATE_VISIBLE = "iv_state_visible";
     public static final String ID_VISIBLE_IV = "id_visible_iv";
+    public static final int REQUEST_CODE_PHOTO = 0;
+    public static final int REQUEST_CODE_PIC_CROP = 1;
 }

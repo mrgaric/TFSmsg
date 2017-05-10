@@ -15,9 +15,16 @@
         <attr name="flag_animated_clear" format="boolean|reference"/>
     </declare-styleable>
 
-    <declare-styleable name="ItemMessage">
-        <attr name="message_text" format="string"/>
+    <declare-styleable name="MessageView">
+        <attr name="message_text" format="string|reference"/>
         <attr name="sender_name" format="string|reference"/>
+        <attr name="time" format="string|reference"/>
+        <attr name="date" format="string|reference"/>
+        <attr name="date_visibility" format="integer|reference">
+            <enum name="visible_date" value="0x00000002"/>
+            <enum name="gone_date" value="0x00000003"/>
+            <enum name="invisible_date" value="0x00000004"/>
+        </attr>
         <attr name="message_type" format="integer|reference">
             <enum name="incoming" value="0x00000000"/>
             <enum name="outgoing" value="0x00000001"/>
