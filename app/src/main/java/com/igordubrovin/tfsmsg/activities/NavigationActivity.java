@@ -21,7 +21,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.fragments.AboutFragment;
 import com.igordubrovin.tfsmsg.fragments.DialogsFragment;
 import com.igordubrovin.tfsmsg.fragments.SettingsFragment;
-import com.igordubrovin.tfsmsg.utils.PrefManager;
+import com.igordubrovin.tfsmsg.utils.LoginManager;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 public class NavigationActivity extends AppCompatActivity {
@@ -47,7 +47,7 @@ public class NavigationActivity extends AppCompatActivity {
         } else {
             visibility = savedInstanceState.getInt(STATE_VISIBILITY_FAB);
         }
-        userLogin = PrefManager.getInstance().login();
+       // userLogin = LoginManager.getInstance().login();
         initToolbar();
         initFab(visibility);
         initNavigationView(savedInstanceState);
@@ -145,8 +145,8 @@ public class NavigationActivity extends AppCompatActivity {
                 case R.id.nav_exit:
                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(loginIntent);
-                    PrefManager.getInstance().saveLogin("");
-                    PrefManager.getInstance().setFlagLogin(false);
+                    /*LoginManager.getInstance().saveLogin("");
+                    LoginManager.getInstance().setFlagLogin(false);*/
                     finish();
                     break;
             }

@@ -1,23 +1,35 @@
 package com.igordubrovin.tfsmsg.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.ImageAdapter;
-import com.igordubrovin.tfsmsg.utils.PrefManager;
+import com.igordubrovin.tfsmsg.di.components.SplashScreenComponent;
+import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
+import com.igordubrovin.tfsmsg.mvp.iview.ISplashView;
+import com.igordubrovin.tfsmsg.utils.App;
+import com.igordubrovin.tfsmsg.utils.LoginManager;
 
-public class SplashActivity extends AppCompatActivity {
+import javax.inject.Inject;
 
-    GridView gridview;
-    ImageAdapter imageAdapter;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SplashActivity extends MvpActivity<ISplashView, ISplashPresenter>
+        implements ISplashView{
+
+    private SplashScreenComponent splashScreenComponent;
+
+    @Inject LoginManager loginManager;
+    private ImageAdapter imageAdapter;
+
+    @BindView(R.id.grid_view_splash) GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,44 +37,37 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        gridview = (GridView) findViewById(R.id.grid_view_splash);
-        Point size = new Point();
-        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        windowManager.getDefaultDisplay().getSize(size);
-        int width = size.x/2;
-        int height = size.y/3;
-        imageAdapter = new ImageAdapter(this, width, height);
+        App.getAppComponent().inject(this);
+        ButterKnife.bind(this);
+        imageAdapter = splashScreenComponent.getImageAdapter();
         gridview.setAdapter(imageAdapter);
-        new Loading().execute();
+        getPresenter().checkLoginState();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         imageAdapter.stopAnimation();
+        App.clearSplashScreenComponent();
+        App.clearSingleComponent();
     }
 
-    private class Loading extends AsyncTask<Void, Void, Boolean> {
+    @NonNull
+    @Override
+    public ISplashPresenter createPresenter() {
+        splashScreenComponent = App.plusSplashScreenComponent();
+        return splashScreenComponent.getSplashPresenter();
+    }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            return PrefManager.getInstance().isLogin();
-        }
+    @Override
+    public void showLoginActivity() {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+    }
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            Intent intent;
-            if (result)
-                intent = new Intent(getApplicationContext(), NavigationActivity.class);
-            else
-                intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-        }
+    @Override
+    public void showNavigationActivity() {
+        Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+        startActivity(intent);
     }
 }
