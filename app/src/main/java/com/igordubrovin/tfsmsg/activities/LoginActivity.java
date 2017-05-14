@@ -1,39 +1,61 @@
 package com.igordubrovin.tfsmsg.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.fragments.LoginTaskFragment;
-import com.igordubrovin.tfsmsg.interfaces.LoginListener;
+import com.igordubrovin.tfsmsg.di.components.LoginScreenComponent;
+import com.igordubrovin.tfsmsg.mvp.ipresenter.ILoginPresenter;
+import com.igordubrovin.tfsmsg.mvp.iview.ILoginView;
+import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.ProgressButton;
 
-public class LoginActivity extends AppCompatActivity
-        implements LoginListener{
+import javax.inject.Inject;
 
-    private EditText login;
-    private EditText password;
-    private ProgressButton button;
-    private LoginTaskFragment loginTaskFragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
+        implements ILoginView{
+
+    @Inject Context context;
+
+    @BindView(R.id.edit_text_login) EditText login;
+    @BindView(R.id.edit_text_password) EditText password;
+    @BindView(R.id.btn_enter) ProgressButton button;
+
+    private LoginScreenComponent loginScreenComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        login = (EditText) findViewById(R.id.edit_text_login);
-        password = (EditText) findViewById(R.id.edit_text_password);
-        button = (ProgressButton) findViewById(R.id.btn_enter);
-        button.setOnClickListener(clickProgressButton);
-        createLoginTaskFragment();
+        App.getAppComponent().inject(this);
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.clearLoginScreenComponent();
+    }
+
+    @NonNull
+    @Override
+    public ILoginPresenter createPresenter() {
+        loginScreenComponent = App.plusLoginScreenComponent();
+        return loginScreenComponent.getLoginPresenter();
     }
 
     @Override
@@ -48,22 +70,11 @@ public class LoginActivity extends AppCompatActivity
         setStateProgressButton(savedInstanceState.getBoolean(ProjectConstants.PROGRESS_BUTTON_STATE));
     }
 
-    private void createLoginTaskFragment(){
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        loginTaskFragment = (LoginTaskFragment) supportFragmentManager.findFragmentByTag(LoginTaskFragment.TAG);
-        if (loginTaskFragment == null) {
-            loginTaskFragment = new LoginTaskFragment();
-            supportFragmentManager.beginTransaction().add(loginTaskFragment, LoginTaskFragment.TAG).commit();
-        }
+    @OnClick (R.id.btn_enter)
+    public void onClickCheckLogin(View v) {
+        getPresenter().onClickBtnCheckLogin(login.getText().toString(), password.getText().toString());
+        setStateProgressButton(true);
     }
-
-    private View.OnClickListener clickProgressButton = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            loginTaskFragment.checkLogin(login.getText().toString(), password.getText().toString());
-            setStateProgressButton(true);
-        }
-    };
 
     private void setStateProgressButton(Boolean buttonPressed){
         if (buttonPressed) {
@@ -76,13 +87,14 @@ public class LoginActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResult(Boolean success) {
-        if (success) {
-            startNextScreen();
-        } else {
-            showErrorLogin();
-            setStateProgressButton(false);
-        }
+    public void loginSuccessful() {
+        startNextScreen();
+    }
+
+    @Override
+    public void showError() {
+        showErrorLogin();
+        setStateProgressButton(false);
     }
 
     private void startNextScreen() {
@@ -92,8 +104,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void showErrorLogin(){
         Snackbar snackbar = Snackbar.make(findViewById(R.id.root_login_view), "Login Error", BaseTransientBottomBar.LENGTH_SHORT);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_dark));
         snackbar.show();
     }
 }
-
