@@ -10,6 +10,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,12 +47,12 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
     }
 
     public void addDialog(DialogItem dialogItem) {
-        dataset.add(dialogItem);
-        notifyItemInserted(dataset.size());
+        ((LinkedList<DialogItem>)dataset).addFirst(dialogItem);
+        notifyDataSetChanged();
     }
 
     public void setItems(List<DialogItem> dialogItems) {
-        dataset = dialogItems;
+        dataset = new LinkedList<>(dialogItems);
         notifyDataSetChanged();
     }
 
@@ -71,10 +72,10 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
         public ViewHolder(View view, OnItemClickListener listener) {
             super(view);
             ButterKnife.bind(this, view);
-            setListener(listener);
+            setClickListener(listener);
         }
 
-        private void setListener(final OnItemClickListener listener) {
+        private void setClickListener(final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

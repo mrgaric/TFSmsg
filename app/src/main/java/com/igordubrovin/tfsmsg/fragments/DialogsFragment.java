@@ -26,6 +26,7 @@ import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
 import com.igordubrovin.tfsmsg.mvp.presenters.DialogsPresenter;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.parceler.Parcels;
 
@@ -59,25 +60,30 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
             throw new IllegalStateException("You should provide InjectFragment");
     }
 
-    @Override
-    public IDialogsPresenter createPresenter() {
-        return dialogsPresenter;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialogs, container, false);
         ButterKnife.bind(this, view);
-        initRecyclerView(view);
+        initRecyclerView();
         return view;
     }
 
-    private void initRecyclerView(final View view) {
+    @Override
+    public IDialogsPresenter createPresenter() {
+        return dialogsPresenter;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getPresenter().loadDialogsList();
+    }
+
+    private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter.setItemClickListener(itemClickListener);
-        getDialogItemsDb();
         recyclerView.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity().getApplicationContext(), layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -87,19 +93,14 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
         @Override
         public void onItemClick(View v, int position) {
             Intent intent = new Intent(getContext(), MessagesActivity.class);
-            intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(((DialogsAdapter)adapter).getItem(position)));
-            intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
+            intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(adapter.getItem(position)));
+            intent.putExtra(ProjectConstants.DIALOG_TITLE, adapter.getItem(position).getTitle());
             Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
             @SuppressWarnings("unchecked")
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
             ActivityCompat.startActivity(getContext(), intent, optionsCompat.toBundle());
         }
     };
-
-    public void getDialogItemsDb() {
-    //    ChatDbHelper helper = new ChatDbHelper(this);
-    //    helper.getDialogItemsDb();
-    }
 
     public void clickFAB(){
         int itemCount = adapter.getItemCount();
@@ -113,34 +114,20 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
     }
 
     private void addDialogItem(final DialogItem dialogItem) {
-     //   ChatDbHelper helper = new ChatDbHelper(this);
-      //  helper.saveItem(dialogItem);
+        getPresenter().addDialogItem(dialogItem);
+    }
+
+    public void getDialogItemsDb(){
+        getPresenter().loadDialogsList();
     }
 
     @Override
     public void showDialogs(List<DialogItem> dialogItems) {
-
-    }
-
-    /*@Override
-    public void itemAdded(BaseModel item) {
-        ((DialogsAdapter)adapter).addDialog((DialogItem) item);
+        adapter.setItems(dialogItems);
     }
 
     @Override
-    public void itemsReceived(List<? extends BaseModel> items) {
-        List<DialogItem> dialogItems = new ArrayList<>();
-        for (BaseModel item: items){
-            if (DialogItem.class.isInstance(item))
-                dialogItems.add((DialogItem) item);
-            else
-                throw new ArrayStoreException("Assignment to an array element of an incompatible type: " + item.toString());
-        }
-        ((DialogsAdapter)adapter).setItems(dialogItems);
+    public void showAddedItem(BaseModel item) {
+        adapter.addDialog((DialogItem) item);
     }
-
-    @Override
-    public void itemDeleted(BaseModel item) {
-        //TODO
-    }*/
 }

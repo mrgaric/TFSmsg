@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.igordubrovin.tfsmsg.db.ChatDatabase;
 import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.db.DialogItem_Table;
 import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.db.MessageItem_Table;
 import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
@@ -46,6 +47,7 @@ public class DBFlowHelper {
     public void getDialogItemsDb(final ChatDbItemsListener chatDbItemsListener) {
         SQLite.select()
                 .from(DialogItem.class)
+                .orderBy(DialogItem_Table.id, false)
                 .async()
                 .queryListResultCallback(new QueryTransaction.QueryResultListCallback<DialogItem>() {
                     @Override
@@ -56,19 +58,18 @@ public class DBFlowHelper {
                 .execute();
     }
 
-    public void saveItem(@NonNull final BaseModel item) {
+    public void saveItem(@NonNull final BaseModel item, final ChatDbItemsListener chatDbItemsListener) {
         FlowManager.getDatabase(ChatDatabase.class)
                 .beginTransactionAsync(new ITransaction() {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
                         item.save();
-
                     }
                 })
                 .success(new Transaction.Success() {
                     @Override
                     public void onSuccess(Transaction transaction) {
-
+                        chatDbItemsListener.itemAdded(item);
                     }
                 })
                 .build()
@@ -81,7 +82,6 @@ public class DBFlowHelper {
                     @Override
                     public void execute(DatabaseWrapper databaseWrapper) {
                         item.delete();
-
                     }
                 })
                 .success(new Transaction.Success() {

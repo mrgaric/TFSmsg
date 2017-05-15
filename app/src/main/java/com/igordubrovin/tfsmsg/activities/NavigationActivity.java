@@ -124,13 +124,10 @@ public class NavigationActivity extends AppCompatActivity
     private void initNavigationView(Bundle savedInstanceState){
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0);
         drawer.addDrawerListener(toggle);
-
         navigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
-
         navigationViewHeader = navigationView.getHeaderView(0);
         tvLogin = ButterKnife.findById(navigationViewHeader, R.id.tv_login_navigation_view_header);
         tvLogin.setText(userLogin);
-
         if (savedInstanceState == null) {
             navigationView.getMenu().getItem(MENU_DIALOGS).setChecked(true);
             navigationItemSelectedListener.onNavigationItemSelected(navigationView.getMenu().getItem(MENU_DIALOGS));

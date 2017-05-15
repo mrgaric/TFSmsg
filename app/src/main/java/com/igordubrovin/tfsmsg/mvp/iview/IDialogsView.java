@@ -2,6 +2,7 @@ package com.igordubrovin.tfsmsg.mvp.iview;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ import java.util.List;
 
 public interface IDialogsView extends MvpView {
     void showDialogs(List<DialogItem> dialogItems);
+    void showAddedItem(BaseModel item);
 }

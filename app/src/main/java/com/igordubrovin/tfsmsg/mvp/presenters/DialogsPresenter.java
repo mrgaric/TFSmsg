@@ -19,8 +19,9 @@ import javax.inject.Inject;
 public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
         implements IDialogsPresenter,
         ChatDbItemsListener {
-    List<DialogItem> dialogItems;
-    DBFlowHelper dbFlowHelper;
+    private List<DialogItem> dialogItems;
+    private BaseModel item;
+    private DBFlowHelper dbFlowHelper;
 
     @Inject
     public DialogsPresenter(DBFlowHelper dbFlowHelper){
@@ -34,6 +35,10 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
             view.showDialogs(dialogItems);
             dialogItems = null;
         }
+        if (item != null){
+            getView().showAddedItem(item);
+            item = null;
+        }
     }
 
     @Override
@@ -42,8 +47,16 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
     }
 
     @Override
-    public void itemAdded(BaseModel item) {
+    public void addDialogItem(BaseModel item) {
+        dbFlowHelper.saveItem(item, this);
+    }
 
+    @Override
+    public void itemAdded(BaseModel item) {
+        if (isViewAttached())
+            getView().showAddedItem(item);
+        else
+            this.item = item;
     }
 
     @Override
