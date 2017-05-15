@@ -2,10 +2,13 @@ package com.igordubrovin.tfsmsg.mvp.models;
 
 import com.igordubrovin.tfsmsg.utils.LoginManager;
 
+import javax.inject.Inject;
+
 public class LoginModel {
 
     private final LoginManager loginManager;
 
+    @Inject
     public LoginModel(LoginManager loginManager){
         this.loginManager = loginManager;
     }

@@ -3,14 +3,20 @@ package com.igordubrovin.tfsmsg.utils;
 import android.app.Application;
 
 import com.igordubrovin.tfsmsg.di.components.AppComponent;
+import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.di.components.DaggerAppComponent;
 import com.igordubrovin.tfsmsg.di.components.LoginScreenComponent;
-import com.igordubrovin.tfsmsg.di.components.SingleComponent;
+import com.igordubrovin.tfsmsg.di.components.MessageScreenComponent;
+import com.igordubrovin.tfsmsg.di.components.NavigationScreenComponent;
 import com.igordubrovin.tfsmsg.di.components.SplashScreenComponent;
+import com.igordubrovin.tfsmsg.di.components.UserComponent;
 import com.igordubrovin.tfsmsg.di.modules.AppModule;
+import com.igordubrovin.tfsmsg.di.modules.CommonModule;
 import com.igordubrovin.tfsmsg.di.modules.LoginModule;
-import com.igordubrovin.tfsmsg.di.modules.SingleModule;
+import com.igordubrovin.tfsmsg.di.modules.MessageModule;
+import com.igordubrovin.tfsmsg.di.modules.NavigationModule;
 import com.igordubrovin.tfsmsg.di.modules.SplashModule;
+import com.igordubrovin.tfsmsg.di.modules.UserModule;
 import com.igordubrovin.tfsmsg.di.modules.UtilsModule;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -23,7 +29,10 @@ public class App extends Application {
     private static AppComponent appComponent;
     private static LoginScreenComponent loginScreenComponent;
     private static SplashScreenComponent splashScreenComponent;
-    private static SingleComponent singleComponent;
+    private static NavigationScreenComponent navigationScreenComponent;
+    private static CommonComponent commonComponent;
+    private static UserComponent userComponent;
+    private static MessageScreenComponent messageScreenComponent;
 
     @Override
     public void onCreate() {
@@ -45,27 +54,37 @@ public class App extends Application {
         return loginScreenComponent;
     }
 
-    public static void clearLoginScreenComponent(){
-        loginScreenComponent = null;
-    }
-
     public static SplashScreenComponent plusSplashScreenComponent(){
         if (splashScreenComponent == null)
             splashScreenComponent = App.getAppComponent().addSplashScreenComponent(new SplashModule());
         return splashScreenComponent;
     }
 
-    public static void clearSplashScreenComponent(){
-        splashScreenComponent = null;
+    public static NavigationScreenComponent plusNavigationScreenComponent(){
+        if (navigationScreenComponent == null)
+            navigationScreenComponent = userComponent.addNavigationScreenComponent(new NavigationModule());
+        return navigationScreenComponent;
     }
 
-    public static SingleComponent plusSingleComponent(){
-        if (singleComponent == null)
-            singleComponent = App.getAppComponent().addSingleComponent(new SingleModule());
-        return singleComponent;
+    public static UserComponent plusUserComponent(){
+        if (userComponent == null)
+            userComponent = App.getAppComponent().addUserComponent(new UserModule());
+        return userComponent;
     }
 
-    public static void clearSingleComponent(){
-        singleComponent = null;
+    public static void clearUserComponent(){
+        userComponent = null;
+    }
+
+    public static CommonComponent plusCommonComponent(){
+        if (commonComponent == null)
+            commonComponent = App.getAppComponent().addSingleComponent(new CommonModule());
+        return commonComponent;
+    }
+
+    public static MessageScreenComponent plusMessageScreenComponent(){
+        if (messageScreenComponent == null)
+            messageScreenComponent = userComponent.addMessageScreenComponent(new MessageModule());
+        return messageScreenComponent;
     }
 }

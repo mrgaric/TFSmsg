@@ -9,7 +9,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.di.components.SingleComponent;
+import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.ImageAnimation;
 
@@ -22,7 +22,7 @@ public class ImageAdapter extends BaseAdapter {
     private final List<ImageAnimation> imageAnimations = new ArrayList<>();
     private int height;
     private int width;
-    private SingleComponent singleComponent;
+    private CommonComponent commonComponent;
 
     private Integer[] imagesArray = {
             R.drawable.avd_vector_anim_cancel, R.drawable.avd_vector_anim_emoji,
@@ -34,7 +34,7 @@ public class ImageAdapter extends BaseAdapter {
         context = c;
         width = widthItem;
         height = heightItem;
-        singleComponent = App.plusSingleComponent();
+        commonComponent = App.plusCommonComponent();
     }
 
     public int getCount() {
@@ -86,7 +86,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     private ImageAnimation createImageAnimation(ImageView imageView){
-        ImageAnimation imageAnimation = singleComponent.getImageAnimation();
+        ImageAnimation imageAnimation = commonComponent.getImageAnimation();
         imageAnimation.setImageView(imageView);
         imageAnimation.startAnimation();
         return imageAnimation;

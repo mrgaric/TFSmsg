@@ -6,20 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
-import com.igordubrovin.tfsmsg.R;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHolder> {
 
     private List<DialogItem> dataset;
     private OnItemClickListener clickListener;
-
-    public DialogsAdapter(OnItemClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
 
     @Override
     public DialogsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -56,17 +55,22 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    public void setItemClickListener(OnItemClickListener onItemClickListener){
+        this.clickListener = onItemClickListener;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvTitle;
-        public TextView tvDesc;
-        public TextView tvLastMessage;
+        @BindView(R.id.tv_dialog_title)
+        TextView tvTitle;
+        @BindView(R.id.tv_dialog_desc)
+        TextView tvDesc;
+        @BindView(R.id.tv_dialog_last_message)
+        TextView tvLastMessage;
 
         public ViewHolder(View view, OnItemClickListener listener) {
             super(view);
-            tvTitle = (TextView) view.findViewById(R.id.tv_dialog_title);
-            tvDesc = (TextView) view.findViewById(R.id.tv_dialog_desc);
-            tvLastMessage = (TextView) view.findViewById(R.id.tv_dialog_last_message);
+            ButterKnife.bind(this, view);
             setListener(listener);
         }
 

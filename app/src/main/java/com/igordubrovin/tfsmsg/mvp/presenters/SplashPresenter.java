@@ -7,15 +7,14 @@ import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ISplashView;
 import com.igordubrovin.tfsmsg.utils.LoginManager;
 
-/**
- * Created by Ксения on 14.05.2017.
- */
+import javax.inject.Inject;
 
 public class SplashPresenter extends MvpBasePresenter<ISplashView>
         implements ISplashPresenter {
 
     private LoginManager loginManager;
 
+    @Inject
     public SplashPresenter(LoginManager loginManager){
         this.loginManager = loginManager;
     }

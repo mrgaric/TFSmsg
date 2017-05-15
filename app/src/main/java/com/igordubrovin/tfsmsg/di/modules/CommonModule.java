@@ -6,10 +6,10 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Created by Ксения on 14.05.2017.
+ * Created by Игорь on 15.05.2017.
  */
 @Module
-public class SingleModule {
+public class CommonModule {
 
     @Provides
     ImageAnimation provideImageAnimation(){

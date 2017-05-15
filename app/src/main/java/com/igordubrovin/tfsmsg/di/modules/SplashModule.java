@@ -5,38 +5,26 @@ import android.graphics.Point;
 import android.view.WindowManager;
 
 import com.igordubrovin.tfsmsg.adapters.ImageAdapter;
-import com.igordubrovin.tfsmsg.di.dagger2_annotation.ChatScreenScope;
-import com.igordubrovin.tfsmsg.mvp.presenters.SplashPresenter;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
+import com.igordubrovin.tfsmsg.di.dagger2_annotation.ActivityScope;
 
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by Ксения on 14.05.2017.
- */
-
 @Module
 public class SplashModule {
 
-    @ChatScreenScope
+    @ActivityScope
     @Provides
     Point providePoint(){
         return new Point();
     }
 
-    @ChatScreenScope
+    @ActivityScope
     @Provides
     ImageAdapter provideImageAdapter(WindowManager windowManager, Point point, Context context){
         windowManager.getDefaultDisplay().getSize(point);
         int width = point.x/2;
         int height = point.y/3;
         return new ImageAdapter(context, width, height);
-    }
-
-    @ChatScreenScope
-    @Provides
-    SplashPresenter provideSplashPresenter(LoginManager loginManager){
-        return new SplashPresenter(loginManager);
     }
 }

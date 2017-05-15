@@ -1,11 +1,11 @@
 package com.igordubrovin.tfsmsg.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,64 +14,69 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
-import com.igordubrovin.tfsmsg.db.ChatDbHelper;
 import com.igordubrovin.tfsmsg.db.DialogItem;
-import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
+import com.igordubrovin.tfsmsg.interfaces.InjectFragment;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
+import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
+import com.igordubrovin.tfsmsg.mvp.presenters.DialogsPresenter;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Игорь on 26.03.2017.
  */
 
-public class DialogsFragment extends Fragment
-        implements ChatDbItemsListener{
+public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter>
+        implements IDialogsView{
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private String login;
+    @BindView(R.id.recycler_view_dialogs)
+    RecyclerView recyclerView;
+    @Inject
+    DialogsAdapter adapter;
+    @Inject
+    DialogsPresenter dialogsPresenter;
 
-    public static DialogsFragment newInstance(String login) {
-
-        Bundle args = new Bundle();
-        args.putString(ProjectConstants.USER_LOGIN, login);
-
-        DialogsFragment fragment = new DialogsFragment();
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof InjectFragment)
+            ((InjectFragment)context).injectDialogsFragment(this);
+        else
+            throw new IllegalStateException("You should provide InjectFragment");
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        login = getArguments().getString(ProjectConstants.USER_LOGIN);
-        setRetainInstance(true);
+    public IDialogsPresenter createPresenter() {
+        return dialogsPresenter;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialogs, container, false);
+        ButterKnife.bind(this, view);
         initRecyclerView(view);
         return view;
     }
 
     private void initRecyclerView(final View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_dialogs);
-        recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DialogsAdapter(itemClickListener);
+        adapter.setItemClickListener(itemClickListener);
         getDialogItemsDb();
         recyclerView.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity().getApplicationContext(), layoutManager.getOrientation());
@@ -84,7 +89,6 @@ public class DialogsFragment extends Fragment
             Intent intent = new Intent(getContext(), MessagesActivity.class);
             intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(((DialogsAdapter)adapter).getItem(position)));
             intent.putExtra(ProjectConstants.DIALOG_TITLE, ((DialogsAdapter)adapter).getItem(position).getTitle());
-            intent.putExtra(ProjectConstants.USER_LOGIN, login);
             Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
             @SuppressWarnings("unchecked")
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
@@ -93,8 +97,8 @@ public class DialogsFragment extends Fragment
     };
 
     public void getDialogItemsDb() {
-        ChatDbHelper helper = new ChatDbHelper(this);
-        helper.getDialogItemsDb();
+    //    ChatDbHelper helper = new ChatDbHelper(this);
+    //    helper.getDialogItemsDb();
     }
 
     public void clickFAB(){
@@ -109,11 +113,16 @@ public class DialogsFragment extends Fragment
     }
 
     private void addDialogItem(final DialogItem dialogItem) {
-        ChatDbHelper helper = new ChatDbHelper(this);
-        helper.saveItem(dialogItem);
+     //   ChatDbHelper helper = new ChatDbHelper(this);
+      //  helper.saveItem(dialogItem);
     }
 
     @Override
+    public void showDialogs(List<DialogItem> dialogItems) {
+
+    }
+
+    /*@Override
     public void itemAdded(BaseModel item) {
         ((DialogsAdapter)adapter).addDialog((DialogItem) item);
     }
@@ -133,5 +142,5 @@ public class DialogsFragment extends Fragment
     @Override
     public void itemDeleted(BaseModel item) {
         //TODO
-    }
+    }*/
 }

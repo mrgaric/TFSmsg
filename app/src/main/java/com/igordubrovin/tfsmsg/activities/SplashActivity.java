@@ -13,6 +13,7 @@ import com.igordubrovin.tfsmsg.adapters.ImageAdapter;
 import com.igordubrovin.tfsmsg.di.components.SplashScreenComponent;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ISplashView;
+import com.igordubrovin.tfsmsg.mvp.presenters.SplashPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.LoginManager;
 
@@ -24,22 +25,23 @@ import butterknife.ButterKnife;
 public class SplashActivity extends MvpActivity<ISplashView, ISplashPresenter>
         implements ISplashView{
 
-    private SplashScreenComponent splashScreenComponent;
-
-    @Inject LoginManager loginManager;
-    private ImageAdapter imageAdapter;
-
+    @Inject
+    LoginManager loginManager;
+    @Inject
+    ImageAdapter imageAdapter;
+    @Inject
+    SplashPresenter splashPresenter;
+    private SplashScreenComponent splashScreenComponent = App.plusSplashScreenComponent();
     @BindView(R.id.grid_view_splash) GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        splashScreenComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        App.getAppComponent().inject(this);
         ButterKnife.bind(this);
-        imageAdapter = splashScreenComponent.getImageAdapter();
         gridview.setAdapter(imageAdapter);
         getPresenter().checkLoginState();
     }
@@ -48,15 +50,12 @@ public class SplashActivity extends MvpActivity<ISplashView, ISplashPresenter>
     protected void onDestroy() {
         super.onDestroy();
         imageAdapter.stopAnimation();
-        App.clearSplashScreenComponent();
-        App.clearSingleComponent();
     }
 
     @NonNull
     @Override
     public ISplashPresenter createPresenter() {
-        splashScreenComponent = App.plusSplashScreenComponent();
-        return splashScreenComponent.getSplashPresenter();
+        return splashPresenter;
     }
 
     @Override
@@ -67,6 +66,7 @@ public class SplashActivity extends MvpActivity<ISplashView, ISplashPresenter>
 
     @Override
     public void showNavigationActivity() {
+        App.plusUserComponent();
         Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
         startActivity(intent);
     }

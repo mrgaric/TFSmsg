@@ -7,12 +7,15 @@ import com.igordubrovin.tfsmsg.mvp.ipresenter.ILoginPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ILoginView;
 import com.igordubrovin.tfsmsg.mvp.models.LoginModel;
 
+import javax.inject.Inject;
+
 public class LoginPresenter extends MvpBasePresenter<ILoginView>
         implements ILoginPresenter {
 
     private Boolean success;
     private final LoginModel loginModel;
 
+    @Inject
     public LoginPresenter(LoginModel loginModel){
         this.loginModel = loginModel;
     }
@@ -20,8 +23,10 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView>
     @Override
     public void attachView(ILoginView view) {
         super.attachView(view);
-        if (success != null)
+        if (success != null) {
             returnResultView(success);
+            success = null;
+        }
     }
 
     @Override

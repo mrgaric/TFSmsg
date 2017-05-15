@@ -18,12 +18,15 @@ import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
 import com.igordubrovin.tfsmsg.db.ChatDbHelper;
 import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.db.MessageItem;
+import com.igordubrovin.tfsmsg.di.components.MessageScreenComponent;
 import com.igordubrovin.tfsmsg.fragments.ChatDbFragment;
 import com.igordubrovin.tfsmsg.fragments.SendMessageTaskFragment;
 import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
 import com.igordubrovin.tfsmsg.interfaces.MessageSentListener;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
+import com.igordubrovin.tfsmsg.utils.App;
+import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
@@ -33,6 +36,8 @@ import org.parceler.Parcels;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class MessagesActivity extends AppCompatActivity
         implements MessageSentListener,
@@ -49,12 +54,16 @@ public class MessagesActivity extends AppCompatActivity
     private ChatDbFragment chatDbFragment;
     private String login;
 
+    @Inject
+    DBFlowHelper dbFlowHelper;
 
+    private MessageScreenComponent messageScreenComponent = App.plusMessageScreenComponent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        messageScreenComponent.inject(this);
         String title;
         Parcelable parcelable;
         messageEditor = (MessageEditor) findViewById(R.id.message_editor);

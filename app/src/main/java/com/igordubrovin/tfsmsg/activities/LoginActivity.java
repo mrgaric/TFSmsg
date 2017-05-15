@@ -15,6 +15,7 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.di.components.LoginScreenComponent;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ILoginPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ILoginView;
+import com.igordubrovin.tfsmsg.mvp.presenters.LoginPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.ProgressButton;
@@ -28,34 +29,31 @@ import butterknife.OnClick;
 public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
         implements ILoginView{
 
-    @Inject Context context;
+    @Inject
+    Context context;
+    @Inject
+    LoginPresenter loginPresenter;
+    @BindView(R.id.edit_text_login)
+    EditText login;
+    @BindView(R.id.edit_text_password)
+    EditText password;
+    @BindView(R.id.btn_enter)
+    ProgressButton button;
 
-    @BindView(R.id.edit_text_login) EditText login;
-    @BindView(R.id.edit_text_password) EditText password;
-    @BindView(R.id.btn_enter) ProgressButton button;
-
-    private LoginScreenComponent loginScreenComponent;
+    private LoginScreenComponent loginScreenComponent = App.plusLoginScreenComponent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loginScreenComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        App.getAppComponent().inject(this);
         ButterKnife.bind(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        App.clearLoginScreenComponent();
     }
 
     @NonNull
     @Override
     public ILoginPresenter createPresenter() {
-        loginScreenComponent = App.plusLoginScreenComponent();
-        return loginScreenComponent.getLoginPresenter();
+        return loginPresenter;
     }
 
     @Override
@@ -98,6 +96,7 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
     }
 
     private void startNextScreen() {
+        App.plusUserComponent();
         Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
     }
