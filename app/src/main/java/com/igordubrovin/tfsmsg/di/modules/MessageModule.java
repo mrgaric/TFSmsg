@@ -14,7 +14,7 @@ public class MessageModule {
 
     @ActivityScope
     @Provides
-    MessageAdapter provideDialogsAdapter(String login){
+    MessageAdapter provideMessageAdapter(String login){
         return new MessageAdapter(login);
     }
 }

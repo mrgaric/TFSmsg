@@ -3,12 +3,12 @@ package com.igordubrovin.tfsmsg.widgets;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
@@ -17,14 +17,13 @@ import com.igordubrovin.tfsmsg.R;
  * Created by Игорь on 03.04.2017.
  */
 
-public class MessageView extends ConstraintLayout {
+public class MessageView extends RelativeLayout {
 
     private TextView tvMessage;
     private TextView tvSender;
     private TextView tvTime;
     private TextView tvDate;
     private LinearLayout containerBackground;
-    private ConstraintLayout constraintLayout;
 
     private int type;
 
@@ -55,7 +54,6 @@ public class MessageView extends ConstraintLayout {
         tvTime = (TextView) findViewById(R.id.tv_time_message);
         tvDate = (TextView) findViewById(R.id.tv_date_message);
         containerBackground = (LinearLayout) findViewById(R.id.container_background_item_message);
-        constraintLayout = (ConstraintLayout) findViewById(R.id.item_message_parent);
 
         final TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.MessageView);
         if (typedArray != null) {
@@ -112,16 +110,15 @@ public class MessageView extends ConstraintLayout {
 
     public void setType (int type){
         this.type = type;
-        ConstraintLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.topToBottom = tvDate.getId();
+        RelativeLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (type == TYPE_IN){
             tvSender.setVisibility(View.VISIBLE);
             containerBackground.setBackgroundResource(R.drawable.in_message);
-            layoutParams.leftToLeft = LayoutParams.PARENT_ID;
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         } else if (type == TYPE_OUT){
             tvSender.setVisibility(View.GONE);
             containerBackground.setBackgroundResource(R.drawable.out_message);
-            layoutParams.rightToRight = LayoutParams.PARENT_ID;
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }
         else throw new IllegalArgumentException("Unknown type" + type);
         containerBackground.setLayoutParams(layoutParams);
