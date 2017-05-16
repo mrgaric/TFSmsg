@@ -19,11 +19,13 @@ import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
 import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.interfaces.InjectFragment;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
 import com.igordubrovin.tfsmsg.mvp.presenters.DialogsPresenter;
+import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -50,6 +52,7 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
     DialogsAdapter adapter;
     @Inject
     DialogsPresenter dialogsPresenter;
+    private CommonComponent commonComponent  = App.plusCommonComponent();
 
     @Override
     public void onAttach(Context context) {
@@ -104,8 +107,8 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
 
     public void clickFAB(){
         int itemCount = adapter.getItemCount();
-        DateHelper dateHelper = new DateHelper();
-        DialogItem dialogItem = new DialogItem();
+        DateHelper dateHelper = commonComponent.getDateHelper();
+        DialogItem dialogItem = commonComponent.getDialogItem();
         dialogItem.setTitle("Title is " + itemCount);
         dialogItem.setDesc("Description is " + itemCount);
         dialogItem.setTime(dateHelper.getCurrentTime());

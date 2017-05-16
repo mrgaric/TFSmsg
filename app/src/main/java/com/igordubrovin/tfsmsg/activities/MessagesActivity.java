@@ -2,10 +2,9 @@ package com.igordubrovin.tfsmsg.activities;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,73 +12,71 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.adapters.MessageAdapter;
-import com.igordubrovin.tfsmsg.db.ChatDbHelper;
 import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.db.MessageItem;
+import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.di.components.MessageScreenComponent;
-import com.igordubrovin.tfsmsg.fragments.ChatDbFragment;
-import com.igordubrovin.tfsmsg.fragments.SendMessageTaskFragment;
-import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
-import com.igordubrovin.tfsmsg.interfaces.MessageSentListener;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
+import com.igordubrovin.tfsmsg.mvp.ipresenter.IMessagePresenter;
+import com.igordubrovin.tfsmsg.mvp.iview.IMessageView;
+import com.igordubrovin.tfsmsg.mvp.presenters.MessagePresenter;
 import com.igordubrovin.tfsmsg.utils.App;
-import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.igordubrovin.tfsmsg.widgets.MessageEditor;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.parceler.Parcels;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MessagesActivity extends AppCompatActivity
-        implements MessageSentListener,
-        ChatDbItemsListener,
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MessagesActivity extends MvpActivity<IMessageView, IMessagePresenter>
+        implements IMessageView,
         LoaderManager.LoaderCallbacks<MessageItem>{
 
-    private MessageEditor messageEditor;
-    private Toolbar toolbar;
-    private TextView tvTitle;
-    private RecyclerView recyclerViewMessage;
-    private RecyclerView.Adapter adapter;
-    private SendMessageTaskFragment sendMessageTaskFragment;
-    private DialogItem dialogItem;
-    private ChatDbFragment chatDbFragment;
-    private String login;
-
+    @BindView(R.id.message_editor)
+    MessageEditor messageEditor;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.tv_dialog_title_toolbar)
+    TextView tvTitle;
+    @BindView(R.id.recycler_view_message)
+    RecyclerView recyclerViewMessage;
     @Inject
-    DBFlowHelper dbFlowHelper;
-
+    MessagePresenter messagePresenter;
+    @Inject
+    MessageAdapter adapter;
+    @Inject
+    String login;
+    private DialogItem dialogItem;
+    private CommonComponent commonComponent = App.plusCommonComponent();
     private MessageScreenComponent messageScreenComponent = App.plusMessageScreenComponent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        messageScreenComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-        messageScreenComponent.inject(this);
+        ButterKnife.bind(this);
         String title;
         Parcelable parcelable;
-        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
         if (savedInstanceState == null) {
             parcelable = getIntent().getParcelableExtra(ProjectConstants.DIALOG_ITEM_INTENT);
             title = getIntent().getStringExtra(ProjectConstants.DIALOG_TITLE);
-            login = getIntent().getStringExtra(ProjectConstants.USER_LOGIN);
             getSupportLoaderManager().initLoader(ProjectConstants.ID_MESSAGE_LOADER, null, this);
         } else {
             parcelable = savedInstanceState.getParcelable(ProjectConstants.DIALOG_ITEM_INTENT);
             title = savedInstanceState.getString(ProjectConstants.DIALOG_TITLE, "Title");
-            login = savedInstanceState.getString(ProjectConstants.USER_LOGIN, "");
         }
         dialogItem = Parcels.unwrap(parcelable);
-        createSendMessageTaskFragment();
-        createChatDbFragment();
         initToolbar(title);
         initRecyclerView();
         initMessageEditor();
@@ -94,30 +91,13 @@ public class MessagesActivity extends AppCompatActivity
         outState.putString(ProjectConstants.USER_LOGIN, login);
     }
 
-    private void createSendMessageTaskFragment(){
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        sendMessageTaskFragment = (SendMessageTaskFragment) supportFragmentManager.findFragmentByTag(SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG);
-        if (sendMessageTaskFragment == null) {
-            sendMessageTaskFragment = new SendMessageTaskFragment();
-            supportFragmentManager.beginTransaction()
-                    .add(sendMessageTaskFragment, SendMessageTaskFragment.SEND_MESSAGE_TASK_FRAGMENT_TAG)
-                    .commit();
-        }
-    }
-
-    private void createChatDbFragment(){
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        chatDbFragment = (ChatDbFragment) supportFragmentManager.findFragmentByTag(ChatDbFragment.CHAT_DB_FRAGMENT_TAG);
-        if (chatDbFragment == null) {
-            chatDbFragment = new ChatDbFragment();
-            supportFragmentManager.beginTransaction()
-                    .add(chatDbFragment, ChatDbFragment.CHAT_DB_FRAGMENT_TAG)
-                    .commit();
-        }
+    @NonNull
+    @Override
+    public IMessagePresenter createPresenter() {
+        return messagePresenter;
     }
 
     private void initToolbar(String tittle){
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -130,18 +110,20 @@ public class MessagesActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
-        tvTitle = (TextView) findViewById(R.id.tv_dialog_title_toolbar);
         tvTitle.setText(tittle);
     }
 
     private void initRecyclerView(){
-        recyclerViewMessage = (RecyclerView) findViewById(R.id.recycler_view_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter = new MessageAdapter(clickRecyclerMessageItem, login);
+        adapter.setOnItemClickListener(clickRecyclerMessageItem);
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
         getMessageItems();
+    }
+
+    private void initMessageEditor(){
+        messageEditor.setOnClickListenerSend(clickSend);
     }
 
     private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
@@ -152,24 +134,17 @@ public class MessagesActivity extends AppCompatActivity
     };
 
     private void getMessageItems(){
-        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
-        helper.getMessageItems(dialogItem);
+        getPresenter().getMessageItems(dialogItem);
     }
 
-    private void initMessageEditor(){
-        messageEditor = (MessageEditor) findViewById(R.id.message_editor);
-        messageEditor.setOnClickListenerSend(clickSend);
-    }
-
-    private View.OnClickListener clickSend = new View.OnClickListener() {
+    View.OnClickListener clickSend = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String messageText = messageEditor.getText();
-            MessageItem messageItem = new MessageItem();
-            DateHelper dateHelper = new DateHelper();
+            MessageItem messageItem = commonComponent.getMessageItem();
+            DateHelper dateHelper = commonComponent.getDateHelper();
             messageItem.setTime(dateHelper.getCurrentTime());
             messageItem.setDate(dateHelper.getCurrentDate());
-            messageItem.setMessageText(messageText);
+            messageItem.setMessageText(messageEditor.getText());
             messageItem.setIdAuthor(login);
             addMessageItem(messageItem);
         }
@@ -177,52 +152,31 @@ public class MessagesActivity extends AppCompatActivity
 
     private void addMessageItem(MessageItem messageItem) {
         messageItem.setDialogItem(dialogItem);
-        ChatDbHelper helper = new ChatDbHelper(chatDbFragment);
-        helper.saveItem(messageItem);
-    }
-
-    @Override
-    public void itemAdded(BaseModel item) {
-        MessageItem messageItem = (MessageItem) item;
-        if (((MessageAdapter) adapter).getData() != null)
-            ((MessageAdapter) adapter).addMessage(messageItem);
-        if (messageItem.getIdAuthor().equals(login)){
-            recyclerViewMessage.scrollToPosition(0);
-            sendMessageTaskFragment.startSend(messageItem);
-        }
-        updateLastMessageDialogItem(messageItem.getIdAuthor(), messageItem.getMessageText());
+        getPresenter().insertMessageItem(messageItem);
     }
 
     private void updateLastMessageDialogItem(String sender, String lastMessage){
         dialogItem.setLastMessage(sender.concat(": ").concat(lastMessage));
-        ChatDbHelper chatDbHelper = new ChatDbHelper();
-        chatDbHelper.saveItem(dialogItem);
+        getPresenter().updateDialogItem(dialogItem);
     }
 
     @Override
-    public void itemsReceived(List<? extends BaseModel> items) {
-        List<MessageItem> messageItems = new LinkedList<>();
-        for (BaseModel item: items){
-            if (MessageItem.class.isInstance(item))
-                messageItems.add((MessageItem) item);
-            else
-                throw new ArrayStoreException("Assignment to an array element of an incompatible type: " + item.toString());
-        }
-        ((MessageAdapter)adapter).setItems(messageItems);
+    public void showMessages(List<MessageItem> messageItems) {
+        adapter.setItems(messageItems);
     }
 
     @Override
-    public void itemDeleted(BaseModel item) {
+    public void showAddedMessageItem(MessageItem item) {
+        adapter.addMessage(item);
+        getPresenter().sendMessageItem(item);
+        if (item.getIdAuthor().equals(login))
+            recyclerViewMessage.scrollToPosition(0);
+        updateLastMessageDialogItem(item.getIdAuthor(), item.getMessageText());
+    }
+
+    @Override
+    public void showErrorSendMessageItem() {
         //TODO
-    }
-
-    @Override
-    public void messageSent(Boolean success) {
-        if (success){
-            Toast.makeText(this, "messageSent", Toast.LENGTH_SHORT).show();
-        } else {
-            //TODO
-        }
     }
 
     @Override

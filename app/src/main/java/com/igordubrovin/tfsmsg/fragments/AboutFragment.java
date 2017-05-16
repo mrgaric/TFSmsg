@@ -1,6 +1,5 @@
 package com.igordubrovin.tfsmsg.fragments;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,11 +24,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.di.components.CommonComponent;
+import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.ImageAnimation;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Игорь on 26.03.2017.
@@ -37,39 +42,48 @@ import java.util.List;
 
 public class AboutFragment extends Fragment {
 
-    private ConstraintLayout clRootTv;
-    private TextView tvAppNameSummary;
-    private TextView tvAppNameTitle;
-    private TextView tvCourseNameSummary;
-    private TextView tvCoursesTitle;
-    private TextView tvDevNameSummary;
-    private TextView tvDeveloperTitle;
-    private TextView tvVersionSummary;
-    private TextView tvVersionTitle;
+    @BindView(R.id.cl_root_tv)
+    ConstraintLayout clRootTv;
+    @BindView(R.id.tv_app_name_summary)
+    TextView tvAppNameSummary;
+    @BindView(R.id.tv_app_name_title)
+    TextView tvAppNameTitle;
+    @BindView(R.id.tv_course_name_summary)
+    TextView tvCourseNameSummary;
+    @BindView(R.id.tv_courses_title)
+    TextView tvCoursesTitle;
+    @BindView(R.id.tv_dev_name_summary)
+    TextView tvDevNameSummary;
+    @BindView(R.id.tv_developer_title)
+    TextView tvDeveloperTitle;
+    @BindView(R.id.tv_version_summary)
+    TextView tvVersionSummary;
+    @BindView(R.id.tv_version_title)
+    TextView tvVersionTitle;
+    @BindView(R.id.cl_root_iv)
+    GridLayout clRootIv;
+    @BindView(R.id.iv_keyboard)
+    ImageView ivKeyboard;
+    @BindView(R.id.iv_emoji)
+    ImageView ivEmoji;
+    @BindView(R.id.iv_chat)
+    ImageView ivChat;
+    @BindView(R.id.iv_mess)
+    ImageView ivMess;
+    @BindView(R.id.iv_send)
+    ImageView ivSend;
+    @BindView(R.id.iv_cancel)
+    ImageView ivCancel;
     private boolean visibilityTv;
-    private GridLayout clRootIv;
-    private ImageView ivKeyboard;
-    private ImageView ivEmoji;
-    private ImageView ivChat;
-    private ImageView ivMess;
-    private ImageView ivSend;
-    private ImageView ivCancel;
     private List<ImageView> imageViews;
     private boolean visibilityIv;
     private int idVisibleIv;
     private ImageAnimation imageAnimation;
-    private int orientationScreen;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        orientationScreen = getActivity().getResources().getConfiguration().orientation;
-    }
-
+    private CommonComponent commonComponent = App.plusCommonComponent();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageAnimation = new ImageAnimation();
+        imageAnimation = commonComponent.getImageAnimation();
         imageViews = new LinkedList<>();
         if (savedInstanceState != null){
             visibilityTv = savedInstanceState.getBoolean(ProjectConstants.TV_STATE_VISIBLE);
@@ -85,8 +99,9 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
-        initTextView(view);
-        initImageView(view);
+        ButterKnife.bind(this,view);
+        initTextView();
+        initImageView();
         return view;
     }
 
@@ -105,68 +120,55 @@ public class AboutFragment extends Fragment {
             imageAnimation.stopAnimation();
     }
 
-    private void initTextView(View view){
-        clRootTv = (ConstraintLayout) view.findViewById(R.id.cl_root_tv);
-        clRootTv.setOnClickListener(clickRootTv);
-        tvAppNameSummary = (TextView) view.findViewById(R.id.tv_app_name_summary);
-        tvAppNameTitle = (TextView) view.findViewById(R.id.tv_app_name_title);
-        tvCourseNameSummary = (TextView) view.findViewById(R.id.tv_course_name_summary);
-        tvCoursesTitle = (TextView) view.findViewById(R.id.tv_courses_title);
-        tvDevNameSummary = (TextView) view.findViewById(R.id.tv_dev_name_summary);
-        tvDeveloperTitle = (TextView) view.findViewById(R.id.tv_developer_title);
-        tvVersionSummary = (TextView) view.findViewById(R.id.tv_version_summary);
-        tvVersionTitle = (TextView) view.findViewById(R.id.tv_version_title);
+    private void initTextView(){
         if (!visibilityTv){
             setVisibilityTv(View.GONE);
         }
     }
 
-    private View.OnClickListener clickRootTv = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    @OnClick(R.id.cl_root_tv)
+    public void onClick(View v) {
+        if (!visibilityTv) {
+            visibilityTv = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                TransitionSet transitionSet = new TransitionSet();
+                Transition slideRight = new Slide(Gravity.RIGHT)
+                        .addTarget(tvAppNameSummary)
+                        .addTarget(tvCourseNameSummary)
+                        .addTarget(tvDevNameSummary)
+                        .addTarget(tvVersionSummary)
+                        .setInterpolator(new BounceInterpolator())
+                        .setDuration(500);
 
-            if (!visibilityTv) {
-                visibilityTv = true;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    TransitionSet transitionSet = new TransitionSet();
-                    Transition slideRight = new Slide(Gravity.RIGHT)
-                            .addTarget(tvAppNameSummary)
-                            .addTarget(tvCourseNameSummary)
-                            .addTarget(tvDevNameSummary)
-                            .addTarget(tvVersionSummary)
-                            .setInterpolator(new BounceInterpolator())
-                            .setDuration(500);
+                Transition slideLeft = new Slide(Gravity.LEFT)
+                        .addTarget(tvAppNameTitle)
+                        .addTarget(tvCoursesTitle)
+                        .addTarget(tvDeveloperTitle)
+                        .addTarget(tvVersionTitle)
+                        .setInterpolator(new BounceInterpolator())
+                        .setDuration(500);
 
-                    Transition slideLeft = new Slide(Gravity.LEFT)
-                            .addTarget(tvAppNameTitle)
-                            .addTarget(tvCoursesTitle)
-                            .addTarget(tvDeveloperTitle)
-                            .addTarget(tvVersionTitle)
-                            .setInterpolator(new BounceInterpolator())
-                            .setDuration(500);
+                transitionSet.addTransition(slideLeft)
+                        .addTransition(slideRight);
 
-                    transitionSet.addTransition(slideLeft)
-                            .addTransition(slideRight);
-
-                    TransitionManager.beginDelayedTransition(clRootTv, transitionSet);
-                } else {
-                    android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
-                }
-                setVisibilityTv(View.VISIBLE);
+                TransitionManager.beginDelayedTransition(clRootTv, transitionSet);
             } else {
-                visibilityTv = false;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    android.transition.Transition explode = new Explode()
-                            .setInterpolator(new LinearInterpolator())
-                            .setDuration(500);
-                    android.transition.TransitionManager.beginDelayedTransition(clRootTv, explode);
-                } else {
-                    android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
-                }
-                setVisibilityTv(View.GONE);
+                android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
             }
+            setVisibilityTv(View.VISIBLE);
+        } else {
+            visibilityTv = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                android.transition.Transition explode = new Explode()
+                        .setInterpolator(new LinearInterpolator())
+                        .setDuration(500);
+                android.transition.TransitionManager.beginDelayedTransition(clRootTv, explode);
+            } else {
+                android.support.transition.TransitionManager.beginDelayedTransition(clRootTv, new Fade());
+            }
+            setVisibilityTv(View.GONE);
         }
-    };
+    }
 
     private void setVisibilityTv(int visibility){
         tvAppNameTitle.setVisibility(visibility);
@@ -179,27 +181,13 @@ public class AboutFragment extends Fragment {
         tvVersionSummary.setVisibility(visibility);
     }
 
-    private void initImageView(View view){
-        clRootIv = (GridLayout) view.findViewById(R.id.cl_root_iv);
-        ivKeyboard = (ImageView) view.findViewById(R.id.iv_keyboard);
+    private void initImageView(){
         imageViews.add(ivKeyboard);
-        ivEmoji = (ImageView) view.findViewById(R.id.iv_emoji);
         imageViews.add(ivEmoji);
-        ivChat = (ImageView) view.findViewById(R.id.iv_chat);
         imageViews.add(ivChat);
-        ivMess = (ImageView) view.findViewById(R.id.iv_mess);
         imageViews.add(ivMess);
-        ivSend = (ImageView) view.findViewById(R.id.iv_send);
         imageViews.add(ivSend);
-        ivCancel = (ImageView) view.findViewById(R.id.iv_cancel);
         imageViews.add(ivCancel);
-
-        ivKeyboard.setOnClickListener(clickImage);
-        ivEmoji.setOnClickListener(clickImage);
-        ivChat.setOnClickListener(clickImage);
-        ivMess.setOnClickListener(clickImage);
-        ivSend.setOnClickListener(clickImage);
-        ivCancel.setOnClickListener(clickImage);
 
         if (!visibilityIv){
             setImageVisibility(idVisibleIv, View.GONE);
@@ -239,36 +227,35 @@ public class AboutFragment extends Fragment {
         }
     }
 
-    private View.OnClickListener clickImage = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            idVisibleIv = v.getId();
-            android.support.transition.TransitionSet transitionSet = new android.support.transition.TransitionSet();
-            android.support.transition.Transition changeBounds = new ChangeBounds();
-            Fade fade = new Fade();
-            fade.excludeTarget(v, true);
-            transitionSet.addTransition(fade)
-                    .addTransition(changeBounds)
-                    .setOrdering(android.support.transition.TransitionSet.ORDERING_TOGETHER)
-                    .setDuration(1000);
-            android.support.transition.TransitionManager.beginDelayedTransition(clRootIv, transitionSet);
+    @OnClick({R.id.iv_keyboard, R.id.iv_emoji, R.id.iv_chat, R.id.iv_mess, R.id.iv_send, R.id.iv_cancel})
+    public void onClickImage(final View v) {
+        idVisibleIv = v.getId();
+        android.support.transition.TransitionSet transitionSet = new android.support.transition.TransitionSet();
+        android.support.transition.Transition changeBounds = new ChangeBounds();
+        Fade fade = new Fade();
+        fade.excludeTarget(v, true);
+        transitionSet.addTransition(fade)
+                .addTransition(changeBounds)
+                .setOrdering(android.support.transition.TransitionSet.ORDERING_TOGETHER)
+                .setDuration(1000);
+        android.support.transition.TransitionManager.beginDelayedTransition(clRootIv, transitionSet);
 
-            if (visibilityIv) {
-                visibilityIv = false;
-                setClickableImage(idVisibleIv, false);
-                imageAnimation.setImageView((ImageView) v);
-                setImageVisibility(idVisibleIv, View.GONE);
-                v.setLayoutParams(getImageViewParentParam(v));
-                imageAnimation.startAnimation();
-            } else {
-                visibilityIv = true;
-                setClickableImage(idVisibleIv, true);
-                setImageVisibility(idVisibleIv, View.VISIBLE);
-                v.setLayoutParams(getImageViewParam(v));
-                imageAnimation.stopAnimation();
-            }
+        if (visibilityIv) {
+            visibilityIv = false;
+            setClickableImage(idVisibleIv, false);
+            imageAnimation.setImageView((ImageView) v);
+            setImageVisibility(idVisibleIv, View.GONE);
+            v.setLayoutParams(getImageViewParentParam(v));
+            imageAnimation.startAnimation();
+        } else {
+            visibilityIv = true;
+            setClickableImage(idVisibleIv, true);
+            setImageVisibility(idVisibleIv, View.VISIBLE);
+            v.setLayoutParams(getImageViewParam(v));
+            imageAnimation.stopAnimation();
         }
-    };
+    }
+
 
     private GridLayout.LayoutParams getImageViewParam(View view){
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();

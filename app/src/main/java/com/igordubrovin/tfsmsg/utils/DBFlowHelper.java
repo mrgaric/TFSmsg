@@ -30,7 +30,7 @@ public class DBFlowHelper {
     public DBFlowHelper(){
     }
 
-    public void getMessageItems (DialogItem dialogItem){
+    public void getMessageItems (DialogItem dialogItem, final ChatDbItemsListener chatDbItemsListener){
         SQLite.select()
                 .from(MessageItem.class)
                 .where(MessageItem_Table.dialogItem_id.eq(dialogItem.getId()))
@@ -39,6 +39,7 @@ public class DBFlowHelper {
                 .queryListResultCallback(new QueryTransaction.QueryResultListCallback<MessageItem>() {
                     @Override
                     public void onListQueryResult(QueryTransaction transaction, @NonNull List<MessageItem> tResult) {
+                        chatDbItemsListener.itemsReceived(tResult);
                     }
                 })
                 .execute();
@@ -76,7 +77,19 @@ public class DBFlowHelper {
                 .execute();
     }
 
-    public void deleteItem(@NonNull final BaseModel item){
+    public void saveItem(@NonNull final BaseModel item) {
+        FlowManager.getDatabase(ChatDatabase.class)
+                .beginTransactionAsync(new ITransaction() {
+                    @Override
+                    public void execute(DatabaseWrapper databaseWrapper) {
+                        item.save();
+                    }
+                })
+                .build()
+                .execute();
+    }
+
+    public void deleteItem(@NonNull final BaseModel item, final ChatDbItemsListener chatDbItemsListener){
         FlowManager.getDatabase(ChatDatabase.class)
                 .beginTransactionAsync(new ITransaction() {
                     @Override
@@ -87,7 +100,7 @@ public class DBFlowHelper {
                 .success(new Transaction.Success() {
                     @Override
                     public void onSuccess(Transaction transaction) {
-
+                        chatDbItemsListener.itemDeleted(item);
                     }
                 })
                 .build()

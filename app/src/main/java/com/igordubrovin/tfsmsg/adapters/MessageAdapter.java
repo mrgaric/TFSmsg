@@ -13,6 +13,11 @@ import com.igordubrovin.tfsmsg.widgets.MessageView;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Игорь on 03.04.2017.
  */
@@ -23,8 +28,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private OnItemClickListener clickListener;
     private String login;
 
-    public MessageAdapter(OnItemClickListener clickListener, String login){
-        this.clickListener = clickListener;
+    @Inject
+    public MessageAdapter(String login){
         this.login = login;
     }
     //сравнение дат текущего элемента и предидущего
@@ -75,17 +80,22 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setItems(List<MessageItem> messageItems) {
-        dataMessage = messageItems;
+        dataMessage = new LinkedList<>(messageItems);
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener clickListener){
+        this.clickListener = clickListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
+        @BindView(R.id.item_message)
         MessageView itemMessage;
 
         public ViewHolder(View itemView, OnItemClickListener clickListener){
             super(itemView);
-            itemMessage = (MessageView) itemView.findViewById(R.id.item_message);
+            ButterKnife.bind(this, itemView);
             setClickListener(clickListener);
         }
 
