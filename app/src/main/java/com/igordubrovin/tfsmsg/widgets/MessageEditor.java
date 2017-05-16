@@ -15,15 +15,22 @@ import android.widget.ImageView;
 
 import com.igordubrovin.tfsmsg.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by Игорь on 03.04.2017.
  */
 
 public class MessageEditor extends FrameLayout{
 
-    private EditText editTextMessage;
-    private ImageView sendImage;
-    private ImageView clearImage;
+    @BindView(R.id.edit_text_message)
+    EditText editTextMessage;
+    @BindView(R.id.image_view_send)
+    ImageView sendImage;
+    @BindView(R.id.image_view_clear)
+    ImageView clearImage;
 
     private OnClickListener listenerSend;
     private OnClickListener listenerClear;
@@ -45,12 +52,8 @@ public class MessageEditor extends FrameLayout{
     }
 
     private void initAttrs(AttributeSet attrs){
-        LayoutInflater.from(getContext()).inflate(R.layout.widget_message_editor, this);
-        sendImage = (ImageView) findViewById(R.id.image_view_send);
-        sendImage.setOnClickListener(clickSend);
-        clearImage = (ImageView) findViewById(R.id.image_view_clear);
-        clearImage.setOnClickListener(clickClear);
-        editTextMessage = (EditText) findViewById(R.id.edit_text_message);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_message_editor, this);
+        ButterKnife.bind(this, view);
         editTextMessage.setOnTextEmptyListener(emptyEditTextListener);
 
         final TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.MessageEditor);
@@ -117,23 +120,20 @@ public class MessageEditor extends FrameLayout{
         this.listenerClear = listenerClear;
     }
 
-    OnClickListener clickSend = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (listenerSend != null)
-                listenerSend.onClick(v);
-            setText("");
-        }
-    };
+    @OnClick(R.id.image_view_send)
+    public void onClickSend(View v) {
+        if (listenerSend != null)
+            listenerSend.onClick(v);
+        setText("");
+    }
 
-    OnClickListener clickClear = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (listenerClear != null)
-                listenerClear.onClick(v);
-            setText("");
-        }
-    };
+    @OnClick(R.id.image_view_clear)
+    public void onClick(View v) {
+        if (listenerClear != null)
+            listenerClear.onClick(v);
+        setText("");
+    }
+
 
     private EditText.OnTextEmptyListener emptyEditTextListener = new EditText.OnTextEmptyListener() {
         @Override

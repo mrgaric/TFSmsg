@@ -13,11 +13,17 @@ import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ProgressButton extends FrameLayout {
 
-    private View background;
-    private TextView textView;
-    private ProgressBar progressBar;
+    @BindView(R.id.view_background)
+    View background;
+    @BindView(R.id.text_view)
+    TextView textView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     public ProgressButton(Context context) {
         super(context);
@@ -34,10 +40,8 @@ public class ProgressButton extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
-        LayoutInflater.from(getContext()).inflate(R.layout.widget_progress_button, this);
-        background = findViewById(R.id.view_background);
-        textView = (TextView) findViewById(R.id.text_view);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_progress_button, this);
+        ButterKnife.bind(this, view);
         progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.grey), PorterDuff.Mode.SRC_ATOP);
 
         final TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ProgressButton);

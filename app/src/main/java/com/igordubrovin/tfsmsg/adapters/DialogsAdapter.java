@@ -48,7 +48,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
 
     public void addDialog(DialogItem dialogItem) {
         ((LinkedList<DialogItem>)dataset).addFirst(dialogItem);
-        notifyDataSetChanged();
+        notifyItemInserted(0);
     }
 
     public void setItems(List<DialogItem> dialogItems) {
@@ -76,12 +76,9 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
         }
 
         private void setClickListener(final OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        listener.onItemClick(v, getAdapterPosition());
-                    }
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(v, getAdapterPosition());
                 }
             });
         }

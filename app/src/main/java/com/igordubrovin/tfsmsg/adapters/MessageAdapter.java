@@ -100,12 +100,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         protected void setClickListener(final OnItemClickListener listener){
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null)
-                        listener.onItemClick(v, getAdapterPosition());
-                }
+            itemView.setOnClickListener(v -> {
+                if (listener != null)
+                    listener.onItemClick(v, getAdapterPosition());
             });
         }
     }

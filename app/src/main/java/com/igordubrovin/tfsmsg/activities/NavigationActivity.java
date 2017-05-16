@@ -2,7 +2,6 @@ package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,10 +35,6 @@ import butterknife.OnClick;
 public class NavigationActivity extends AppCompatActivity
         implements InjectFragment{
 
-    private static final int MENU_DIALOGS = 0;
-    private static final String STATE_VISIBILITY_FAB = "state_visiblity_fab";
-    private ActionBarDrawerToggle toggle;
-    private View navigationViewHeader;
     TextView tvLogin;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -56,6 +50,8 @@ public class NavigationActivity extends AppCompatActivity
     LoginManager loginManager;
     @Inject
     String userLogin;
+    private ActionBarDrawerToggle toggle;
+    private View navigationViewHeader;
     private NavigationScreenComponent navigationScreenComponent = App.plusNavigationScreenComponent();
 
     @Override
@@ -67,7 +63,7 @@ public class NavigationActivity extends AppCompatActivity
         if (savedInstanceState == null){
             visibility = View.VISIBLE;
         } else {
-            visibility = savedInstanceState.getInt(STATE_VISIBILITY_FAB);
+            visibility = savedInstanceState.getInt(ProjectConstants.STATE_VISIBILITY_FAB);
         }
         ButterKnife.bind(this);
         initToolbar();
@@ -84,7 +80,7 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_VISIBILITY_FAB, fabAddDialog.getVisibility());
+        outState.putInt(ProjectConstants.STATE_VISIBILITY_FAB, fabAddDialog.getVisibility());
     }
 
     @Override
@@ -129,42 +125,39 @@ public class NavigationActivity extends AppCompatActivity
         tvLogin = ButterKnife.findById(navigationViewHeader, R.id.tv_login_navigation_view_header);
         tvLogin.setText(userLogin);
         if (savedInstanceState == null) {
-            navigationView.getMenu().getItem(MENU_DIALOGS).setChecked(true);
-            navigationItemSelectedListener.onNavigationItemSelected(navigationView.getMenu().getItem(MENU_DIALOGS));
+            navigationView.getMenu().getItem(ProjectConstants.MENU_DIALOGS).setChecked(true);
+            navigationItemSelectedListener.onNavigationItemSelected(navigationView.getMenu().getItem(ProjectConstants.MENU_DIALOGS));
         }
     }
 
-    private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.nav_dialogs:
-                    DialogsFragment dialogsFragment = new DialogsFragment();
-                    replaceFragment(dialogsFragment, ProjectConstants.FRAGMENT_DIALOGS);
-                    showFab();
-                    break;
-                case R.id.nav_settings:
-                    SettingsFragment settingsFragment = new SettingsFragment();
-                    replaceFragment(settingsFragment, ProjectConstants.FRAGMENT_SETTINGS);
-                    hideFab();
-                    break;
-                case R.id.nav_about:
-                    AboutFragment aboutFragment = new AboutFragment();
-                    replaceFragment(aboutFragment, ProjectConstants.FRAGMENT_ABOUT);
-                    hideFab();
-                    break;
-                case R.id.nav_exit:
-                    App.clearUserComponent();
-                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(loginIntent);
-                    loginManager.saveLogin("");
-                    loginManager.setFlagLogin(false);
-                    finish();
-                    break;
-            }
-            drawer.closeDrawer(GravityCompat.START);
-            return true;
+    private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = item -> {
+        switch (item.getItemId()) {
+            case R.id.nav_dialogs:
+                DialogsFragment dialogsFragment = new DialogsFragment();
+                replaceFragment(dialogsFragment, ProjectConstants.FRAGMENT_DIALOGS);
+                showFab();
+                break;
+            case R.id.nav_settings:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                replaceFragment(settingsFragment, ProjectConstants.FRAGMENT_SETTINGS);
+                hideFab();
+                break;
+            case R.id.nav_about:
+                AboutFragment aboutFragment = new AboutFragment();
+                replaceFragment(aboutFragment, ProjectConstants.FRAGMENT_ABOUT);
+                hideFab();
+                break;
+            case R.id.nav_exit:
+                App.clearUserComponent();
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                loginManager.saveLogin("");
+                loginManager.setFlagLogin(false);
+                finish();
+                break;
         }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     };
 
     private void showFab(){

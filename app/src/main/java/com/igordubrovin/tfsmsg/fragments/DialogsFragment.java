@@ -132,5 +132,6 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
     @Override
     public void showAddedItem(BaseModel item) {
         adapter.addDialog((DialogItem) item);
+        recyclerView.scrollToPosition(0);
     }
 }

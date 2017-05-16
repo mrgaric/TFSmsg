@@ -13,17 +13,25 @@ import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Игорь on 03.04.2017.
  */
 
 public class MessageView extends RelativeLayout {
 
-    private TextView tvMessage;
-    private TextView tvSender;
-    private TextView tvTime;
-    private TextView tvDate;
-    private LinearLayout containerBackground;
+    @BindView(R.id.text_view_message)
+    TextView tvMessage;
+    @BindView(R.id.text_view_sender)
+    TextView tvSender;
+    @BindView(R.id.tv_time_message)
+    TextView tvTime;
+    @BindView(R.id.tv_date_message)
+    TextView tvDate;
+    @BindView(R.id.container_background_item_message)
+    LinearLayout containerBackground;
 
     private int type;
 
@@ -48,12 +56,8 @@ public class MessageView extends RelativeLayout {
     }
 
     private void initAttrs(AttributeSet attrs){
-        LayoutInflater.from(getContext()).inflate(R.layout.widget_message_view, this);
-        tvMessage = (TextView) findViewById(R.id.text_view_message);
-        tvSender = (TextView) findViewById(R.id.text_view_sender);
-        tvTime = (TextView) findViewById(R.id.tv_time_message);
-        tvDate = (TextView) findViewById(R.id.tv_date_message);
-        containerBackground = (LinearLayout) findViewById(R.id.container_background_item_message);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_message_view, this);
+        ButterKnife.bind(this, view);
 
         final TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.MessageView);
         if (typedArray != null) {
@@ -121,6 +125,7 @@ public class MessageView extends RelativeLayout {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }
         else throw new IllegalArgumentException("Unknown type" + type);
+        layoutParams.addRule(RelativeLayout.BELOW, tvDate.getId());
         containerBackground.setLayoutParams(layoutParams);
     }
 

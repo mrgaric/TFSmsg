@@ -8,7 +8,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +18,6 @@ import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.di.components.MessageScreenComponent;
-import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 import com.igordubrovin.tfsmsg.loaders.MessageLoader;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.IMessagePresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IMessageView;
@@ -104,42 +102,22 @@ public class MessagesActivity extends MvpActivity<IMessageView, IMessagePresente
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         tvTitle.setText(tittle);
     }
 
     private void initRecyclerView(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
-        adapter.setOnItemClickListener(clickRecyclerMessageItem);
+        adapter.setOnItemClickListener((v, position) ->
+                Toast.makeText(MessagesActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show());
         recyclerViewMessage.setLayoutManager(layoutManager);
         recyclerViewMessage.setAdapter(adapter);
         getMessageItems();
     }
 
     private void initMessageEditor(){
-        messageEditor.setOnClickListenerSend(clickSend);
-    }
-
-    private OnItemClickListener clickRecyclerMessageItem = new OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, int position) {
-            Toast.makeText(MessagesActivity.this, "click position = " + position, Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private void getMessageItems(){
-        getPresenter().getMessageItems(dialogItem);
-    }
-
-    View.OnClickListener clickSend = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+        messageEditor.setOnClickListenerSend(v -> {
             MessageItem messageItem = commonComponent.getMessageItem();
             DateHelper dateHelper = commonComponent.getDateHelper();
             messageItem.setTime(dateHelper.getCurrentTime());
@@ -147,8 +125,12 @@ public class MessagesActivity extends MvpActivity<IMessageView, IMessagePresente
             messageItem.setMessageText(messageEditor.getText());
             messageItem.setIdAuthor(login);
             addMessageItem(messageItem);
-        }
-    };
+        });
+    }
+
+    private void getMessageItems(){
+        getPresenter().getMessageItems(dialogItem);
+    }
 
     private void addMessageItem(MessageItem messageItem) {
         messageItem.setDialogItem(dialogItem);
