@@ -1,6 +1,7 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
 import android.os.AsyncTask;
+import android.support.annotation.VisibleForTesting;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ILoginPresenter;
@@ -11,8 +12,8 @@ import javax.inject.Inject;
 
 public class LoginPresenter extends MvpBasePresenter<ILoginView>
         implements ILoginPresenter {
-
-    private Boolean success;
+    @VisibleForTesting
+    public Boolean success;
     private final LoginModel loginModel;
 
     @Inject
@@ -34,7 +35,8 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView>
         new LoginTask().execute(login, password);
     }
 
-    private void returnResultView(Boolean success){
+    @VisibleForTesting
+    public void returnResultView(Boolean success){
         if (success)
             getView().loginSuccessful();
         else
