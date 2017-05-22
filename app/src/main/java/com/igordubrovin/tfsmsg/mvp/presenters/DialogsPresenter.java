@@ -1,5 +1,7 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
@@ -19,7 +21,8 @@ import javax.inject.Inject;
 public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
         implements IDialogsPresenter,
         ChatDbItemsListener {
-    private List<DialogItem> dialogItems;
+    @VisibleForTesting
+    public List<DialogItem> dialogItems;
     private BaseModel item;
     private DBFlowHelper dbFlowHelper;
 

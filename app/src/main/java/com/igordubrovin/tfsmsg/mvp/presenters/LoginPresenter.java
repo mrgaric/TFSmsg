@@ -43,7 +43,8 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView>
             getView().showError();
     }
 
-    private void setSuccess(Boolean success) {
+    @VisibleForTesting
+    public void setSuccess(Boolean success) {
         if (isViewAttached())
             returnResultView(success);
         else

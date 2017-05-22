@@ -1,6 +1,7 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
 import android.os.AsyncTask;
+import android.support.annotation.VisibleForTesting;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
@@ -24,7 +25,8 @@ public class SplashPresenter extends MvpBasePresenter<ISplashView>
         new Loading().execute();
     }
 
-    private void returnResultView(boolean success){
+    @VisibleForTesting
+    public void returnResultView(boolean success){
         if (success)
             getView().showNavigationActivity();
         else

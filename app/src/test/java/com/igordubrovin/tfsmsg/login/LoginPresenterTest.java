@@ -6,7 +6,9 @@ import com.igordubrovin.tfsmsg.mvp.presenters.LoginPresenter;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
@@ -38,39 +40,39 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void when_attachView_and_result_not_null_call_onAuthorizationResult_and_clear_result() throws Exception {
+    public void when_attachView_and_result_not_null_call_returnResultView_and_clear_result() throws Exception {
         Boolean result = loginPresenterSpy.success = false;
         loginPresenterSpy.attachView(viewMock);
         verify(loginPresenterSpy).returnResultView(result);
         assertNull(loginPresenterSpy.success);
     }
-/*
+
     @Test
-    public void given_viewAttached_when_setAuthorizationResult_then_onAuthorizationResult_with_result() throws Exception {
+    public void given_viewAttached_when_setSuccess_then_returnResultView_with_result() throws Exception {
         Mockito.doReturn(true).when(loginPresenterSpy).isViewAttached();
         Boolean authorizationResult = true;
-        loginPresenterSpy.setAuthorizationResult(authorizationResult);
-        verify(loginPresenterSpy).onAuthorizationResult(authorizationResult);
+        loginPresenterSpy.setSuccess(authorizationResult);
+        verify(loginPresenterSpy).returnResultView(authorizationResult);
     }
 
     @Test
-    public void given_not_viewAttached_when_setAuthorizationResult_then_set_authorizationResult() throws Exception {
-        Mockito.doReturn(true).when(loginPresenterSpy).isViewAttached();
+    public void given_not_viewAttached_when_setSuccess_then_set_success() throws Exception {
+        Mockito.doReturn(false).when(loginPresenterSpy).isViewAttached();
         Boolean authorizationResult = true;
-        loginPresenterSpy.setAuthorizationResult(authorizationResult);
-        assertNull(loginPresenterSpy.authorizationResult);
+        loginPresenterSpy.setSuccess(authorizationResult);
+        assertNotNull(loginPresenterSpy.success);
     }
 
     @Test
-    public void given_result_true_when_onAuthorizationResult_then_goToNavigationScreen() throws Exception {
-        loginPresenterSpy.onAuthorizationResult(true);
-        verify(viewMock).goToNavigationScreen();
+    public void given_result_true_when_returnResultView_then_loginSuccessful() throws Exception {
+        loginPresenterSpy.returnResultView(true);
+        verify(viewMock).loginSuccessful();
     }
 
     @Test
-    public void given_result_false_when_onAuthorizationResult_then_showUnSuccessAuthorization() throws Exception {
-        loginPresenterSpy.onAuthorizationResult(false);
-        verify(viewMock).showUnSuccessAuthorization();
-    }*/
+    public void given_result_false_when_returnResultView_then_showError() throws Exception {
+        loginPresenterSpy.returnResultView(false);
+        verify(viewMock).showError();
+    }
 
 }
