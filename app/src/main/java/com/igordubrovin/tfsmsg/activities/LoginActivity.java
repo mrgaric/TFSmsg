@@ -10,6 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.di.components.LoginScreenComponent;
@@ -27,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
-        implements ILoginView{
+        implements ILoginView, GoogleApiClient.OnConnectionFailedListener{
 
     @Inject
     Context context;
@@ -39,7 +45,12 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
     EditText password;
     @BindView(R.id.btn_enter)
     ProgressButton button;
+    @BindView(R.id.sign_in_button)
+    SignInButton googleSignInBtn;
 
+
+    private GoogleSignInOptions signInOptions;
+    private GoogleApiClient client;
     private LoginScreenComponent loginScreenComponent = App.plusLoginScreenComponent();
 
     @Override
@@ -48,6 +59,16 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        client = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions)
+                .build();
     }
 
     @NonNull
@@ -74,6 +95,21 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
         setStateProgressButton(true);
     }
 
+    @OnClick (R.id.sign_in_button)
+    public void onClickGoogleSignIn(){
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(client);
+        startActivityForResult(signInIntent, ProjectConstants.GOOGLE_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ProjectConstants.GOOGLE_SIGN_IN){
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            getPresenter().handleSignInResult(result);
+        }
+    }
+
     private void setStateProgressButton(Boolean buttonPressed){
         if (buttonPressed) {
             button.showProgress();
@@ -98,6 +134,7 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
     private void startNextScreen() {
         App.plusUserComponent();
         Intent intent = new Intent(this, NavigationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
@@ -105,5 +142,10 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
         Snackbar snackbar = Snackbar.make(findViewById(R.id.root_login_view), "Login Error", BaseTransientBottomBar.LENGTH_SHORT);
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_red_dark));
         snackbar.show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //empty
     }
 }

@@ -1,24 +1,28 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
-import android.os.AsyncTask;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ILoginPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ILoginView;
-import com.igordubrovin.tfsmsg.mvp.models.LoginModel;
 
 import javax.inject.Inject;
 
 public class LoginPresenter extends MvpBasePresenter<ILoginView>
-        implements ILoginPresenter {
+        implements ILoginPresenter{
     @VisibleForTesting
     public Boolean success;
-    private final LoginModel loginModel;
+    private final FirebaseAuth firebaseAuth;
 
     @Inject
-    public LoginPresenter(LoginModel loginModel){
-        this.loginModel = loginModel;
+    public LoginPresenter(FirebaseAuth firebaseAuth){
+        this.firebaseAuth = firebaseAuth;
     }
 
     @Override
@@ -32,7 +36,28 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView>
 
     @Override
     public void onClickBtnCheckLogin(String login, String password) {
-        new LoginTask().execute(login, password);
+        //TODO
+    }
+
+    @Override
+    public void handleSignInResult(GoogleSignInResult result) {
+        if (result.isSuccess()) {
+            GoogleSignInAccount acct = result.getSignInAccount();
+            firebaseAuth(acct);
+        }
+    }
+
+    private void firebaseAuth(GoogleSignInAccount acct) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = authResult.getUser();
+                    if (user != null)
+                        setSuccess(true);
+                    else
+                        setSuccess(false);
+                    })
+                .addOnFailureListener(e -> setSuccess(false));
     }
 
     @VisibleForTesting
@@ -50,24 +75,4 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView>
         else
             this.success = success;
     }
-
-    private class LoginTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return loginModel.checkLogin(params[0], params[1]);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
-            setSuccess(success);
-        }
-    }
-
 }

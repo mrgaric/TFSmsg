@@ -10,7 +10,6 @@ import com.igordubrovin.tfsmsg.di.modules.SplashModule;
 import com.igordubrovin.tfsmsg.di.modules.UserModule;
 import com.igordubrovin.tfsmsg.di.modules.UtilsModule;
 import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
 
 import javax.inject.Singleton;
 
@@ -21,7 +20,6 @@ import dagger.Component;
 public interface AppComponent {
     Context getContext();
     WindowManager getWindowManager();
-    LoginManager getLoginManager();
     DBFlowHelper getDbFlowHelper();
     LoginScreenComponent addLoginScreenComponent(LoginModule loginModule);
     SplashScreenComponent addSplashScreenComponent(SplashModule splashModule);

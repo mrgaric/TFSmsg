@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.application' // or apply plugin: 'java'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
@@ -31,20 +30,18 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationIdSuffix ".release"
             signingConfig signingConfigs.release
         }
         debug {
-            applicationIdSuffix '.debug'
+
         }
         prodDebug {
             initWith(buildTypes.debug)
-            applicationIdSuffix ".prodDebug"
+
         }
     }
     productFlavors {
         free {
-            applicationIdSuffix ".free"
             versionNameSuffix "-free"
         }
         api16 {
@@ -67,6 +64,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+    testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
@@ -74,18 +75,19 @@ dependencies {
     compile 'com.android.support:preference-v14:25.3.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    testCompile 'junit:junit:4.12'
-    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
-    compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
     compile 'org.parceler:parceler-api:1.1.6'
-    annotationProcessor 'org.parceler:parceler:1.1.6'
     compile 'com.hannesdorfmann.mosby3:mvp:3.0.3'
     compile 'com.google.dagger:dagger:2.0'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.google.firebase:firebase-auth:10.2.6'
+    compile 'com.google.android.gms:play-services-auth:10.2.6'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.7.22'
+    annotationProcessor 'org.parceler:parceler:1.1.6'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
+
+apply plugin: 'com.google.gms.google-services'
+

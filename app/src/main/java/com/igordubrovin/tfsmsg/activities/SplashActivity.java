@@ -15,7 +15,6 @@ import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ISplashView;
 import com.igordubrovin.tfsmsg.mvp.presenters.SplashPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
 
 import javax.inject.Inject;
 
@@ -24,9 +23,6 @@ import butterknife.ButterKnife;
 
 public class SplashActivity extends MvpActivity<ISplashView, ISplashPresenter>
         implements ISplashView{
-
-    @Inject
-    LoginManager loginManager;
     @Inject
     ImageAdapter imageAdapter;
     @Inject

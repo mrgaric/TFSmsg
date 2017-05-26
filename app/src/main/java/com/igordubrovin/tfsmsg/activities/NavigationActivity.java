@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.di.components.NavigationScreenComponent;
 import com.igordubrovin.tfsmsg.fragments.AboutFragment;
@@ -23,7 +24,6 @@ import com.igordubrovin.tfsmsg.fragments.SettingsFragment;
 import com.igordubrovin.tfsmsg.interfaces.InjectFragment;
 import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 
 import javax.inject.Inject;
@@ -47,9 +47,9 @@ public class NavigationActivity extends AppCompatActivity
     @Inject
     DBFlowHelper dbFlowHelper;
     @Inject
-    LoginManager loginManager;
-    @Inject
     String userLogin;
+    @Inject
+    FirebaseAuth firebaseAuth;
     private ActionBarDrawerToggle toggle;
     private View navigationViewHeader;
     private NavigationScreenComponent navigationScreenComponent = App.plusNavigationScreenComponent();
@@ -151,8 +151,7 @@ public class NavigationActivity extends AppCompatActivity
                 App.clearUserComponent();
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
-                loginManager.saveLogin("");
-                loginManager.setFlagLogin(false);
+                firebaseAuth.signOut();
                 finish();
                 break;
         }

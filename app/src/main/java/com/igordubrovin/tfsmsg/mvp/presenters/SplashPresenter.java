@@ -1,28 +1,27 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
-import android.os.AsyncTask;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.ISplashPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.ISplashView;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
 
 import javax.inject.Inject;
 
 public class SplashPresenter extends MvpBasePresenter<ISplashView>
         implements ISplashPresenter {
 
-    private LoginManager loginManager;
+    private FirebaseAuth firebaseAuth;
 
     @Inject
-    public SplashPresenter(LoginManager loginManager){
-        this.loginManager = loginManager;
+    public SplashPresenter(FirebaseAuth firebaseAuth){
+        this.firebaseAuth = firebaseAuth;
     }
 
     @Override
     public void checkLoginState() {
-        new Loading().execute();
+        checkUser();
     }
 
     @VisibleForTesting
@@ -33,22 +32,10 @@ public class SplashPresenter extends MvpBasePresenter<ISplashView>
             getView().showLoginActivity();
     }
 
-    private class Loading extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            return loginManager.isLogin();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            returnResultView(result);
-        }
+    private void checkUser(){
+        if (firebaseAuth.getCurrentUser() != null){
+            returnResultView(true);
+        } else
+            returnResultView(false);
     }
 }

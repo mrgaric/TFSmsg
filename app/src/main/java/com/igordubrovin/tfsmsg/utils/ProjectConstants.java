@@ -17,5 +17,7 @@ public class ProjectConstants {
     public static final String IV_STATE_VISIBLE = "iv_state_visible";
     public static final String ID_VISIBLE_IV = "id_visible_iv";
     public static final int MENU_DIALOGS = 0;
+    public static final int GOOGLE_SIGN_IN = 1;
     public static final String STATE_VISIBILITY_FAB = "state_visiblity_fab";
+
 }

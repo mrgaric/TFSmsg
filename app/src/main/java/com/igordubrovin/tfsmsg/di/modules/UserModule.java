@@ -1,7 +1,7 @@
 package com.igordubrovin.tfsmsg.di.modules;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.igordubrovin.tfsmsg.di.dagger2_annotation.UserScope;
-import com.igordubrovin.tfsmsg.utils.LoginManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,8 +14,8 @@ public class UserModule {
 
     @UserScope
     @Provides
-    String provideUserName(LoginManager loginManager){
-        return loginManager.login();
+    String provideUserName(FirebaseAuth firebaseAuth){
+        return firebaseAuth.getCurrentUser().getDisplayName();
     }
 
 }

@@ -3,6 +3,8 @@ package com.igordubrovin.tfsmsg.di.modules;
 import android.content.Context;
 import android.view.WindowManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -26,5 +28,11 @@ public class AppModule {
     @Singleton
     WindowManager provideWindowManager (Context context) {
         return (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAuth provideFirebaseAuth(){
+        return FirebaseAuth.getInstance();
     }
 }
