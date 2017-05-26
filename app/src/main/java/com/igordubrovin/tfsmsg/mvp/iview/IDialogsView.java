@@ -1,7 +1,7 @@
 package com.igordubrovin.tfsmsg.mvp.iview;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
-import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;

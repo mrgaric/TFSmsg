@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.db.DialogItem;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
 
 import java.util.LinkedList;
@@ -31,10 +31,10 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.tvTitle.setText(dataset.get(position).getTitle());
         holder.tvDesc.setText(dataset.get(position).getDesc());
-        String lastMessage = dataset.get(position).getLastMessage();
-        if (lastMessage != null && !lastMessage.equals("")){
+        //String lastMessage = dataset.get(position).getLastMessage();
+        /*if (lastMessage != null && !lastMessage.equals("")){
             holder.tvLastMessage.setText(lastMessage);
-        }
+        }*/
     }
 
     @Override

@@ -3,8 +3,9 @@ package com.igordubrovin.tfsmsg.mvp.presenters;
 import android.support.annotation.VisibleForTesting;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
-import com.igordubrovin.tfsmsg.db.DialogItem;
-import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
+import com.igordubrovin.tfsmsg.firebase.DialogItemValueListener;
+import com.igordubrovin.tfsmsg.firebase.dialog.DialogRepository;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
 import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
@@ -19,8 +20,7 @@ import javax.inject.Inject;
  */
 
 public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
-        implements IDialogsPresenter,
-        ChatDbItemsListener {
+        implements IDialogsPresenter{
     @VisibleForTesting
     public List<DialogItem> dialogItems;
     private BaseModel item;
@@ -46,23 +46,31 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
 
     @Override
     public void loadDialogsList() {
-        dbFlowHelper.getDialogItemsDb(this);
+        DialogRepository.getInstance().getDialogs(new DialogItemValueListener() {
+            @Override
+            public void onValue(List<com.igordubrovin.tfsmsg.utils.DialogItem> items) {
+                if (isViewAttached())
+                    getView().showDialogs(items);
+                else
+                    dialogItems = items;
+            }
+        });
     }
 
     @Override
     public void addDialogItem(BaseModel item) {
-        dbFlowHelper.saveItem(item, this);
+      //  dbFlowHelper.saveItem(item, this);
     }
 
-    @Override
+   /* @Override
     public void itemAdded(BaseModel item) {
         if (isViewAttached())
             getView().showAddedItem(item);
         else
             this.item = item;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void itemsReceived(List<? extends BaseModel> items) {
         if (isViewAttached())
             getView().showDialogs((List<DialogItem>) items);
@@ -73,5 +81,5 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
     @Override
     public void itemDeleted(BaseModel item) {
 
-    }
+    }*/
 }

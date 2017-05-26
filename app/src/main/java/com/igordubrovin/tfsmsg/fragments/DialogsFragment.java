@@ -18,7 +18,6 @@ import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 import com.igordubrovin.tfsmsg.R;
 import com.igordubrovin.tfsmsg.activities.MessagesActivity;
 import com.igordubrovin.tfsmsg.adapters.DialogsAdapter;
-import com.igordubrovin.tfsmsg.db.DialogItem;
 import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.interfaces.InjectFragment;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
@@ -26,7 +25,7 @@ import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
 import com.igordubrovin.tfsmsg.mvp.presenters.DialogsPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
-import com.igordubrovin.tfsmsg.utils.DateHelper;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -105,7 +104,7 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
         }
     };
 
-    public void clickFAB(){
+    /*public void clickFAB(){
         int itemCount = adapter.getItemCount();
         DateHelper dateHelper = commonComponent.getDateHelper();
         DialogItem dialogItem = commonComponent.getDialogItem();
@@ -114,11 +113,11 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
         dialogItem.setTime(dateHelper.getCurrentTime());
         dialogItem.setDate(dateHelper.getCurrentDate());
         addDialogItem(dialogItem);
-    }
+    }*/
 
-    private void addDialogItem(final DialogItem dialogItem) {
+   /* private void addDialogItem(final DialogItem dialogItem) {
         getPresenter().addDialogItem(dialogItem);
-    }
+    }*/
 
     public void getDialogItemsDb(){
         getPresenter().loadDialogsList();
@@ -131,7 +130,12 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
 
     @Override
     public void showAddedItem(BaseModel item) {
+
+    }
+
+    /*@Override
+    public void showAddedItem(BaseModel item) {
         adapter.addDialog((DialogItem) item);
         recyclerView.scrollToPosition(0);
-    }
+    }*/
 }

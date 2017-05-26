@@ -111,10 +111,8 @@ public class NavigationActivity extends AppCompatActivity
 
     @OnClick(R.id.fab_add_dialog)
     public void onClickAddDialog(View v) {
-        Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
-        if (dialogsFragment != null){
-            ((DialogsFragment) dialogsFragment).clickFAB();
-        }
+        Intent intent = new Intent(this, AddDialogActivity.class);
+        startActivity(intent);
     }
 
     private void initNavigationView(Bundle savedInstanceState){
