@@ -2,6 +2,7 @@ package com.igordubrovin.tfsmsg.utils;
 
 import android.app.Application;
 
+import com.igordubrovin.tfsmsg.di.components.AddDialogScreenComponent;
 import com.igordubrovin.tfsmsg.di.components.AppComponent;
 import com.igordubrovin.tfsmsg.di.components.CommonComponent;
 import com.igordubrovin.tfsmsg.di.components.DaggerAppComponent;
@@ -10,6 +11,7 @@ import com.igordubrovin.tfsmsg.di.components.MessageScreenComponent;
 import com.igordubrovin.tfsmsg.di.components.NavigationScreenComponent;
 import com.igordubrovin.tfsmsg.di.components.SplashScreenComponent;
 import com.igordubrovin.tfsmsg.di.components.UserComponent;
+import com.igordubrovin.tfsmsg.di.modules.AddDialogModule;
 import com.igordubrovin.tfsmsg.di.modules.AppModule;
 import com.igordubrovin.tfsmsg.di.modules.CommonModule;
 import com.igordubrovin.tfsmsg.di.modules.LoginModule;
@@ -33,11 +35,11 @@ public class App extends Application {
     private static CommonComponent commonComponent;
     private static UserComponent userComponent;
     private static MessageScreenComponent messageScreenComponent;
+    private static AddDialogScreenComponent addDialogScreenComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        FlowManager.init(this);
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .utilsModule(new UtilsModule())
@@ -86,5 +88,11 @@ public class App extends Application {
         if (messageScreenComponent == null)
             messageScreenComponent = userComponent.addMessageScreenComponent(new MessageModule());
         return messageScreenComponent;
+    }
+
+    public static AddDialogScreenComponent plusAddDialogScreenComponent(){
+        if (addDialogScreenComponent == null)
+            addDialogScreenComponent = getAppComponent().addAddDialogScreenComponent(new AddDialogModule());
+        return addDialogScreenComponent;
     }
 }

@@ -48,7 +48,6 @@ public class LoginActivity extends MvpActivity<ILoginView, ILoginPresenter>
     @BindView(R.id.sign_in_button)
     SignInButton googleSignInBtn;
 
-
     private GoogleSignInOptions signInOptions;
     private GoogleApiClient client;
     private LoginScreenComponent loginScreenComponent = App.plusLoginScreenComponent();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.WindowManager;
 
 import com.igordubrovin.tfsmsg.activities.AddDialogActivity;
+import com.igordubrovin.tfsmsg.di.modules.AddDialogModule;
 import com.igordubrovin.tfsmsg.di.modules.AppModule;
 import com.igordubrovin.tfsmsg.di.modules.CommonModule;
 import com.igordubrovin.tfsmsg.di.modules.LoginModule;
@@ -19,10 +20,9 @@ import dagger.Component;
 @Component(modules = {AppModule.class, UtilsModule.class})
 public interface AppComponent {
     Context getContext();
-    WindowManager getWindowManager();
     LoginScreenComponent addLoginScreenComponent(LoginModule loginModule);
+    AddDialogScreenComponent addAddDialogScreenComponent(AddDialogModule addDialogModule);
     SplashScreenComponent addSplashScreenComponent(SplashModule splashModule);
     UserComponent addUserComponent(UserModule UserModule);
     CommonComponent addSingleComponent(CommonModule commonModule);
-    void inject(AddDialogActivity addDialogActivity);
 }

@@ -2,12 +2,18 @@ package com.igordubrovin.tfsmsg.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.igordubrovin.tfsmsg.R;
+import com.igordubrovin.tfsmsg.di.components.AddDialogScreenComponent;
+import com.igordubrovin.tfsmsg.mvp.ipresenter.IAddDialogPresenter;
+import com.igordubrovin.tfsmsg.mvp.iview.IAddDialogView;
+import com.igordubrovin.tfsmsg.mvp.presenters.AddDialogPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
 import com.igordubrovin.tfsmsg.utils.DateHelper;
 import com.igordubrovin.tfsmsg.utils.DialogItem;
@@ -23,7 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AddDialogActivity extends AppCompatActivity {
+public class AddDialogActivity extends MvpActivity<IAddDialogView, IAddDialogPresenter>
+        implements IAddDialogView{
 
     @BindView(R.id.add_title)
     EditText etAddTitle;
@@ -32,14 +39,22 @@ public class AddDialogActivity extends AppCompatActivity {
     @BindView(R.id.add_dialog_btn)
     Button btnAddDialog;
     @Inject
-    DialogRepository dialogRepository;
+    AddDialogPresenter addDialogPresenter;
+
+    private AddDialogScreenComponent addDialogScreenComponent = App.plusAddDialogScreenComponent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        App.getAppComponent().inject(this);
+        addDialogScreenComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dialog);
         ButterKnife.bind(this);
+    }
+
+    @NonNull
+    @Override
+    public IAddDialogPresenter createPresenter() {
+        return addDialogPresenter;
     }
 
     @OnClick(R.id.add_dialog_btn)
@@ -50,19 +65,19 @@ public class AddDialogActivity extends AppCompatActivity {
         dialogItem.setTitle(etAddTitle.getText().toString());
         dialogItem.setTime(dateHelper.getCurrentTime());
         dialogItem.setDate(dateHelper.getCurrentDate());
-        dialogRepository.addDialog(dialogItem, new OnTransactionComplete<Void>() {
-            @Override
-            public void onCommit(Void result) {
-                Intent intent = new Intent();
-                intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(dialogItem));
-                setResult(RESULT_OK, intent);
-                finish();
-            }
+        getPresenter().addDialog(dialogItem);
+    }
 
-            @Override
-            public void onAbort(Exception e) {
-                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
+    @Override
+    public void dialogAdded(DialogItem dialogItem) {
+        Intent intent = new Intent();
+        intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(dialogItem));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    public void showError(Exception e) {
+        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
     }
 }

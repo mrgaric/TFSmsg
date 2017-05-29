@@ -4,7 +4,7 @@
     package="com.igordubrovin.tfsmsg">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    s
+
     <application
         android:name=".utils.App"
         android:allowBackup="true"
