@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.igordubrovin.tfsmsg.R;
-import com.igordubrovin.tfsmsg.db.MessageItem;
 import com.igordubrovin.tfsmsg.interfaces.OnItemClickListener;
+import com.igordubrovin.tfsmsg.utils.MessageItem;
 import com.igordubrovin.tfsmsg.widgets.MessageView;
 
 import java.util.LinkedList;

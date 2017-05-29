@@ -1,7 +1,7 @@
 package com.igordubrovin.tfsmsg.mvp.iview;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
-import com.igordubrovin.tfsmsg.db.MessageItem;
+import com.igordubrovin.tfsmsg.utils.MessageItem;
 
 import java.util.List;
 

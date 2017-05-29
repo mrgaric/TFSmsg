@@ -1,13 +1,13 @@
 package com.igordubrovin.tfsmsg.mvp.presenters;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
-import com.igordubrovin.tfsmsg.db.DialogItem;
-import com.igordubrovin.tfsmsg.db.MessageItem;
-import com.igordubrovin.tfsmsg.interfaces.ChatDbItemsListener;
+import com.igordubrovin.tfsmsg.firebase.DialogItemValueListener;
+import com.igordubrovin.tfsmsg.firebase.OnTransactionComplete;
+import com.igordubrovin.tfsmsg.firebase.message.MessageRepository;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.IMessagePresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IMessageView;
-import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
+import com.igordubrovin.tfsmsg.utils.MessageItem;
 
 import java.util.List;
 
@@ -18,16 +18,15 @@ import javax.inject.Inject;
  */
 
 public class MessagePresenter extends MvpBasePresenter<IMessageView>
-        implements IMessagePresenter,
-        ChatDbItemsListener{
+        implements IMessagePresenter{
 
-    private DBFlowHelper dbFlowHelper;
     private MessageItem messageItem;
     private List<MessageItem> messageItems;
+    private MessageRepository messageRepository;
 
     @Inject
-    public MessagePresenter(DBFlowHelper dbFlowHelper){
-        this.dbFlowHelper = dbFlowHelper;
+    public MessagePresenter(MessageRepository messageRepository){
+        this.messageRepository = messageRepository;
     }
 
     @Override
@@ -44,44 +43,75 @@ public class MessagePresenter extends MvpBasePresenter<IMessageView>
     }
 
     @Override
-    public void getMessageItems(DialogItem dialogItem) {
-        dbFlowHelper.getMessageItems(dialogItem, this);
+    public void getMessageItems(String dialogId) {
+        messageRepository.getMessages(dialogId, new DialogItemValueListener<MessageItem>() {
+            @Override
+            public void onValue(List<MessageItem> items) {
+                if (isViewAttached())
+                    getView().showMessages(items);
+                else
+                    messageItems = items;
+            }
+        });
+       // dbFlowHelper.getMessageItems(dialogItem, this);
     }
 
     @Override
     public void updateDialogItem(DialogItem dialogItem) {
-        dbFlowHelper.saveItem(dialogItem);
+        //dbFlowHelper.saveItem(dialogItem);
     }
 
     @Override
-    public void sendMessageItem(MessageItem item) {
+    public void sendMessageItem(String dialogId, MessageItem item) {
+        messageRepository.addMessage(dialogId, item, new OnTransactionComplete<MessageItem>() {
+            @Override
+            public void onCommit(MessageItem result) {
+                if (isViewAttached()){
+                    getView().showAddedMessageItem(result);
+                } else
+                    messageItem = result;
+            }
+            @Override
+            public void onAbort(Exception e) {
 
+            }
+        });
     }
 
     @Override
     public void insertMessageItem(MessageItem item) {
-        dbFlowHelper.saveItem(item, this);
+      //  dbFlowHelper.saveItem(item, this);
+    }
+
+    /*@Override
+    public void itemAdded(MessageItem item) {
+        if (isViewAttached())
+            getView().showAddedMessageItem(item);
+        else
+            messageItem = item;
+
     }
 
     @Override
-    public void itemAdded(BaseModel item) {
+    public void itemsReceived(List<MessageItem> items) {
         if (isViewAttached())
-            getView().showAddedMessageItem((MessageItem) item);
+            getView().showMessages(items);
         else
-            messageItem = (MessageItem) item;
+            messageItems = items;
+    }*/
+
+    /*@Override
+    public void itemAdded(BaseModel item) {
 
     }
 
     @Override
     public void itemsReceived(List<? extends BaseModel> items) {
-        if (isViewAttached())
-            getView().showMessages((List<MessageItem>) items);
-        else
-            messageItems = (List<MessageItem>) items;
+
     }
 
     @Override
     public void itemDeleted(BaseModel item) {
 
-    }
+    }*/
 }

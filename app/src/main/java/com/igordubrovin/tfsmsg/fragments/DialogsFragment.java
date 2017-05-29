@@ -25,6 +25,7 @@ import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
 import com.igordubrovin.tfsmsg.mvp.presenters.DialogsPresenter;
 import com.igordubrovin.tfsmsg.utils.App;
+import com.igordubrovin.tfsmsg.utils.DialogIdManager;
 import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -51,6 +52,8 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
     DialogsAdapter adapter;
     @Inject
     DialogsPresenter dialogsPresenter;
+    @Inject
+    DialogIdManager dialogIdManager;
     private CommonComponent commonComponent  = App.plusCommonComponent();
 
     @Override
@@ -97,6 +100,7 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
             Intent intent = new Intent(getContext(), MessagesActivity.class);
             intent.putExtra(ProjectConstants.DIALOG_ITEM_INTENT, Parcels.wrap(adapter.getItem(position)));
             intent.putExtra(ProjectConstants.DIALOG_TITLE, adapter.getItem(position).getTitle());
+            intent.putExtra(ProjectConstants.DIALOG_ID, dialogIdManager.getDialogId(position));
             Pair<View, String> pair = new Pair<>(v.findViewById(R.id.tv_dialog_title), getString(R.string.transition_name_title_dialog));
             @SuppressWarnings("unchecked")
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pair);
@@ -118,6 +122,10 @@ public class DialogsFragment extends MvpFragment<IDialogsView, IDialogsPresenter
    /* private void addDialogItem(final DialogItem dialogItem) {
         getPresenter().addDialogItem(dialogItem);
     }*/
+
+    public void addItem(DialogItem dialogItem){
+        adapter.addDialog(dialogItem);
+    }
 
     public void getDialogItemsDb(){
         getPresenter().loadDialogsList();

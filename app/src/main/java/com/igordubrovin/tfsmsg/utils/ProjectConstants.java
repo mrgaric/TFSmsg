@@ -18,6 +18,8 @@ public class ProjectConstants {
     public static final String ID_VISIBLE_IV = "id_visible_iv";
     public static final int MENU_DIALOGS = 0;
     public static final int GOOGLE_SIGN_IN = 1;
+    public static final int REQUEST_CODE_DIALOG_ADD = 2;
     public static final String STATE_VISIBILITY_FAB = "state_visiblity_fab";
+    public static final String DIALOG_ID = "dialog_id";
 
 }

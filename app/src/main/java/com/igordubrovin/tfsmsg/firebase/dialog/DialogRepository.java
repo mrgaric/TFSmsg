@@ -3,35 +3,39 @@ package com.igordubrovin.tfsmsg.firebase.dialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
-import com.igordubrovin.tfsmsg.utils.DialogItem;
 import com.igordubrovin.tfsmsg.firebase.DefaultValueEventListener;
 import com.igordubrovin.tfsmsg.firebase.DialogItemValueListener;
 import com.igordubrovin.tfsmsg.firebase.OnTransactionComplete;
+import com.igordubrovin.tfsmsg.utils.DialogIdManager;
+import com.igordubrovin.tfsmsg.utils.DialogItem;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+
+import javax.inject.Inject;
 
 /**
  * Created by Игорь on 26.05.2017.
  */
 
 public class DialogRepository {
-    private final static DialogRepository instance = new DialogRepository();
+    //private final static DialogRepository instance = new DialogRepository();
     private final DatabaseReference db;
-
-    public DialogRepository() {
+    private final DialogIdManager dialogIdManager;
+    @Inject
+    public DialogRepository(DialogIdManager dialogIdManager) {
+        this.dialogIdManager = dialogIdManager;
         this.db = FirebaseDatabase.getInstance().getReference("dialogs");
     }
 
-    public static synchronized DialogRepository getInstance() {
+    /*public static synchronized DialogRepository getInstance() {
         return instance;
-    }
+    }*/
 
     public void addDialog(final DialogItem dialogItem, final OnTransactionComplete<Void> onTransactionComplete) {
         UserInfo userInfo = FirebaseAuth.getInstance().getCurrentUser();
@@ -45,6 +49,7 @@ public class DialogRepository {
             @Override
             public void onComplete(DatabaseError databaseError, boolean commited, DataSnapshot dataSnapshot) {
                 if (commited) {
+                    dialogIdManager.addDialogId(dataSnapshot.getKey());
                     onTransactionComplete.onCommit(null);
                 } else {
                     onTransactionComplete.onAbort(databaseError.toException());
@@ -53,40 +58,15 @@ public class DialogRepository {
         });
     }
 
-    public void getDialogs(final DialogItemValueListener eventListener) {
+    public void getDialogs(final DialogItemValueListener<DialogItem> eventListener) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        db.child(currentUser.getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                DialogItem value = dataSnapshot.getValue(DialogItem.class);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //TODO implementation
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                //TODO implementation
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                //TODO implementation
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //TODO implementation
-            }
-        });
         db.child(currentUser.getUid()).addListenerForSingleValueEvent(new DefaultValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DialogItem> items = new ArrayList<>();
+                LinkedList<DialogItem> items = new LinkedList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    items.add(snapshot.getValue(DialogItem.class));
+                    dialogIdManager.addDialogId(snapshot.getKey());
+                    items.addFirst(snapshot.getValue(DialogItem.class));
                 }
                 eventListener.onValue(items);
             }

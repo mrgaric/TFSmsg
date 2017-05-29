@@ -8,7 +8,6 @@ import com.igordubrovin.tfsmsg.firebase.DialogItemValueListener;
 import com.igordubrovin.tfsmsg.firebase.dialog.DialogRepository;
 import com.igordubrovin.tfsmsg.mvp.ipresenter.IDialogsPresenter;
 import com.igordubrovin.tfsmsg.mvp.iview.IDialogsView;
-import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
@@ -24,11 +23,11 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
     @VisibleForTesting
     public List<DialogItem> dialogItems;
     private BaseModel item;
-    private DBFlowHelper dbFlowHelper;
+    private DialogRepository dialogRepository;
 
     @Inject
-    public DialogsPresenter(DBFlowHelper dbFlowHelper){
-        this.dbFlowHelper = dbFlowHelper;
+    public DialogsPresenter(DialogRepository dialogRepository){
+        this.dialogRepository = dialogRepository;
     }
 
     @Override
@@ -46,9 +45,9 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
 
     @Override
     public void loadDialogsList() {
-        DialogRepository.getInstance().getDialogs(new DialogItemValueListener() {
+        dialogRepository.getDialogs(new DialogItemValueListener<DialogItem>() {
             @Override
-            public void onValue(List<com.igordubrovin.tfsmsg.utils.DialogItem> items) {
+            public void onValue(List<DialogItem> items) {
                 if (isViewAttached())
                     getView().showDialogs(items);
                 else
@@ -58,9 +57,14 @@ public class DialogsPresenter extends MvpBasePresenter<IDialogsView>
     }
 
     @Override
+    public void addDialogItem(DialogItem item) {
+
+    }
+
+    /*@Override
     public void addDialogItem(BaseModel item) {
       //  dbFlowHelper.saveItem(item, this);
-    }
+    }*/
 
    /* @Override
     public void itemAdded(BaseModel item) {

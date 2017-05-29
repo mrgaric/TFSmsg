@@ -1,14 +1,14 @@
 package com.igordubrovin.tfsmsg.utils;
 
-import java.util.List;
+import org.parceler.Parcel;
 
+@Parcel(analyze = DialogItem.class)
 public class DialogItem {
     String title;
     String desc;
     String time;
     String date;
     String lastMessage;
-    List<MessageItem> messageItems;
 
     public DialogItem(){}
 

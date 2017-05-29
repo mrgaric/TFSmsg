@@ -23,8 +23,9 @@ import com.igordubrovin.tfsmsg.fragments.DialogsFragment;
 import com.igordubrovin.tfsmsg.fragments.SettingsFragment;
 import com.igordubrovin.tfsmsg.interfaces.InjectFragment;
 import com.igordubrovin.tfsmsg.utils.App;
-import com.igordubrovin.tfsmsg.utils.DBFlowHelper;
 import com.igordubrovin.tfsmsg.utils.ProjectConstants;
+
+import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
@@ -44,8 +45,6 @@ public class NavigationActivity extends AppCompatActivity
     NavigationView navigationView;
     @BindView(R.id.fab_add_dialog)
     FloatingActionButton fabAddDialog;
-    @Inject
-    DBFlowHelper dbFlowHelper;
     @Inject
     String userLogin;
     @Inject
@@ -93,12 +92,21 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
-        if (dialogsFragment != null) {
-            ((DialogsFragment)dialogsFragment).getDialogItemsDb();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            if (requestCode == ProjectConstants.REQUEST_CODE_DIALOG_ADD){
+                Fragment dialogsFragment = getSupportFragmentManager().findFragmentByTag(ProjectConstants.FRAGMENT_DIALOGS);
+                if (dialogsFragment != null) {
+                    ((DialogsFragment)dialogsFragment).addItem(Parcels.unwrap(data.getParcelableExtra(ProjectConstants.DIALOG_ITEM_INTENT)));
+                }
+            }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void initToolbar(){
@@ -112,7 +120,7 @@ public class NavigationActivity extends AppCompatActivity
     @OnClick(R.id.fab_add_dialog)
     public void onClickAddDialog(View v) {
         Intent intent = new Intent(this, AddDialogActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ProjectConstants.REQUEST_CODE_DIALOG_ADD);
     }
 
     private void initNavigationView(Bundle savedInstanceState){
